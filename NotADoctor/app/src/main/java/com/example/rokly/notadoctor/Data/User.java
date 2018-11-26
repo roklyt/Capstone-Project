@@ -54,32 +54,64 @@ public class User implements Parcelable {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSex() {
         return sex;
     }
 
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
     public int getAge() {
         return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public int getBmiOver30() {
         return bmiOver30;
     }
 
+    public void setBmiOver30(int bmiOver30) {
+        this.bmiOver30 = bmiOver30;
+    }
+
     public int getBmiUnder19() {
         return bmiUnder19;
+    }
+
+    public void setBmiUnder19(int bmiUnder19) {
+        this.bmiUnder19 = bmiUnder19;
     }
 
     public int getHypertension() {
         return hypertension;
     }
 
+    public void setHypertension(int hypertension) {
+        this.hypertension = hypertension;
+    }
+
     public int getSmoking() {
         return smoking;
+    }
+
+    public void setSmoking(int smoking) {
+        this.smoking = smoking;
     }
 
     @Override

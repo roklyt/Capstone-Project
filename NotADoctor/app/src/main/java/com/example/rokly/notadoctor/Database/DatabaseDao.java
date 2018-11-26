@@ -14,13 +14,13 @@ import java.util.List;
 public interface DatabaseDao {
 
     @Query("SELECT * FROM user ORDER BY name")
-    LiveData<List<UserEntry>> loadAllFavorites();
+    LiveData<List<UserEntry>> loadAllUser();
 
     @Insert
-    void insertFavorite(UserEntry userEntity);
+    void insertUser(UserEntry userEntity);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateFavorite(UserEntry userEntity);
+    void updateUser(UserEntry userEntity);
 
     @Delete
     void deleteFavorite(UserEntry userEntity);

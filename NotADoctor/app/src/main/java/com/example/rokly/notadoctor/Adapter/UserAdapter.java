@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
 import com.example.rokly.notadoctor.Data.User;
+import com.example.rokly.notadoctor.Database.UserEntry;
 import com.example.rokly.notadoctor.R;
 
 import java.util.List;
@@ -17,11 +18,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
 
     private final UserAdapterOnClickHandler ClickHandler;
     /* List for all user*/
-    private List<User> UserList;
+    private List<UserEntry> UserList;
 
-    public UserAdapter(UserAdapterOnClickHandler clickHandler, List<User> userList) {
+    public UserAdapter(UserAdapterOnClickHandler clickHandler) {
         ClickHandler = clickHandler;
-        UserList = userList;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
     @Override
     public void onBindViewHolder(UserAdapterViewHolder forecastAdapterViewHolder, int position) {
         /*Get the current user */
-        User user = UserList.get(position);
+        UserEntry user = UserList.get(position);
 
         forecastAdapterViewHolder.UserNameTextView.setText(user.getName());
 
@@ -50,14 +50,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
     }
 
     /* Set the new user list to the adapter */
-    public void setUserData(List<User> userData) {
+    public void setUserData(List<UserEntry> userData) {
         UserList = userData;
         notifyDataSetChanged();
     }
 
     /* Interface for the on click handler */
     public interface UserAdapterOnClickHandler {
-        void onClick(User currentMovie);
+        void onClick(UserEntry currentUser);
     }
 
     public class UserAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -71,7 +71,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
 
         @Override
         public void onClick(View v) {
-            User currentUser = UserList.get(getAdapterPosition());
+            UserEntry currentUser = UserList.get(getAdapterPosition());
             ClickHandler.onClick(currentUser);
         }
     }
