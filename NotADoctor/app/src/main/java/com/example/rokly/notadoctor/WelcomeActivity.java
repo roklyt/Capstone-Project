@@ -2,30 +2,33 @@ package com.example.rokly.notadoctor;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.rokly.notadoctor.Adapter.UserAdapter;
-import com.example.rokly.notadoctor.Data.User;
 import com.example.rokly.notadoctor.Database.AppDatabase;
 import com.example.rokly.notadoctor.Database.UserEntry;
+import com.example.rokly.notadoctor.Executor.AppExecutor;
 import com.example.rokly.notadoctor.ViewModel.MainViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class WelcomeActivity extends AppCompatActivity implements UserAdapter.UserAdapterOnClickHandler{
+public class WelcomeActivity extends AppCompatActivity implements UserAdapter.ItemClickListener{
 
     AppDatabase UsersDb;
 
     private UserAdapter UserAdapter;
-    private List<User> UserList = new ArrayList<>();
     private RecyclerView UserRecyclerView;
 
 
@@ -41,23 +44,23 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.Us
         UserRecyclerView.setAdapter(UserAdapter);
 
 
-
         FloatingActionButton addUser = findViewById(R.id.fab_add_user);
 
         addUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserEntry userentry = new UserEntry("Klaus", "woman", 0 ,0, 0, 0,0);
-                UsersDb.databaseDao().insertUser(userentry);
+                Intent addUserIntent = new Intent(WelcomeActivity.this, CreateEditActivity.class);
+                startActivity(addUserIntent);
             }
         });
 
         UsersDb = AppDatabase.getInstance(getApplicationContext());
+        setupViewModel();
     }
 
     private void setupViewModel() {
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.getTasks().observe(this, new Observer<List<UserEntry>>() {
+        viewModel.getUsers().observe(this, new Observer<List<UserEntry>>() {
             @Override
             public void onChanged(@Nullable List<UserEntry> userEntries) {
                 UserAdapter.setUserData(userEntries);
@@ -66,7 +69,40 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.Us
     }
 
     @Override
-    public void onClick(UserEntry currentUser) {
+    public void onItemClickListener(UserEntry currentUser) {
+        Intent symptomeIntent = new Intent(WelcomeActivity.this, SymptomActivity.class);
+        symptomeIntent.putExtra(CreateEditActivity.EXTRA_USER_ID, currentUser.getId());
+        startActivity(symptomeIntent);
+    }
 
+    @Override
+    public void onDeleteClickListener(final UserEntry currentUser) {
+
+        final Resources res = getResources();
+
+        new AlertDialog.Builder(this)
+                .setTitle(res.getString(R.string.alert_dialog_delete_user_title, currentUser.getName()))
+                .setMessage(res.getString(R.string.alert_dialog_delete_user_text))
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        AppExecutor.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                UsersDb.databaseDao().deleteUser(currentUser);
+
+                            }
+                        });
+                        Toast.makeText(getApplicationContext(), res.getString(R.string.delete_user_toast, currentUser.getName()), Toast.LENGTH_SHORT).show();
+                    }})
+                .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    @Override
+    public void onEditClickListener(UserEntry currentUser) {
+        Intent editUserIntent = new Intent(WelcomeActivity.this, CreateEditActivity.class);
+        editUserIntent.putExtra(CreateEditActivity.EXTRA_USER_ID, currentUser.getId());
+        startActivity(editUserIntent);
     }
 }

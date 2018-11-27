@@ -23,8 +23,8 @@ public interface DatabaseDao {
     void updateUser(UserEntry userEntity);
 
     @Delete
-    void deleteFavorite(UserEntry userEntity);
+    void deleteUser(UserEntry userEntity);
 
-    @Query("SELECT * FROM user WHERE name = :name")
-    LiveData<UserEntry> loadUserByName(String name);
+    @Query("SELECT * FROM user WHERE id = :id")
+    LiveData<UserEntry> loadUserById(int id);
 }

@@ -16,10 +16,12 @@ public class UserEntry {
     private int bmiUnder19;
     private int hypertension;
     private int smoking;
+    private int height;
+    private int weight;
 
 
     @Ignore
-    public UserEntry(String name, String sex, int age, int bmiOver30, int bmiUnder19, int hypertension, int smoking) {
+    public UserEntry(String name, String sex, int age, int bmiOver30, int bmiUnder19, int hypertension, int smoking, int height, int weight) {
         this.name = name;
         this.sex = sex;
         this.age = age;
@@ -27,6 +29,8 @@ public class UserEntry {
         this.bmiUnder19 = bmiUnder19;
         this.hypertension = hypertension;
         this.smoking = smoking;
+        this.height = height;
+        this.weight = weight;
     }
 
     public UserEntry(int id, String name, String sex, int age, int bmiOver30, int bmiUnder19, int hypertension, int smoking) {
@@ -38,6 +42,8 @@ public class UserEntry {
         this.bmiUnder19 = bmiUnder19;
         this.hypertension = hypertension;
         this.smoking = smoking;
+        this.height = height;
+        this.weight = weight;
     }
 
     public int getId() {
@@ -102,5 +108,21 @@ public class UserEntry {
 
     public void setSmoking(int smoking) {
         this.smoking = smoking;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 }

@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">NotADoctor</string>
+
+    <string name="present_risk_factor">Yes</string>
+    <string name="absent_risk_factor">No</string>
+
+    <string name="button_abort">Abort</string>
+    <string name="button_save">Save</string>
+    <string name="button_update">Update</string>
+
+    <string name="alert_dialog_delete_user_title">Delete %s ?</string>
+    <string name="alert_dialog_delete_user_text">"Do you really want to delete this user?"</string>
+    <string name="delete_user_toast">%s was deleted?</string>
+
+    <string-array name="sex">
+        <item>male</item>
+        <item>female</item>
+        <item>diverse</item>
+    </string-array>
 </resources>

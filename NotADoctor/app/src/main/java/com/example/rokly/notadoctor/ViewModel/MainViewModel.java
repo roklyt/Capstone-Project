@@ -22,7 +22,7 @@ public class MainViewModel extends AndroidViewModel {
         user = database.databaseDao().loadAllUser();
     }
 
-    public LiveData<List<UserEntry>> getTasks() {
+    public LiveData<List<UserEntry>> getUsers() {
         return user;
     }
 }

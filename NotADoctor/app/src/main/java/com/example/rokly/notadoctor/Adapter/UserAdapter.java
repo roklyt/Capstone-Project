@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.support.v7.widget.RecyclerView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.rokly.notadoctor.Data.User;
 import com.example.rokly.notadoctor.Database.UserEntry;
 import com.example.rokly.notadoctor.R;
 
@@ -16,11 +16,11 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterViewHolder> {
 
-    private final UserAdapterOnClickHandler ClickHandler;
+    private final ItemClickListener ClickHandler;
     /* List for all user*/
     private List<UserEntry> UserList;
 
-    public UserAdapter(UserAdapterOnClickHandler clickHandler) {
+    public UserAdapter(ItemClickListener clickHandler) {
         ClickHandler = clickHandler;
     }
 
@@ -38,14 +38,30 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
     @Override
     public void onBindViewHolder(UserAdapterViewHolder forecastAdapterViewHolder, int position) {
         /*Get the current user */
-        UserEntry user = UserList.get(position);
+        final UserEntry user = UserList.get(position);
 
         forecastAdapterViewHolder.UserNameTextView.setText(user.getName());
 
+        forecastAdapterViewHolder.DeleteUserImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClickHandler.onDeleteClickListener(user);
+            }
+        });
+
+        forecastAdapterViewHolder.EditUserImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClickHandler.onEditClickListener(user);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
+        if(UserList == null){
+            return 0;
+        }
         return UserList.size();
     }
 
@@ -56,15 +72,23 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
     }
 
     /* Interface for the on click handler */
-    public interface UserAdapterOnClickHandler {
-        void onClick(UserEntry currentUser);
+    public interface ItemClickListener {
+        void onItemClickListener(UserEntry currentUser);
+
+        void onDeleteClickListener(UserEntry currentUser);
+
+        void onEditClickListener(UserEntry currentUser);
     }
 
     public class UserAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView UserNameTextView;
+        ImageButton DeleteUserImageButton;
+        ImageButton EditUserImageButton;
 
         public UserAdapterViewHolder(View view) {
             super(view);
+            DeleteUserImageButton = view.findViewById(R.id.ib_delete_user);
+            EditUserImageButton = view.findViewById(R.id.ib_edit_user);
             UserNameTextView = view.findViewById(R.id.tv_list_user_name);
             view.setOnClickListener(this);
         }
@@ -72,7 +96,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
         @Override
         public void onClick(View v) {
             UserEntry currentUser = UserList.get(getAdapterPosition());
-            ClickHandler.onClick(currentUser);
+            ClickHandler.onItemClickListener(currentUser);
         }
     }
 }
