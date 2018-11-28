@@ -7,10 +7,15 @@
     <string name="button_abort">Abort</string>
     <string name="button_save">Save</string>
     <string name="button_update">Update</string>
+    <string name="button_submit">Submit</string>
 
     <string name="alert_dialog_delete_user_title">Delete %s ?</string>
     <string name="alert_dialog_delete_user_text">"Do you really want to delete this user?"</string>
     <string name="delete_user_toast">%s was deleted?</string>
+    <string name="error_no_user">Please choose a valid user</string>
+
+    <string name="welcome_to_the_symptomes">Hi %s tell me your problems</string>
+
 
     <string-array name="sex">
         <item>male</item>

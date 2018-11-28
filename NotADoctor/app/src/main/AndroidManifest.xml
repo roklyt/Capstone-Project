@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.rokly.notadoctor">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreateEditActivity" />
-        <activity android:name=".SymptomActivity"></activity>
+        <activity android:name=".SymptomActivity" />
+        <activity android:name=".MentionActivity"></activity>
     </application>
 
 </manifest>

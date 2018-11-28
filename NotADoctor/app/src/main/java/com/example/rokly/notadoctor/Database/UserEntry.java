@@ -3,9 +3,25 @@ package com.example.rokly.notadoctor.Database;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 @Entity(tableName = "user")
-public class UserEntry {
+public class UserEntry implements Parcelable {
+
+    public static final String PARCELABLE_KEY = "parcelable_key";
+    public final static Parcelable.Creator<UserEntry> CREATOR = new Parcelable.Creator<UserEntry>() {
+        @Override
+        public UserEntry createFromParcel(Parcel parcel) {
+            return new UserEntry(parcel);
+        }
+
+        @Override
+        public UserEntry[] newArray(int i) {
+            return new UserEntry[i];
+        }
+
+    };
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -44,6 +60,19 @@ public class UserEntry {
         this.smoking = smoking;
         this.height = height;
         this.weight = weight;
+    }
+
+    private UserEntry(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        sex = in.readString();
+        age = in.readInt();
+        bmiOver30 = in.readInt();
+        bmiUnder19 = in.readInt();
+        hypertension = in.readInt();
+        smoking = in.readInt();
+        height = in.readInt();
+        weight = in.readInt();
     }
 
     public int getId() {
@@ -124,5 +153,25 @@ public class UserEntry {
 
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(name);
+        parcel.writeString(sex);
+        parcel.writeInt(age);
+        parcel.writeInt(bmiOver30);
+        parcel.writeInt(bmiUnder19);
+        parcel.writeInt(hypertension);
+        parcel.writeInt(smoking);
+        parcel.writeInt(height);
+        parcel.writeInt(weight);
+
     }
 }

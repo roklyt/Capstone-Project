@@ -71,7 +71,7 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
     @Override
     public void onItemClickListener(UserEntry currentUser) {
         Intent symptomeIntent = new Intent(WelcomeActivity.this, SymptomActivity.class);
-        symptomeIntent.putExtra(CreateEditActivity.EXTRA_USER_ID, currentUser.getId());
+        symptomeIntent.putExtra(SymptomActivity.EXTRA_USER, currentUser);
         startActivity(symptomeIntent);
     }
 

@@ -1,6 +1,7 @@
 package com.example.rokly.notadoctor.Adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +25,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
         ClickHandler = clickHandler;
     }
 
+    @NonNull
     @Override
-    public UserAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public UserAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.user_list;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -36,7 +38,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
     }
 
     @Override
-    public void onBindViewHolder(UserAdapterViewHolder forecastAdapterViewHolder, int position) {
+    public void onBindViewHolder(@NonNull UserAdapterViewHolder forecastAdapterViewHolder, int position) {
         /*Get the current user */
         final UserEntry user = UserList.get(position);
 
