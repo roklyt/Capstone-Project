@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.rokly.notadoctor.Model.Mentions;
@@ -40,8 +41,15 @@ public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionA
         /*Get the current user */
         final Mentions mention = Mentions.get(position);
 
-        forecastAdapterViewHolder.MentionNameTextView.setText(mention.getName());
 
+        forecastAdapterViewHolder.MentionNameTextView.setText(mention.getName());
+        if(mention.getChoiceId().equals("present")){
+            forecastAdapterViewHolder.MentionIndicatorImageView.setImageResource(android.R.drawable.checkbox_on_background);
+        }else if(mention.getChoiceId().equals("absent")){
+            forecastAdapterViewHolder.MentionIndicatorImageView.setImageResource(android.R.drawable.ic_delete);
+        }else{
+            forecastAdapterViewHolder.MentionIndicatorImageView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -63,12 +71,19 @@ public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionA
         void onItemClickListener(Mentions mention);
     }
 
+    public void removeItem(int position) {
+        Mentions.remove(position);
+        notifyItemRemoved(position);
+    }
+
     public class MentionAdpaterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView MentionNameTextView;
+        ImageView MentionIndicatorImageView;
 
         public MentionAdpaterViewHolder(View view) {
             super(view);
             MentionNameTextView = view.findViewById(R.id.tv_mention_list);
+            MentionIndicatorImageView = view.findViewById(R.id.iv_indicator);
             view.setOnClickListener(this);
         }
 

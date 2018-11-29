@@ -8,14 +8,30 @@
     <string name="button_save">Save</string>
     <string name="button_update">Update</string>
     <string name="button_submit">Submit</string>
+    <string name="button_start_diagnose">Start diagnose</string>
+    <string name="button_reenter_symptome">Reenter Symptomes</string>
 
+    <string name="radio_button_hypertension">Hypertension</string>
+    <string name="radio_button_smoking">Smoking</string>
+
+    <string name="mentions_page_text_success">We found these symptomes. If on of this symptomes is not correct please delete via swipe. If symptomes are missing please reenter your symptomes and try to be a little more specific. Thanks s a lot.</string>
     <string name="alert_dialog_delete_user_title">Delete %s ?</string>
     <string name="alert_dialog_delete_user_text">"Do you really want to delete this user?"</string>
     <string name="delete_user_toast">%s was deleted?</string>
     <string name="error_no_user">Please choose a valid user</string>
+    <string name="error_no_mentions">We could not find any mentions pleas try again.</string>
+    <string name="error_some_entrys_missing">Some entry are missing.</string>
 
     <string name="welcome_to_the_symptomes">Hi %s tell me your problems</string>
 
+    <string name="hint_create_edit_name">Name</string>
+    <string name="hint_create_edit_age">Age</string>
+    <string name="hint_create_edit_height">Height in cm</string>
+    <string name="hint_create_edit_weight">Weight in kg</string>
+    <string name="hint_symptome_enter_symptome">Enter Symptome here</string>
+
+    <integer name="max_lenght_symptome_edit_text">400</integer>
+    <integer name="max_lenght_create_name_edit_text">20</integer>
 
     <string-array name="sex">
         <item>male</item>

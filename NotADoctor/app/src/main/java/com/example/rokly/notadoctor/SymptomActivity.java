@@ -3,6 +3,7 @@ package com.example.rokly.notadoctor;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.PersistableBundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -43,10 +44,14 @@ public class SymptomActivity extends AppCompatActivity {
             SubmitSymptomeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent submitSymptomes = new Intent(SymptomActivity.this, MentionActivity.class);
-                    submitSymptomes.putExtra(EXTRA_USER, currentUser);
-                    submitSymptomes.putExtra(EXTRA_USER_SYMPTOME_TEXT, EnterSymptomeEditText.getText().toString());
-                    startActivity(submitSymptomes);
+                    if(checkEntry()){
+                        Intent submitSymptomes = new Intent(SymptomActivity.this, MentionActivity.class);
+                        submitSymptomes.putExtra(EXTRA_USER, currentUser);
+                        submitSymptomes.putExtra(EXTRA_USER_SYMPTOME_TEXT, EnterSymptomeEditText.getText().toString());
+                        startActivity(submitSymptomes);
+                    }else{
+                        Toast.makeText(SymptomActivity.this, getResources().getString(R.string.error_some_entrys_missing), Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
@@ -54,6 +59,19 @@ public class SymptomActivity extends AppCompatActivity {
         }else{
             Toast.makeText(getApplicationContext(), R.string.error_no_user, Toast.LENGTH_LONG).show();
         }
+    }
+
+    private boolean checkEntry(){
+        boolean checked = true;
+
+        if(EnterSymptomeEditText.getText().toString().equals("")){
+            checked = false;
+            EnterSymptomeEditText.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
+        }else{
+            EnterSymptomeEditText.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
+        }
+
+        return checked;
     }
 
     @Override

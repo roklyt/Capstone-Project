@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,7 +25,7 @@ import java.util.List;
 
 public class WelcomeActivity extends AppCompatActivity implements UserAdapter.ItemClickListener{
 
-    AppDatabase UsersDb;
+    AppDatabase NotADoctorDB;
 
     private UserAdapter UserAdapter;
     private RecyclerView UserRecyclerView;
@@ -54,7 +53,7 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
             }
         });
 
-        UsersDb = AppDatabase.getInstance(getApplicationContext());
+        NotADoctorDB = AppDatabase.getInstance(getApplicationContext());
         setupViewModel();
     }
 
@@ -90,7 +89,7 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
                         AppExecutor.getInstance().diskIO().execute(new Runnable() {
                             @Override
                             public void run() {
-                                UsersDb.databaseDao().deleteUser(currentUser);
+                                NotADoctorDB.databaseDao().deleteUser(currentUser);
 
                             }
                         });

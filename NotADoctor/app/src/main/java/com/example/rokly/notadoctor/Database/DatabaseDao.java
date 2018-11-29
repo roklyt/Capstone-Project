@@ -8,6 +8,7 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Dao
@@ -27,4 +28,33 @@ public interface DatabaseDao {
 
     @Query("SELECT * FROM user WHERE id = :id")
     LiveData<UserEntry> loadUserById(int id);
+
+
+
+    @Insert
+    void insertDiagnose(DiagnoseEntry diagnoseEntry);
+
+    @Query("SELECT * FROM diagnose WHERE userId = :userId")
+    LiveData<DiagnoseEntry> loadDiagnoseByUserId(int userId);
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    void updateDiagnose(DiagnoseEntry diagnoseEntry);
+
+    @Delete
+    void deleteDiagnose(DiagnoseEntry diagnoseEntry);
+
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertEvidence(EvidenceEntry evidenceEntry);
+
+    @Query("SELECT * FROM evidence WHERE diagnoseId = :diagnoseId")
+    LiveData<List<EvidenceEntry>> loadEvidenceByDiagnoseId(int diagnoseId);
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    void updateEvidence(EvidenceEntry evidenceEntry);
+
+    @Delete
+    void deleteEvidence(EvidenceEntry evidenceEntry);
+
 }

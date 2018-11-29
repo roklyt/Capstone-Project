@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
+
 import com.example.rokly.notadoctor.Database.AppDatabase;
 import com.example.rokly.notadoctor.Database.UserEntry;
 import com.example.rokly.notadoctor.Executor.AppExecutor;
@@ -44,7 +47,7 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     private Button AbortButton;
     private Button SaveButton;
 
-    private AppDatabase UserDb;
+    private AppDatabase NotADoctorDB;
 
     private static final int DEFAULT_USER_ID = -1;
 
@@ -57,7 +60,7 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
 
         findViews();
 
-        UserDb = AppDatabase.getInstance(getApplicationContext());
+        NotADoctorDB = AppDatabase.getInstance(getApplicationContext());
 
         if(savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_USER_ID)){
             UserId = savedInstanceState.getInt(INSTANCE_USER_ID);
@@ -69,7 +72,7 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
             if (UserId == DEFAULT_USER_ID) {
                 UserId = intent.getIntExtra(EXTRA_USER_ID, DEFAULT_USER_ID);
 
-                CreateEditViewModelFactory factory = new CreateEditViewModelFactory(UserDb, UserId);
+                CreateEditViewModelFactory factory = new CreateEditViewModelFactory(NotADoctorDB, UserId);
 
                 final CreateEditViewModel viewModel
                         = ViewModelProviders.of(this, factory).get(CreateEditViewModel.class);
@@ -131,27 +134,77 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
 
     private void saveButtonClicked(){
         String name = NameEditField.getText().toString();
-        int age = Integer.parseInt(AgeEditField.getText().toString());
-        int height = Integer.parseInt(HeightEditField.getText().toString());
-        int weight = Integer.parseInt(WeightEditField.getText().toString());
+        int age = getInt(AgeEditField.getText().toString());
+        int height = getInt(HeightEditField.getText().toString());
+        int weight = getInt(WeightEditField.getText().toString());
         int bmiOver30 = bmiOver30(height,weight);
         int bmiUnder19 = bmiUnder19(height, weight);
         int hypertension = getRadioGroupResult(R.id.rg_hypertension);
         int smoking = getRadioGroupResult(R.id.rg_smoking);
 
-        final UserEntry user = new UserEntry(name, Sex, age, bmiOver30, bmiUnder19, hypertension, smoking, height, weight);
-        AppExecutor.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                if(UserId == DEFAULT_USER_ID){
-                    UserDb.databaseDao().insertUser(user);
-                }else{
-                    user.setId(UserId);
-                    UserDb.databaseDao().updateUser(user);
+        if(checkEntrys(name, age, height, weight)){
+            final UserEntry user = new UserEntry(name, Sex, age, bmiOver30, bmiUnder19, hypertension, smoking, height, weight);
+            AppExecutor.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    if(UserId == DEFAULT_USER_ID){
+                        NotADoctorDB.databaseDao().insertUser(user);
+                    }else{
+                        user.setId(UserId);
+                        NotADoctorDB.databaseDao().updateUser(user);
+                    }
+                    finish();
                 }
-                finish();
-            }
-        });
+            });
+        }
+
+        Toast.makeText(this, R.string.error_some_entrys_missing, Toast.LENGTH_SHORT).show();
+    }
+
+    private int getInt(String value){
+        int i;
+
+        if(value.equals("")){
+            i = 0;
+        }else{
+            i = Integer.parseInt(value);
+        }
+
+        return i;
+    }
+
+    private boolean checkEntrys(String name, int age, int height, int weight){
+        boolean checked = true;
+
+        if(name.equals("")){
+            checked = false;
+            NameEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
+        }else{
+            NameEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
+        }
+
+        if(age == 0){
+            checked = false;
+            AgeEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
+        }else{
+            AgeEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
+        }
+
+        if(height == 0){
+            checked = false;
+            HeightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
+        }else{
+            HeightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
+        }
+
+        if(weight == 0){
+            checked = false;
+            WeightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
+        }else{
+            WeightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
+        }
+
+        return checked;
     }
 
     private void setSpinnerSelection(String sex){

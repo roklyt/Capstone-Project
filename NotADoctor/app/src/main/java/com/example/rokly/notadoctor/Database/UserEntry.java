@@ -49,7 +49,7 @@ public class UserEntry implements Parcelable {
         this.weight = weight;
     }
 
-    public UserEntry(int id, String name, String sex, int age, int bmiOver30, int bmiUnder19, int hypertension, int smoking) {
+    public UserEntry(int id, String name, String sex, int age, int bmiOver30, int bmiUnder19, int hypertension, int smoking, int height, int weight) {
         this.id = id;
         this.name = name;
         this.sex = sex;

@@ -14,8 +14,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
+        android:maxLength="@integer/max_lenght_create_name_edit_text"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:hint="@string/hint_create_edit_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,6 +40,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
+        android:hint="@string/hint_create_edit_age"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,6 +54,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
+        android:hint="@string/hint_create_edit_height"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,6 +69,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
+        android:hint="@string/hint_create_edit_weight"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +77,7 @@
 
     <RadioGroup
         android:id="@+id/rg_hypertension"
-        android:layout_width="220dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
@@ -84,6 +88,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_weight">
+
+        <TextView
+            android:layout_width="110dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
+            android:layout_height="wrap_content"
+            android:text="@string/radio_button_hypertension"/>
 
         <RadioButton
             android:id="@+id/rb_1"
@@ -104,7 +115,7 @@
 
     <RadioGroup
         android:id="@+id/rg_smoking"
-        android:layout_width="220dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
@@ -115,6 +126,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rg_hypertension">
+
+        <TextView
+            android:layout_width="110dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
+            android:layout_height="wrap_content"
+            android:text="@string/radio_button_smoking"/>
 
         <RadioButton
             android:id="@id/rb_1"
