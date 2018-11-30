@@ -1,12 +1,12 @@
 package com.example.rokly.notadoctor.helper;
 
 public class ChoiceId {
-    private static final String CHOICEID_PRESENT = "present";
-    private static final String CHOICEID_ABSENT = "absent";
-    private static final String CHOICEID_UNKNOWN = "unknown";
-    private static final int CHOICEID_INT_PRESENT = 1;
-    private static final int CHOICEID_INT_ABSENT = 0;
-    private static final int CHOICEID_INT_UNKNOWN = -1;
+    public static final String CHOICEID_PRESENT = "present";
+    public static final String CHOICEID_ABSENT = "absent";
+    public static final String CHOICEID_UNKNOWN = "unknown";
+    public static final int CHOICEID_INT_PRESENT = 1;
+    public static final int CHOICEID_INT_ABSENT = 0;
+    public static final int CHOICEID_INT_UNKNOWN = -1;
 
     public static int getChoiceIdInt(String choiceId){
         int choiceInt;

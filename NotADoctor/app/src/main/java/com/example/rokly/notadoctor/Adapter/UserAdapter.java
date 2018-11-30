@@ -42,16 +42,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
         /*Get the current user */
         final UserEntry user = userList.get(position);
 
-        forecastAdapterViewHolder.UserNameTextView.setText(user.getName());
+        forecastAdapterViewHolder.userNameTextView.setText(user.getName());
 
-        forecastAdapterViewHolder.DeleteUserImageButton.setOnClickListener(new View.OnClickListener() {
+        forecastAdapterViewHolder.deleteUserImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 clickHandler.onDeleteClickListener(user);
             }
         });
 
-        forecastAdapterViewHolder.EditUserImageButton.setOnClickListener(new View.OnClickListener() {
+        forecastAdapterViewHolder.editUserImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 clickHandler.onEditClickListener(user);
@@ -83,15 +83,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
     }
 
     public class UserAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView UserNameTextView;
-        ImageButton DeleteUserImageButton;
-        ImageButton EditUserImageButton;
+        TextView userNameTextView;
+        ImageButton deleteUserImageButton;
+        ImageButton editUserImageButton;
 
         public UserAdapterViewHolder(View view) {
             super(view);
-            DeleteUserImageButton = view.findViewById(R.id.ib_delete_user);
-            EditUserImageButton = view.findViewById(R.id.ib_edit_user);
-            UserNameTextView = view.findViewById(R.id.tv_list_user_name);
+            deleteUserImageButton = view.findViewById(R.id.ib_delete_user);
+            editUserImageButton = view.findViewById(R.id.ib_edit_user);
+            userNameTextView = view.findViewById(R.id.tv_list_user_name);
             view.setOnClickListener(this);
         }
 

@@ -42,13 +42,13 @@ public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionA
         final Mentions mention = mentionsList.get(position);
 
 
-        forecastAdapterViewHolder.MentionNameTextView.setText(mention.getName());
+        forecastAdapterViewHolder.mentionNameTextView.setText(mention.getName());
         if(mention.getChoiceId().equals("present")){
-            forecastAdapterViewHolder.MentionIndicatorImageView.setImageResource(android.R.drawable.checkbox_on_background);
+            forecastAdapterViewHolder.mentionIndicatorImageView.setImageResource(android.R.drawable.checkbox_on_background);
         }else if(mention.getChoiceId().equals("absent")){
-            forecastAdapterViewHolder.MentionIndicatorImageView.setImageResource(android.R.drawable.ic_delete);
+            forecastAdapterViewHolder.mentionIndicatorImageView.setImageResource(android.R.drawable.ic_delete);
         }else{
-            forecastAdapterViewHolder.MentionIndicatorImageView.setVisibility(View.GONE);
+            forecastAdapterViewHolder.mentionIndicatorImageView.setVisibility(View.GONE);
         }
     }
 
@@ -77,13 +77,13 @@ public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionA
     }
 
     public class MentionAdpaterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView MentionNameTextView;
-        ImageView MentionIndicatorImageView;
+        TextView mentionNameTextView;
+        ImageView mentionIndicatorImageView;
 
         public MentionAdpaterViewHolder(View view) {
             super(view);
-            MentionNameTextView = view.findViewById(R.id.tv_mention_list);
-            MentionIndicatorImageView = view.findViewById(R.id.iv_indicator);
+            mentionNameTextView = view.findViewById(R.id.tv_mention_list);
+            mentionIndicatorImageView = view.findViewById(R.id.iv_indicator);
             view.setOnClickListener(this);
         }
 

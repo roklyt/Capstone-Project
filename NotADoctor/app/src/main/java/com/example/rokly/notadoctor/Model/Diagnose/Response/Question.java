@@ -7,6 +7,7 @@ import com.example.rokly.notadoctor.Model.Diagnose.Request.Extras;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Question implements Parcelable {
@@ -43,6 +44,7 @@ public class Question implements Parcelable {
     protected Question(Parcel in) {
         this.type = ((String) in.readValue((String.class.getClassLoader())));
         this.text = ((String) in.readValue((String.class.getClassLoader())));
+        this.items = new ArrayList<>();
         in.readList(this.items, (Item.class.getClassLoader()));
         this.extras = ((Extras) in.readValue((Extras.class.getClassLoader())));
     }

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Diagnose implements Parcelable {
@@ -38,6 +39,7 @@ public class Diagnose implements Parcelable {
 
     protected Diagnose(Parcel in) {
         this.question = ((Question) in.readValue((Question.class.getClassLoader())));
+        this.conditions = new ArrayList<>();
         in.readList(this.conditions, (Condition.class.getClassLoader()));
         this.shouldStop = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
     }

@@ -21,7 +21,8 @@
         <activity android:name=".CreateEditActivity" />
         <activity android:name=".SymptomActivity" />
         <activity android:name=".MentionActivity" />
-        <activity android:name=".DiagnoseActivity"></activity>
+        <activity android:name=".DiagnoseActivity" />
+        <activity android:name=".ConditionActivity"></activity>
     </application>
 
 </manifest>

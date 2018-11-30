@@ -10,6 +10,7 @@
     <string name="button_submit">Submit</string>
     <string name="button_start_diagnose">Start diagnose</string>
     <string name="button_reenter_symptome">Reenter Symptomes</string>
+    <string name="button_proceed_question">Procced</string>
 
     <string name="radio_button_hypertension">Hypertension</string>
     <string name="radio_button_smoking">Smoking</string>
@@ -20,6 +21,7 @@
     <string name="delete_user_toast">%s was deleted?</string>
     <string name="error_no_user">Please choose a valid user</string>
     <string name="error_no_mentions">We could not find any mentions pleas try again.</string>
+    <string name="error_no_conditions">We could not find any conditions pleas try again.</string>
     <string name="error_some_entrys_missing">Some entry are missing.</string>
 
     <string name="welcome_to_the_symptomes">Hi %s tell me your problems</string>
@@ -38,4 +40,6 @@
         <item>female</item>
         <item>diverse</item>
     </string-array>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

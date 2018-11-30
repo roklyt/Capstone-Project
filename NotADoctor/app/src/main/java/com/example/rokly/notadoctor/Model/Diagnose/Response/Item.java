@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Item implements Parcelable {
@@ -39,6 +40,7 @@ public class Item implements Parcelable {
     protected Item(Parcel in) {
         this.id = ((String) in.readValue((String.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
+        this.choices = new ArrayList<>();
         in.readList(this.choices, (Choice.class.getClassLoader()));
     }
 

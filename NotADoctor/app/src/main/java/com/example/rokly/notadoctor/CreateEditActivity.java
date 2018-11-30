@@ -24,6 +24,9 @@ import com.example.rokly.notadoctor.ViewModel.CreateEditViewModelFactory;
 
 import java.util.Locale;
 
+import static com.example.rokly.notadoctor.helper.ChoiceId.CHOICEID_INT_ABSENT;
+import static com.example.rokly.notadoctor.helper.ChoiceId.CHOICEID_INT_PRESENT;
+
 
 public class CreateEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final String EXTRA_USER_ID = "userExtraId";
@@ -33,8 +36,6 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     private static final String SEX_TYPE_D = "diverse";
     private static final int DEFAULT_USER_ID = -1;
     private int UserId = DEFAULT_USER_ID;
-    public static final int PRESENT_INT = 1;
-    public static final int ABSENT_INT = 0;
 
 
     private EditText nameEditField;
@@ -235,23 +236,23 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
         int checkedId = ((RadioGroup) findViewById(resourceId)).getCheckedRadioButtonId();
         switch (checkedId) {
             case R.id.rb_1:
-                resultRG = PRESENT_INT;
+                resultRG = CHOICEID_INT_PRESENT;
                 break;
             case R.id.rb_2:
-                resultRG = ABSENT_INT;
+                resultRG = CHOICEID_INT_ABSENT;
                 break;
             default:
-                resultRG = PRESENT_INT;
+                resultRG = CHOICEID_INT_PRESENT;
         }
         return resultRG;
     }
 
     public void setRadioGroup(int resultRG, int resourceId) {
         switch (resultRG) {
-            case PRESENT_INT:
+            case CHOICEID_INT_PRESENT:
                 ((RadioGroup)findViewById(resourceId)).check(R.id.rb_1);
                 break;
-            case ABSENT_INT:
+            case CHOICEID_INT_ABSENT:
                 ((RadioGroup) findViewById(resourceId)).check(R.id.rb_2);
                 break;
             default:
@@ -264,9 +265,9 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
         double bmi = weight /(heightInMeter * heightInMeter);
 
         if(bmi > 30){
-            return PRESENT_INT;
+            return CHOICEID_INT_PRESENT;
         }else{
-            return ABSENT_INT;
+            return CHOICEID_INT_ABSENT;
         }
     }
 
@@ -275,9 +276,9 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
         double bmi = weight /(heightInMeter * heightInMeter);
 
         if(bmi < 19){
-            return PRESENT_INT;
+            return CHOICEID_INT_PRESENT;
         }else{
-            return ABSENT_INT;
+            return CHOICEID_INT_ABSENT;
         }
     }
 
