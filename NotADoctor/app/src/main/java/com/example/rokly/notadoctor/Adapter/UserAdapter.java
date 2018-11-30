@@ -17,12 +17,12 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterViewHolder> {
 
-    private final ItemClickListener ClickHandler;
+    private final ItemClickListener clickHandler;
     /* List for all user*/
-    private List<UserEntry> UserList;
+    private List<UserEntry> userList;
 
     public UserAdapter(ItemClickListener clickHandler) {
-        ClickHandler = clickHandler;
+        this.clickHandler = clickHandler;
     }
 
     @NonNull
@@ -40,36 +40,36 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
     @Override
     public void onBindViewHolder(@NonNull UserAdapterViewHolder forecastAdapterViewHolder, int position) {
         /*Get the current user */
-        final UserEntry user = UserList.get(position);
+        final UserEntry user = userList.get(position);
 
         forecastAdapterViewHolder.UserNameTextView.setText(user.getName());
 
         forecastAdapterViewHolder.DeleteUserImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ClickHandler.onDeleteClickListener(user);
+                clickHandler.onDeleteClickListener(user);
             }
         });
 
         forecastAdapterViewHolder.EditUserImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ClickHandler.onEditClickListener(user);
+                clickHandler.onEditClickListener(user);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        if(UserList == null){
+        if(userList == null){
             return 0;
         }
-        return UserList.size();
+        return userList.size();
     }
 
     /* Set the new user list to the adapter */
     public void setUserData(List<UserEntry> userData) {
-        UserList = userData;
+        userList = userData;
         notifyDataSetChanged();
     }
 
@@ -97,8 +97,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
 
         @Override
         public void onClick(View v) {
-            UserEntry currentUser = UserList.get(getAdapterPosition());
-            ClickHandler.onItemClickListener(currentUser);
+            UserEntry currentUser = userList.get(getAdapterPosition());
+            clickHandler.onItemClickListener(currentUser);
         }
     }
 }

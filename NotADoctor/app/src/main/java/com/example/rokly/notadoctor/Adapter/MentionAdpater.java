@@ -9,19 +9,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.rokly.notadoctor.Model.Mentions;
+import com.example.rokly.notadoctor.Model.Parse.Response.Mentions;
 import com.example.rokly.notadoctor.R;
 
 import java.util.List;
 
 public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionAdpaterViewHolder> {
 
-    private final MentionAdpater.ItemClickListener ClickHandler;
+    private final MentionAdpater.ItemClickListener clickHandler;
     /* List for all user*/
-    private List<Mentions> Mentions;
+    private List<Mentions> mentionsList;
 
     public MentionAdpater(MentionAdpater.ItemClickListener clickHandler) {
-        ClickHandler = clickHandler;
+        this.clickHandler = clickHandler;
     }
 
     @NonNull
@@ -39,7 +39,7 @@ public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionA
     @Override
     public void onBindViewHolder(@NonNull MentionAdpater.MentionAdpaterViewHolder forecastAdapterViewHolder, int position) {
         /*Get the current user */
-        final Mentions mention = Mentions.get(position);
+        final Mentions mention = mentionsList.get(position);
 
 
         forecastAdapterViewHolder.MentionNameTextView.setText(mention.getName());
@@ -54,15 +54,15 @@ public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionA
 
     @Override
     public int getItemCount() {
-        if(Mentions == null){
+        if(mentionsList == null){
             return 0;
         }
-        return Mentions.size();
+        return mentionsList.size();
     }
 
     /* Set the new user list to the adapter */
     public void setUserData(List<Mentions> mentionData) {
-        Mentions = mentionData;
+        mentionsList = mentionData;
         notifyDataSetChanged();
     }
 
@@ -72,7 +72,7 @@ public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionA
     }
 
     public void removeItem(int position) {
-        Mentions.remove(position);
+        mentionsList.remove(position);
         notifyItemRemoved(position);
     }
 
@@ -89,8 +89,8 @@ public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionA
 
         @Override
         public void onClick(View v) {
-            Mentions currentMention = Mentions.get(getAdapterPosition());
-            ClickHandler.onItemClickListener(currentMention);
+            Mentions currentMention = mentionsList.get(getAdapterPosition());
+            clickHandler.onItemClickListener(currentMention);
         }
     }
 }

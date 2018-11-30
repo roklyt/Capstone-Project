@@ -1,4 +1,4 @@
-package com.example.rokly.notadoctor.Model;
+package com.example.rokly.notadoctor.Model.Parse.Response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

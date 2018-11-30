@@ -51,6 +51,38 @@ public class EvidenceEntry implements Parcelable {
         this.choiceId =choiceId;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getDiagnoseId() {
+        return diagnoseId;
+    }
+
+    public void setDiagnoseId(int diagnoseId) {
+        this.diagnoseId = diagnoseId;
+    }
+
+    public String getEvidenceId() {
+        return evidenceId;
+    }
+
+    public void setEvidenceId(String evidenceId) {
+        this.evidenceId = evidenceId;
+    }
+
+    public int getChoiceId() {
+        return choiceId;
+    }
+
+    public void setChoiceId(int choiceId) {
+        this.choiceId = choiceId;
+    }
+
     @Override
     public int describeContents() {
         return 0;

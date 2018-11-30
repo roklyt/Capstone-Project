@@ -31,27 +31,26 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     private static final String SEX_TYPE_M = "male";
     private static final String SEX_TYPE_W = "female";
     private static final String SEX_TYPE_D = "diverse";
-
+    private static final int DEFAULT_USER_ID = -1;
+    private int UserId = DEFAULT_USER_ID;
     public static final int PRESENT_INT = 1;
     public static final int ABSENT_INT = 0;
 
 
-    private EditText NameEditField;
-    private Spinner SexSpinner;
-    private String Sex;
+    private EditText nameEditField;
+    private Spinner sexSpinner;
+    private String sex;
 
-    private EditText AgeEditField;
-    private EditText HeightEditField;
-    private EditText WeightEditField;
+    private EditText ageEditField;
+    private EditText heightEditField;
+    private EditText weightEditField;
 
-    private Button AbortButton;
-    private Button SaveButton;
+    private Button abortButton;
+    private Button saveButton;
 
-    private AppDatabase NotADoctorDB;
+    private AppDatabase notADoctorDB;
 
-    private static final int DEFAULT_USER_ID = -1;
 
-    private int UserId = DEFAULT_USER_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +59,7 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
 
         findViews();
 
-        NotADoctorDB = AppDatabase.getInstance(getApplicationContext());
+        notADoctorDB = AppDatabase.getInstance(getApplicationContext());
 
         if(savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_USER_ID)){
             UserId = savedInstanceState.getInt(INSTANCE_USER_ID);
@@ -68,11 +67,11 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(EXTRA_USER_ID)) {
-            SaveButton.setText(R.string.button_update);
+            saveButton.setText(R.string.button_update);
             if (UserId == DEFAULT_USER_ID) {
                 UserId = intent.getIntExtra(EXTRA_USER_ID, DEFAULT_USER_ID);
 
-                CreateEditViewModelFactory factory = new CreateEditViewModelFactory(NotADoctorDB, UserId);
+                CreateEditViewModelFactory factory = new CreateEditViewModelFactory(notADoctorDB, UserId);
 
                 final CreateEditViewModel viewModel
                         = ViewModelProviders.of(this, factory).get(CreateEditViewModel.class);
@@ -97,34 +96,34 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
 
     private void showUserValues(UserEntry user){
         if(user == null){return;}
-        NameEditField.setText(user.getName());
+        nameEditField.setText(user.getName());
         setSpinnerSelection(user.getSex());
-        AgeEditField.setText(String.format(Locale.getDefault(),"%d", user.getAge()));
-        HeightEditField.setText(String.format(Locale.getDefault(),"%d", user.getHeight()));
-        WeightEditField.setText(String.format(Locale.getDefault(),"%d", user.getWeight()));
+        ageEditField.setText(String.format(Locale.getDefault(),"%d", user.getAge()));
+        heightEditField.setText(String.format(Locale.getDefault(),"%d", user.getHeight()));
+        weightEditField.setText(String.format(Locale.getDefault(),"%d", user.getWeight()));
 
         setRadioGroup(user.getHypertension(), R.id.rg_hypertension);
         setRadioGroup(user.getSmoking(), R.id.rg_smoking);
     }
 
     private void findViews(){
-        NameEditField = findViewById(R.id.et_name);
-        SexSpinner = findViewById(R.id.sp_sex);
+        nameEditField = findViewById(R.id.et_name);
+        sexSpinner = findViewById(R.id.sp_sex);
         setSpinner();
-        AgeEditField = findViewById(R.id.et_age);
-        HeightEditField = findViewById(R.id.et_height);
-        WeightEditField = findViewById(R.id.et_weight);
+        ageEditField = findViewById(R.id.et_age);
+        heightEditField = findViewById(R.id.et_height);
+        weightEditField = findViewById(R.id.et_weight);
 
-        AbortButton = findViewById(R.id.bt_abort);
-        AbortButton.setOnClickListener(new View.OnClickListener() {
+        abortButton = findViewById(R.id.bt_abort);
+        abortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
 
-        SaveButton = findViewById(R.id.bt_save);
-        SaveButton.setOnClickListener(new View.OnClickListener() {
+        saveButton = findViewById(R.id.bt_save);
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveButtonClicked();
@@ -133,25 +132,25 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     }
 
     private void saveButtonClicked(){
-        String name = NameEditField.getText().toString();
-        int age = getInt(AgeEditField.getText().toString());
-        int height = getInt(HeightEditField.getText().toString());
-        int weight = getInt(WeightEditField.getText().toString());
+        String name = nameEditField.getText().toString();
+        int age = getInt(ageEditField.getText().toString());
+        int height = getInt(heightEditField.getText().toString());
+        int weight = getInt(weightEditField.getText().toString());
         int bmiOver30 = bmiOver30(height,weight);
         int bmiUnder19 = bmiUnder19(height, weight);
         int hypertension = getRadioGroupResult(R.id.rg_hypertension);
         int smoking = getRadioGroupResult(R.id.rg_smoking);
 
         if(checkEntrys(name, age, height, weight)){
-            final UserEntry user = new UserEntry(name, Sex, age, bmiOver30, bmiUnder19, hypertension, smoking, height, weight);
+            final UserEntry user = new UserEntry(name, sex, age, bmiOver30, bmiUnder19, hypertension, smoking, height, weight);
             AppExecutor.getInstance().diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
                     if(UserId == DEFAULT_USER_ID){
-                        NotADoctorDB.databaseDao().insertUser(user);
+                        notADoctorDB.databaseDao().insertUser(user);
                     }else{
                         user.setId(UserId);
-                        NotADoctorDB.databaseDao().updateUser(user);
+                        notADoctorDB.databaseDao().updateUser(user);
                     }
                     finish();
                 }
@@ -178,30 +177,30 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
 
         if(name.equals("")){
             checked = false;
-            NameEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
+            nameEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
         }else{
-            NameEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
+            nameEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
         }
 
         if(age == 0){
             checked = false;
-            AgeEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
+            ageEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
         }else{
-            AgeEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
+            ageEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
         }
 
         if(height == 0){
             checked = false;
-            HeightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
+            heightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
         }else{
-            HeightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
+            heightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
         }
 
         if(weight == 0){
             checked = false;
-            WeightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
+            weightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
         }else{
-            WeightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
+            weightEditField.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
         }
 
         return checked;
@@ -210,16 +209,16 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     private void setSpinnerSelection(String sex){
         switch (sex){
             case SEX_TYPE_M:
-                SexSpinner.setSelection(0,true);
+                sexSpinner.setSelection(0,true);
                 break;
             case SEX_TYPE_W:
-                SexSpinner.setSelection(1, true);
+                sexSpinner.setSelection(1, true);
                 break;
             case SEX_TYPE_D:
-                SexSpinner.setSelection(2, true);
+                sexSpinner.setSelection(2, true);
                 break;
             default:
-                SexSpinner.setSelection(0,true);
+                sexSpinner.setSelection(0,true);
         }
     }
 
@@ -227,8 +226,8 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.sex, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        SexSpinner.setAdapter(adapter);
-        SexSpinner.setOnItemSelectedListener(this);
+        sexSpinner.setAdapter(adapter);
+        sexSpinner.setOnItemSelectedListener(this);
     }
 
     public int getRadioGroupResult(int resourceId) {
@@ -284,11 +283,11 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        Sex = adapterView.getItemAtPosition(i).toString();
+        sex = adapterView.getItemAtPosition(i).toString();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-        Sex = "male";
+        sex = "male";
     }
 }

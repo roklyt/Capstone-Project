@@ -25,10 +25,10 @@ import java.util.List;
 
 public class WelcomeActivity extends AppCompatActivity implements UserAdapter.ItemClickListener{
 
-    AppDatabase NotADoctorDB;
+    AppDatabase notADoctorDB;
 
-    private UserAdapter UserAdapter;
-    private RecyclerView UserRecyclerView;
+    private UserAdapter userAdapter;
+    private RecyclerView userRecyclerView;
 
 
     @Override
@@ -36,11 +36,11 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        UserRecyclerView = findViewById(R.id.recyclerview_user);
-        UserRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        userRecyclerView = findViewById(R.id.recyclerview_user);
+        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        UserAdapter = new UserAdapter(this);
-        UserRecyclerView.setAdapter(UserAdapter);
+        userAdapter = new UserAdapter(this);
+        userRecyclerView.setAdapter(userAdapter);
 
 
         FloatingActionButton addUser = findViewById(R.id.fab_add_user);
@@ -53,7 +53,7 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
             }
         });
 
-        NotADoctorDB = AppDatabase.getInstance(getApplicationContext());
+        notADoctorDB = AppDatabase.getInstance(getApplicationContext());
         setupViewModel();
     }
 
@@ -62,7 +62,7 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
         viewModel.getUsers().observe(this, new Observer<List<UserEntry>>() {
             @Override
             public void onChanged(@Nullable List<UserEntry> userEntries) {
-                UserAdapter.setUserData(userEntries);
+                userAdapter.setUserData(userEntries);
             }
         });
     }
@@ -89,7 +89,7 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
                         AppExecutor.getInstance().diskIO().execute(new Runnable() {
                             @Override
                             public void run() {
-                                NotADoctorDB.databaseDao().deleteUser(currentUser);
+                                notADoctorDB.databaseDao().deleteUser(currentUser);
 
                             }
                         });

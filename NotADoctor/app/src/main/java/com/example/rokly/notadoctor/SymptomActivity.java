@@ -19,9 +19,9 @@ public class SymptomActivity extends AppCompatActivity {
     public static final String EXTRA_USER = "currentUser";
     public static final String EXTRA_USER_SYMPTOME_TEXT = "symptomeText";
 
-    private TextView AskForSymptomeTextView;
-    private EditText EnterSymptomeEditText;
-    private Button SubmitSymptomeButton;
+    private TextView askForSymptomeTextView;
+    private EditText enterSymptomeEditText;
+    private Button submitSymptomeButton;
     private UserEntry currentUser;
 
     AppDatabase UserDb;
@@ -39,15 +39,15 @@ public class SymptomActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(EXTRA_USER)) {
             currentUser = intent.getParcelableExtra(EXTRA_USER);
-            AskForSymptomeTextView.setText(res.getString(R.string.welcome_to_the_symptomes, currentUser.getName()));
+            askForSymptomeTextView.setText(res.getString(R.string.welcome_to_the_symptomes, currentUser.getName()));
 
-            SubmitSymptomeButton.setOnClickListener(new View.OnClickListener() {
+            submitSymptomeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(checkEntry()){
                         Intent submitSymptomes = new Intent(SymptomActivity.this, MentionActivity.class);
                         submitSymptomes.putExtra(EXTRA_USER, currentUser);
-                        submitSymptomes.putExtra(EXTRA_USER_SYMPTOME_TEXT, EnterSymptomeEditText.getText().toString());
+                        submitSymptomes.putExtra(EXTRA_USER_SYMPTOME_TEXT, enterSymptomeEditText.getText().toString());
                         startActivity(submitSymptomes);
                     }else{
                         Toast.makeText(SymptomActivity.this, getResources().getString(R.string.error_some_entrys_missing), Toast.LENGTH_SHORT).show();
@@ -64,11 +64,11 @@ public class SymptomActivity extends AppCompatActivity {
     private boolean checkEntry(){
         boolean checked = true;
 
-        if(EnterSymptomeEditText.getText().toString().equals("")){
+        if(enterSymptomeEditText.getText().toString().equals("")){
             checked = false;
-            EnterSymptomeEditText.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
+            enterSymptomeEditText.setBackgroundColor(ContextCompat.getColor(this, R.color.error_background));
         }else{
-            EnterSymptomeEditText.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
+            enterSymptomeEditText.setBackgroundColor(ContextCompat.getColor(this, R.color.default_background));
         }
 
         return checked;
@@ -80,8 +80,8 @@ public class SymptomActivity extends AppCompatActivity {
     }
 
     private void findViews(){
-        AskForSymptomeTextView = findViewById(R.id.tv_ask_for_symptome);
-        EnterSymptomeEditText = findViewById(R.id.et_enter_symptome);
-        SubmitSymptomeButton = findViewById(R.id.bt_submit);
+        askForSymptomeTextView = findViewById(R.id.tv_ask_for_symptome);
+        enterSymptomeEditText = findViewById(R.id.et_enter_symptome);
+        submitSymptomeButton = findViewById(R.id.bt_submit);
     }
 }

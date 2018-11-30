@@ -1,4 +1,4 @@
-package com.example.rokly.notadoctor.Model;
+package com.example.rokly.notadoctor.Model.Diagnose.Request;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -28,6 +28,11 @@ public class Evidence implements Parcelable {
     @SerializedName("choice_id")
     @Expose
     private String choiceId;
+
+    public Evidence(String id, String choiceId) {
+        this.id = id;
+        this.choiceId = choiceId;
+    }
 
     private Evidence(Parcel in) {
         id = in.readString();
@@ -59,7 +64,6 @@ public class Evidence implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(id);
         parcel.writeString(choiceId);
-
     }
 
 }

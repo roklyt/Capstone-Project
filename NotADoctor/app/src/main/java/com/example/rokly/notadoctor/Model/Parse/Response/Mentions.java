@@ -1,4 +1,4 @@
-package com.example.rokly.notadoctor.Model;
+package com.example.rokly.notadoctor.Model.Parse.Response;
 
 import android.os.Parcel;
 import android.os.Parcelable;

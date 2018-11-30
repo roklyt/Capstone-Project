@@ -6,8 +6,6 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
-
 @Entity(tableName = "diagnose")
 public class DiagnoseEntry implements Parcelable {
 
