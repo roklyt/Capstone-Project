@@ -208,9 +208,8 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
 
         }
 
-        //TODO set extra to false to get all questions
         Extras extra = new Extras();
-        extra.setDisableGroups(true);
+        extra.setDisableGroups(false);
 
         currentDiagnose = new DiagnoseReq(currentUser.getSex(), currentUser.getAge(), evidenceList, extra);
     }

@@ -87,7 +87,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
         ImageButton deleteUserImageButton;
         ImageButton editUserImageButton;
 
-        public UserAdapterViewHolder(View view) {
+        UserAdapterViewHolder(View view) {
             super(view);
             deleteUserImageButton = view.findViewById(R.id.ib_delete_user);
             editUserImageButton = view.findViewById(R.id.ib_edit_user);

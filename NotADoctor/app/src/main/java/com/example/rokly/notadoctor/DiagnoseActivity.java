@@ -56,12 +56,13 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     }
 
     @Override
-    public void onFragmentInteraction(Evidence evidence) {
-        currentDiagnose.getEvidence().add(evidence);
+    public void onFragmentInteraction(List<Evidence> evidences) {
+        for(Evidence evidence:evidences){
+            currentDiagnose.getEvidence().add(evidence);
+        }
         //TODO write new evidence into the database
-        //TODO check thihs implementaiont : implement percentage check when the diagnose is over
         //TODO check why solution is always null
-        if(counter < maxCounter && !isMinimumPercentag()){
+        if(counter < maxCounter && !isMinimumPercentage()){
             callInfermedica();
             counter ++;
         }else{
@@ -114,7 +115,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
                 .commit();
     }
 
-    private boolean isMinimumPercentag(){
+    private boolean isMinimumPercentage(){
         boolean isMinimumPercentage = false;
 
         List<Condition> conditions = diagnose.getConditions();

@@ -10,7 +10,9 @@
     <string name="button_submit">Submit</string>
     <string name="button_start_diagnose">Start diagnose</string>
     <string name="button_reenter_symptome">Reenter Symptomes</string>
-    <string name="button_proceed_question">Procced</string>
+    <string name="button_proceed_question">Proceed</string>
+    <string name="button_pass_question">Pass</string>
+
 
     <string name="radio_button_hypertension">Hypertension</string>
     <string name="radio_button_smoking">Smoking</string>

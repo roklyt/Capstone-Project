@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -15,6 +16,11 @@ import android.widget.TextView;
 import com.example.rokly.notadoctor.Model.Diagnose.Request.Evidence;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Question;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.rokly.notadoctor.helper.ChoiceId.CHOICEID_ABSENT;
+import static com.example.rokly.notadoctor.helper.ChoiceId.CHOICEID_PRESENT;
 import static com.example.rokly.notadoctor.helper.ChoiceId.CHOICEID_UNKNOWN;
 
 public class QuestionFragment extends Fragment {
@@ -24,11 +30,10 @@ public class QuestionFragment extends Fragment {
     private static final String QUESTION_KIND_GROUP_MULTIPLE = "group_multiple";
     private Question question;
     private TextView questionTextView;
-    private RadioButton radioButtonOne;
-    private RadioButton radioButtonTwo;
-    private RadioButton radioButtonThree;
     private Button proceedButton;
     private RadioGroup radioGroup;
+    private Button passButton;
+    private LinearLayout radioButtonLinearLayout;
 
     private OnFragmentInteractionListener mListener;
 
@@ -59,33 +64,63 @@ public class QuestionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView;
+        final View rootView;
 
-        if(question.getType().equals(QUESTION_KIND_SINGLE)){
-            rootView = inflater.inflate(R.layout.fragment_question, container, false);
-            findSingleView(rootView);
+        switch (question.getType()) {
+            case QUESTION_KIND_SINGLE:
+                rootView = inflater.inflate(R.layout.fragment_question, container, false);
+                findSingleView(rootView);
 
-            questionTextView.setText(question.getText());
-            radioButtonOne.setText(question.getItems().get(0).getChoices().get(0).getLabel());
-            radioButtonTwo.setText(question.getItems().get(0).getChoices().get(1).getLabel());
-            radioButtonThree.setText(question.getItems().get(0).getChoices().get(2).getLabel());
+                proceedButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        List<Evidence> evidences = new ArrayList<>();
+                        Evidence evidence = new Evidence(question.getItems().get(0).getId(), getRadioGroupResult());
+                        evidences.add(evidence);
+                        onButtonPressed(evidences);
+                    }
+                });
+                break;
+            case QUESTION_KIND_GROUP_SINGLE:
+                rootView = inflater.inflate(R.layout.fragment_question_group_single, container, false);
+                findGroupSingleView(rootView);
 
-            proceedButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Evidence evidence = new Evidence(question.getItems().get(0).getId(), getRadioGroupResult());
-                    onButtonPressed(evidence);
-                }
-            });
-        }else if(question.getType().equals(QUESTION_KIND_GROUP_SINGLE)){
-            //TODO implement group single question. Make a new layout and gather this questions
-            rootView = inflater.inflate(R.layout.fragment_question, container, false);
-        }else if(question.getType().equals(QUESTION_KIND_GROUP_MULTIPLE)){
-            //TODO implement group multiple question. Make a new layout and gather this questions
-            rootView = inflater.inflate(R.layout.fragment_question, container, false);
-        }else{
-            //TODO implement an error layout
-            rootView = inflater.inflate(R.layout.fragment_question, container, false);
+                proceedButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onButtonPressed(getRadioGroupSingleResult());
+                    }
+                });
+
+                passButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onButtonPressed(getRadioGroupUnknown());
+                    }
+                });
+                break;
+            case QUESTION_KIND_GROUP_MULTIPLE:
+                rootView = inflater.inflate(R.layout.fragment_question_group_mulitple, container, false);
+                findGroupMulitpleView(rootView);
+
+                proceedButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onButtonPressed(getRadioGroupMultipleResult(rootView));
+                    }
+                });
+
+                passButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onButtonPressed(getRadioGroupUnknown());
+                    }
+                });
+                break;
+            default:
+                //TODO implement an error layout
+                rootView = inflater.inflate(R.layout.fragment_question, container, false);
+                break;
         }
 
         return rootView;
@@ -93,14 +128,108 @@ public class QuestionFragment extends Fragment {
 
     private void findSingleView(View rootView){
         questionTextView = rootView.findViewById(R.id.tv_question);
-        radioButtonOne = rootView.findViewById(R.id.rb_1);
-        radioButtonTwo = rootView.findViewById(R.id.rb_2);
-        radioButtonThree = rootView.findViewById(R.id.rb_3);
+        RadioButton radioButtonOne = rootView.findViewById(R.id.rb_1);
+        RadioButton radioButtonTwo = rootView.findViewById(R.id.rb_2);
+        RadioButton radioButtonThree = rootView.findViewById(R.id.rb_3);
         proceedButton = rootView.findViewById(R.id.bt_procced);
         radioGroup = rootView.findViewById(R.id.rg_question);
+
+        questionTextView.setText(question.getText());
+        radioButtonOne.setText(question.getItems().get(0).getChoices().get(0).getLabel());
+        radioButtonTwo.setText(question.getItems().get(0).getChoices().get(1).getLabel());
+        radioButtonThree.setText(question.getItems().get(0).getChoices().get(2).getLabel());
     }
 
-    public String getRadioGroupResult() {
+    private void findGroupSingleView(View rootView){
+        proceedButton = rootView.findViewById(R.id.bt_procced);
+        radioGroup = rootView.findViewById(R.id.rg_question);
+        questionTextView = rootView.findViewById(R.id.tv_question);
+        passButton = rootView.findViewById(R.id.bt_pass);
+
+        questionTextView.setText(question.getText());
+
+        for (int i = 0; i < question.getItems().size(); i++) {
+            RadioButton radioButton = new RadioButton(getContext());
+            radioButton.setId(i + 1000);
+            radioButton.setText(question.getItems().get(i).getName());
+            radioGroup.addView(radioButton);
+        }
+    }
+
+    private void findGroupMulitpleView(View rootView){
+        proceedButton = rootView.findViewById(R.id.bt_procced);
+        radioGroup = rootView.findViewById(R.id.rg_question);
+        questionTextView = rootView.findViewById(R.id.tv_question);
+        passButton = rootView.findViewById(R.id.bt_pass);
+        radioButtonLinearLayout = rootView.findViewById(R.id.ll_question);
+        questionTextView.setText(question.getText());
+
+        for (int i = 0; i < question.getItems().size(); i++) {
+            RadioButton radioButton = new RadioButton(getContext());
+            radioButton.setId(i + 1000);
+            radioButton.setText(question.getItems().get(i).getName());
+            radioButtonLinearLayout.addView(radioButton);
+        }
+    }
+
+
+    private List<Evidence> getRadioGroupMultipleResult(View rootView) {
+        List<Evidence> evidences = new ArrayList<>();
+
+
+        for (int i = 0; i <  question.getItems().size(); i++) {
+            Evidence evidence = new Evidence(null,null);
+            evidence.setId(question.getItems().get(i).getId());
+
+            RadioButton radioButton = rootView.findViewById(i + 1000);
+
+            if(radioButton.isChecked()){
+                evidence.setChoiceId(CHOICEID_PRESENT);
+            }else{
+                evidence.setChoiceId(CHOICEID_ABSENT);
+            }
+
+            evidences.add(evidence);
+        }
+
+        return evidences;
+    }
+
+    private List<Evidence> getRadioGroupSingleResult() {
+        List<Evidence> evidences = new ArrayList<>();
+
+        int checkedId = radioGroup.getCheckedRadioButtonId();
+
+        for (int i = 0; i <  question.getItems().size(); i++) {
+            Evidence evidence = new Evidence(null,null);
+            evidence.setId(question.getItems().get(i).getId());
+
+            if(checkedId == i + 1000){
+                evidence.setChoiceId(CHOICEID_PRESENT);
+            }else{
+                evidence.setChoiceId(CHOICEID_ABSENT);
+            }
+
+            evidences.add(evidence);
+        }
+
+        return evidences;
+    }
+
+    private List<Evidence> getRadioGroupUnknown(){
+        List<Evidence> evidences = new ArrayList<>();
+
+        for (int i = 0; i < question.getItems().size(); i++) {
+            Evidence evidence = new Evidence(null,null);
+            evidence.setId(question.getItems().get(i).getId());
+            evidence.setChoiceId(CHOICEID_UNKNOWN);
+            evidences.add(evidence);
+        }
+
+        return evidences;
+    }
+
+    private String getRadioGroupResult() {
         String resultRG;
         int checkedId = radioGroup.getCheckedRadioButtonId();
         switch (checkedId) {
@@ -120,9 +249,9 @@ public class QuestionFragment extends Fragment {
         return resultRG;
     }
 
-    public void onButtonPressed(Evidence evidence) {
+    public void onButtonPressed(List<Evidence> evidences) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(evidence);
+            mListener.onFragmentInteraction(evidences);
         }
     }
 
@@ -144,6 +273,6 @@ public class QuestionFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Evidence evidence);
+        void onFragmentInteraction(List<Evidence> evidences);
     }
 }

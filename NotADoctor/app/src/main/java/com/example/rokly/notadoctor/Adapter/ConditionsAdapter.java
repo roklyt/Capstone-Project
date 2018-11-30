@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
@@ -76,7 +75,7 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
         TextView conditionNameTextView;
         TextView conditionProbabilityTextView;
 
-        public ConditionsAdapterViewHolder(View view) {
+        ConditionsAdapterViewHolder(View view) {
             super(view);
             conditionNameTextView = view.findViewById(R.id.tv_condition_name);
             conditionProbabilityTextView = view.findViewById(R.id.tv_condition_probability);

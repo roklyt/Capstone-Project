@@ -14,6 +14,9 @@ import com.example.rokly.notadoctor.R;
 
 import java.util.List;
 
+import static com.example.rokly.notadoctor.helper.ChoiceId.CHOICEID_ABSENT;
+import static com.example.rokly.notadoctor.helper.ChoiceId.CHOICEID_PRESENT;
+
 public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionAdpaterViewHolder> {
 
     private final MentionAdpater.ItemClickListener clickHandler;
@@ -43,12 +46,16 @@ public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionA
 
 
         forecastAdapterViewHolder.mentionNameTextView.setText(mention.getName());
-        if(mention.getChoiceId().equals("present")){
-            forecastAdapterViewHolder.mentionIndicatorImageView.setImageResource(android.R.drawable.checkbox_on_background);
-        }else if(mention.getChoiceId().equals("absent")){
-            forecastAdapterViewHolder.mentionIndicatorImageView.setImageResource(android.R.drawable.ic_delete);
-        }else{
-            forecastAdapterViewHolder.mentionIndicatorImageView.setVisibility(View.GONE);
+        switch (mention.getChoiceId()) {
+            case CHOICEID_PRESENT:
+                forecastAdapterViewHolder.mentionIndicatorImageView.setImageResource(android.R.drawable.checkbox_on_background);
+                break;
+            case CHOICEID_ABSENT:
+                forecastAdapterViewHolder.mentionIndicatorImageView.setImageResource(android.R.drawable.ic_delete);
+                break;
+            default:
+                forecastAdapterViewHolder.mentionIndicatorImageView.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -80,7 +87,7 @@ public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionA
         TextView mentionNameTextView;
         ImageView mentionIndicatorImageView;
 
-        public MentionAdpaterViewHolder(View view) {
+        MentionAdpaterViewHolder(View view) {
             super(view);
             mentionNameTextView = view.findViewById(R.id.tv_mention_list);
             mentionIndicatorImageView = view.findViewById(R.id.iv_indicator);
