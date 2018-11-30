@@ -12,11 +12,14 @@ import android.util.Log;
 
 import com.example.rokly.notadoctor.Model.Diagnose.Request.DiagnoseReq;
 import com.example.rokly.notadoctor.Model.Diagnose.Request.Evidence;
+import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Diagnose;
 import com.example.rokly.notadoctor.Model.Parse.Request.Parse;
 import com.example.rokly.notadoctor.Model.Parse.Response.Mention;
 import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,8 +31,9 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     public static final String EXTRA_DIAGNOSE = "extrEvidences";
     private DiagnoseReq currentDiagnose;
     private Diagnose diagnose;
+    private static final double MINIMUM_PERCENTAGE = 0.7;
     private static int counter = 0;
-    private final static int maxCounter = 1;
+    private final static int maxCounter = 15;
     private QuestionFragment questionFragment;
 
 
@@ -55,11 +59,13 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     public void onFragmentInteraction(Evidence evidence) {
         currentDiagnose.getEvidence().add(evidence);
         //TODO write new evidence into the database
-        //TODO implement percentage check when the diagnose is over
-        if(counter < maxCounter){
+        //TODO check thihs implementaiont : implement percentage check when the diagnose is over
+        //TODO check why solution is always null
+        if(counter < maxCounter && !isMinimumPercentag()){
             callInfermedica();
             counter ++;
         }else{
+            //TODO write final conditions into the database
             Intent conditionActivity = new Intent(DiagnoseActivity.this, ConditionActivity.class);
             conditionActivity.putExtra(EXTRA_CONDITIONS, diagnose);
             startActivity(conditionActivity);
@@ -106,5 +112,19 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.question_container, questionFragment)
                 .commit();
+    }
+
+    private boolean isMinimumPercentag(){
+        boolean isMinimumPercentage = false;
+
+        List<Condition> conditions = diagnose.getConditions();
+
+        for(Condition condition: conditions){
+            if(condition.getProbability() > MINIMUM_PERCENTAGE){
+                isMinimumPercentage = true;
+            }
+        }
+
+        return isMinimumPercentage;
     }
 }

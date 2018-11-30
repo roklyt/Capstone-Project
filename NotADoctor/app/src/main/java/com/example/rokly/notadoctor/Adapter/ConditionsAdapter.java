@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
 import com.example.rokly.notadoctor.R;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.ConditionsAdapterViewHolder> {
@@ -42,7 +43,7 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
 
 
         forecastAdapterViewHolder.conditionNameTextView.setText(condition.getName());
-        double percentage = condition.getProbability() * 100;
+        String percentage = new DecimalFormat("#.##").format(condition.getProbability() * 100);
         forecastAdapterViewHolder.conditionProbabilityTextView.setText(percentage + "%");
 
     }

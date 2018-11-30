@@ -53,6 +53,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
 
     @Override
     public void onItemClickListener(Condition condition) {
+        //TODO get the description of the condition and show it to to the user in a dialog.
         Toast.makeText(this, condition.getName().toString(), Toast.LENGTH_SHORT).show();
     }
 }
