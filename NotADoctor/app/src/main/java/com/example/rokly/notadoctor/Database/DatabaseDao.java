@@ -34,7 +34,7 @@ public interface DatabaseDao {
     void insertDiagnose(DiagnoseEntry diagnoseEntry);
 
     @Query("SELECT * FROM diagnose WHERE userId = :userId")
-    LiveData<DiagnoseEntry> loadDiagnoseByUserId(int userId);
+    DiagnoseEntry loadDiagnoseByUserId(int userId);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateDiagnose(DiagnoseEntry diagnoseEntry);
@@ -55,5 +55,19 @@ public interface DatabaseDao {
 
     @Delete
     void deleteEvidence(EvidenceEntry evidenceEntry);
+
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertCondition(ConditionEntry conditionEntry);
+
+    @Query("SELECT * FROM condition WHERE diagnoseId = :diagnoseId")
+    LiveData<List<ConditionEntry>> loadConditionByDiagnoseId(int diagnoseId);
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    void updateCondition(ConditionEntry ConditionEntry);
+
+    @Delete
+    void deleteCondition(ConditionEntry ConditionEntry);
 
 }

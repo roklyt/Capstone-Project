@@ -66,64 +66,77 @@ public class QuestionFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView;
 
-        switch (question.getType()) {
-            case QUESTION_KIND_SINGLE:
-                rootView = inflater.inflate(R.layout.fragment_question, container, false);
-                findSingleView(rootView);
-
-                proceedButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        List<Evidence> evidences = new ArrayList<>();
-                        Evidence evidence = new Evidence(question.getItems().get(0).getId(), getRadioGroupResult());
-                        evidences.add(evidence);
-                        onButtonPressed(evidences);
-                    }
-                });
-                break;
-            case QUESTION_KIND_GROUP_SINGLE:
-                rootView = inflater.inflate(R.layout.fragment_question_group_single, container, false);
-                findGroupSingleView(rootView);
-
-                proceedButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onButtonPressed(getRadioGroupSingleResult());
-                    }
-                });
-
-                passButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onButtonPressed(getRadioGroupUnknown());
-                    }
-                });
-                break;
-            case QUESTION_KIND_GROUP_MULTIPLE:
-                rootView = inflater.inflate(R.layout.fragment_question_group_mulitple, container, false);
-                findGroupMulitpleView(rootView);
-
-                proceedButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onButtonPressed(getRadioGroupMultipleResult(rootView));
-                    }
-                });
-
-                passButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onButtonPressed(getRadioGroupUnknown());
-                    }
-                });
-                break;
-            default:
-                //TODO implement an error layout
-                rootView = inflater.inflate(R.layout.fragment_question, container, false);
-                break;
+        if (savedInstanceState != null) {
+            question = savedInstanceState.getParcelable(ARG_PARAM1);
         }
 
+            switch (question.getType()) {
+                case QUESTION_KIND_SINGLE:
+                    rootView = inflater.inflate(R.layout.fragment_question, container, false);
+                    findSingleView(rootView);
+
+                    proceedButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            List<Evidence> evidences = new ArrayList<>();
+                            Evidence evidence = new Evidence(question.getItems().get(0).getId(), getRadioGroupResult());
+                            evidences.add(evidence);
+                            onButtonPressed(evidences);
+                        }
+                    });
+                    break;
+                case QUESTION_KIND_GROUP_SINGLE:
+                    rootView = inflater.inflate(R.layout.fragment_question_group_single, container, false);
+                    findGroupSingleView(rootView);
+
+                    proceedButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onButtonPressed(getRadioGroupSingleResult());
+                        }
+                    });
+
+                    passButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onButtonPressed(getRadioGroupUnknown());
+                        }
+                    });
+                    break;
+                case QUESTION_KIND_GROUP_MULTIPLE:
+                    rootView = inflater.inflate(R.layout.fragment_question_group_mulitple, container, false);
+                    findGroupMulitpleView(rootView);
+
+                    proceedButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onButtonPressed(getRadioGroupMultipleResult(rootView));
+                        }
+                    });
+
+                    passButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onButtonPressed(getRadioGroupUnknown());
+                        }
+                    });
+                    break;
+                default:
+                    //TODO implement an error layout
+                    rootView = inflater.inflate(R.layout.fragment_question, container, false);
+                    break;
+            }
+
+
+
+
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ARG_PARAM1, question);
     }
 
     private void findSingleView(View rootView){

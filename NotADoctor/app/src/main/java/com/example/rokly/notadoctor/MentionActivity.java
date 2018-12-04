@@ -20,6 +20,7 @@ import com.example.rokly.notadoctor.Executor.AppExecutor;
 import com.example.rokly.notadoctor.Model.Diagnose.Request.DiagnoseReq;
 import com.example.rokly.notadoctor.Model.Diagnose.Request.Evidence;
 import com.example.rokly.notadoctor.Model.Diagnose.Request.Extras;
+import com.example.rokly.notadoctor.Model.Diagnose.Response.Diagnose;
 import com.example.rokly.notadoctor.Model.Parse.Response.Mention;
 import com.example.rokly.notadoctor.Model.Parse.Response.Mentions;
 import com.example.rokly.notadoctor.Model.Parse.Request.Parse;
@@ -153,7 +154,7 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
                 createDiagnose();
 
                 Intent startDiagnose = new Intent(MentionActivity.this, DiagnoseActivity.class);
-
+                startDiagnose.putExtra(DiagnoseActivity.EXTRA_USER, currentUser);
                 startDiagnose.putExtra(DiagnoseActivity.EXTRA_DIAGNOSE, currentDiagnose);
                 startActivity(startDiagnose);
 

@@ -156,9 +156,9 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
                     finish();
                 }
             });
+        }else{
+            Toast.makeText(this, R.string.error_some_entrys_missing, Toast.LENGTH_SHORT).show();
         }
-
-        Toast.makeText(this, R.string.error_some_entrys_missing, Toast.LENGTH_SHORT).show();
     }
 
     private int getInt(String value){
@@ -261,7 +261,7 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     }
 
     private int bmiOver30(int height, int weight){
-        double heightInMeter = height / 100;
+        double heightInMeter = (double)height / 100;
         double bmi = weight /(heightInMeter * heightInMeter);
 
         if(bmi > 30){
@@ -272,7 +272,7 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     }
 
     private int bmiUnder19(int height, int weight){
-        double heightInMeter = height / 100;
+        double heightInMeter = (double)height / 100;
         double bmi = weight /(heightInMeter * heightInMeter);
 
         if(bmi < 19){
