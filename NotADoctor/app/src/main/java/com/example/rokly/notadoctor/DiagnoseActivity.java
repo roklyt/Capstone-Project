@@ -36,9 +36,9 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     private DiagnoseReq currentDiagnose;
     private UserEntry currentUser;
     private Diagnose diagnose;
-    private static final double MINIMUM_PERCENTAGE = 0.7;
+    private static final double MINIMUM_PERCENTAGE = 0.5;
     private static int counter = 0;
-    private final static int maxCounter = 15;
+    private final static int maxCounter = 1;
     private QuestionFragment questionFragment;
     private ProgressBar progressBar;
 
@@ -67,7 +67,6 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         getSupportFragmentManager().putFragment(outState, "myFragmentName", questionFragment);
     }
 

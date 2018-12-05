@@ -12,6 +12,7 @@
     <string name="button_reenter_symptome">Reenter Symptomes</string>
     <string name="button_proceed_question">Proceed</string>
     <string name="button_pass_question">Pass</string>
+    <string name="button_find_a_docotor">Find A Doctor</string>
 
 
     <string name="radio_button_hypertension">Hypertension</string>
@@ -51,4 +52,5 @@
     </string-array>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_doctor">Map</string>
 </resources>

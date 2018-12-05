@@ -9,11 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.rokly.notadoctor.Model.Condition.ConditionDetail;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
-import com.example.rokly.notadoctor.Model.Parse.Response.Mention;
 import com.example.rokly.notadoctor.R;
 import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
@@ -32,6 +32,7 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
     private RecyclerView recyclerView;
     /* List for all user*/
     private List<Condition> conditionList;
+    private static ConditionDetail conditionDetail;
     public ConditionsAdapter(ConditionsAdapter.ItemClickListener clickHandler) {
         this.clickHandler = clickHandler;
     }
@@ -61,44 +62,28 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
         final boolean isExpanded = position==expandedPosition;
         forecastAdapterViewHolder.detailConstraintLayout.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         forecastAdapterViewHolder.itemView.setActivated(isExpanded);
-
+        final View view = forecastAdapterViewHolder.itemView;
         if (isExpanded)
             previousExpandedPosition = position;
 
         forecastAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(!isExpanded){
-                    InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance().create(InfermedicaApi.class);
-
-                    Call<ConditionDetail> call = infermedicaApi.getConditionById(condition.getId());
-                    call.enqueue(new Callback<ConditionDetail>() {
-
-                        @Override
-                        public void onResponse(@NonNull Call<ConditionDetail> call, @NonNull Response<ConditionDetail> response) {
-                            //TODO check for bad response
-                            forecastAdapterViewHolder.conditionDetailsNameTextView.setText(response.body().getCommonName());
-                            forecastAdapterViewHolder.conditionDetailsCategoriesTextView.setText(getCategories(response.body()));
-                            forecastAdapterViewHolder.conditionDetailsPrevalenceTextView.setText(response.body().getPrevalence());
-                            forecastAdapterViewHolder.conditionDetailsAcutenessTextView.setText(response.body().getAcuteness());
-                            forecastAdapterViewHolder.conditionDetailsNameSeverityView.setText(response.body().getSeverity());
-                            forecastAdapterViewHolder.conditionDetailsHintTextView.setText(response.body().getExtras().getHint());
-
-                            response.body().getExtras().describeContents();
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<ConditionDetail> call, @NonNull Throwable t) {
-                            Log.e("ConditionActivity","" +  t);
-
-                        }
-                    });
+                    clickHandler.onItemExpandChecklist(view, condition, position);
                 }
-
                 expandedPosition = isExpanded ? -1:position;
                 TransitionManager.beginDelayedTransition(recyclerView);
                 notifyItemChanged(previousExpandedPosition);
                 notifyDataSetChanged();
+            }
+        });
+
+        forecastAdapterViewHolder.findADoctorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              clickHandler.onButtonClicked(condition);
             }
         });
     }
@@ -120,24 +105,10 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
     /* Interface for the on click handler */
     public interface ItemClickListener {
         void onItemClickListener(Condition condition);
-    }
 
-    public void removeItem(int position) {
-        conditionList.remove(position);
-        notifyItemRemoved(position);
-    }
+        void onItemExpandChecklist(View view, Condition condition, int position);
 
-    private String getCategories(ConditionDetail conditionDetail){
-        String categories = "";
-        for(int i = 0;i < conditionDetail.getCategories().size();i++){
-            if(i == 0){
-                categories = conditionDetail.getCategories().get(i);
-            }else{
-                categories = categories + ", "+ conditionDetail.getCategories().get(i);
-            }
-        }
-
-        return categories;
+        void onButtonClicked(Condition condition);
     }
 
     @Override
@@ -151,24 +122,14 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
         TextView conditionNameTextView;
         TextView conditionProbabilityTextView;
         ConstraintLayout detailConstraintLayout;
-        TextView conditionDetailsNameTextView;
-        TextView conditionDetailsCategoriesTextView;
-        TextView conditionDetailsPrevalenceTextView;
-        TextView conditionDetailsAcutenessTextView;
-        TextView conditionDetailsNameSeverityView;
-        TextView conditionDetailsHintTextView;
+        Button findADoctorButton;
 
         ConditionsAdapterViewHolder(View view) {
             super(view);
             conditionNameTextView = view.findViewById(R.id.tv_condition_name);
             conditionProbabilityTextView = view.findViewById(R.id.tv_condition_probability);
             detailConstraintLayout = view.findViewById(R.id.conditions_detail_layout);
-            conditionDetailsNameTextView = view.findViewById(R.id.tv_name_value);
-            conditionDetailsCategoriesTextView = view.findViewById(R.id.tv_categories_value);
-            conditionDetailsPrevalenceTextView = view.findViewById(R.id.tv_prevalence_value);
-            conditionDetailsAcutenessTextView = view.findViewById(R.id.tv_acuteness_value);
-            conditionDetailsNameSeverityView = view.findViewById(R.id.tv_severity_value);
-            conditionDetailsHintTextView = view.findViewById(R.id.tv_hint);
+            findADoctorButton = view.findViewById(R.id.bt_find_a_doctor);
             view.setOnClickListener(this);
         }
 
