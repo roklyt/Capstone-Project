@@ -1,6 +1,5 @@
 package com.example.rokly.notadoctor.Model.Places;
 
-import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -178,10 +179,14 @@ public class QuestionFragment extends Fragment {
         questionTextView.setText(question.getText());
 
         for (int i = 0; i < question.getItems().size(); i++) {
-            RadioButton radioButton = new RadioButton(getContext());
+            CheckBox checkBox = new CheckBox(getContext());
+            checkBox.setId(i + 1000);
+            checkBox.setText(question.getItems().get(i).getName());
+            radioButtonLinearLayout.addView(checkBox);
+/*            RadioButton radioButton = new RadioButton(getContext());
             radioButton.setId(i + 1000);
             radioButton.setText(question.getItems().get(i).getName());
-            radioButtonLinearLayout.addView(radioButton);
+            radioButtonLinearLayout.addView(radioButton);*/
         }
     }
 
@@ -194,13 +199,14 @@ public class QuestionFragment extends Fragment {
             Evidence evidence = new Evidence(null,null);
             evidence.setId(question.getItems().get(i).getId());
 
-            RadioButton radioButton = rootView.findViewById(i + 1000);
+            CheckBox checkBox = rootView.findViewById(i + 1000);
 
-            if(radioButton.isChecked()){
+            if(checkBox.isChecked()){
                 evidence.setChoiceId(CHOICEID_PRESENT);
             }else{
                 evidence.setChoiceId(CHOICEID_ABSENT);
             }
+
 
             evidences.add(evidence);
         }

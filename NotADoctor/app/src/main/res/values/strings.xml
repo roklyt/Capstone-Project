@@ -9,7 +9,7 @@
     <string name="button_update">Update</string>
     <string name="button_submit">Submit</string>
     <string name="button_start_diagnose">Start diagnose</string>
-    <string name="button_reenter_symptome">Reenter Symptomes</string>
+    <string name="button_reenter_symptome">Reenter Symptoms</string>
     <string name="button_proceed_question">Proceed</string>
     <string name="button_pass_question">Pass</string>
     <string name="button_find_a_docotor">Find A Doctor</string>
@@ -18,7 +18,7 @@
     <string name="radio_button_hypertension">Hypertension</string>
     <string name="radio_button_smoking">Smoking</string>
 
-    <string name="mentions_page_text_success">We found these symptomes. If on of this symptomes is not correct please delete via swipe. If symptomes are missing please reenter your symptomes and try to be a little more specific. Thanks s a lot.</string>
+    <string name="mentions_page_text_success">We found these symptomes. If on of thees symptoms is not correct please delete via swipe. If symptomes are missing please reenter your symptomes and try to be a little more specific. Thanks s a lot.</string>
     <string name="alert_dialog_delete_user_title">Delete %s ?</string>
     <string name="alert_dialog_delete_user_text">"Do you really want to delete this user?"</string>
     <string name="delete_user_toast">%s was deleted?</string>
@@ -43,6 +43,8 @@
     <string name="condition_prevalence_label">Prevalence:</string>
     <string name="condition_acuteness_label">Acuteness:</string>
     <string name="condition_severity_label">Severity:</string>
+
+    <string name="marker_your_position">Your position</string>
 
 
     <string-array name="sex">

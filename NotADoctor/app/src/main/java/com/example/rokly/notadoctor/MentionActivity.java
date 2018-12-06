@@ -139,7 +139,6 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
                 });
 
 
-
                 for(Mentions oneMention: mentionsList){
                     final EvidenceEntry evidenceEntry = new EvidenceEntry(currentUser.getId(), oneMention.getId(), getChoiceIdInt(oneMention.getChoiceId()));
 

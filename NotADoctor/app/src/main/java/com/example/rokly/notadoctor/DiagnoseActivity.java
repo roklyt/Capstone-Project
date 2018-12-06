@@ -36,9 +36,9 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     private DiagnoseReq currentDiagnose;
     private UserEntry currentUser;
     private Diagnose diagnose;
-    private static final double MINIMUM_PERCENTAGE = 0.5;
+    private static final double MINIMUM_PERCENTAGE = 0.85;
     private static int counter = 0;
-    private final static int maxCounter = 1;
+    private final static int maxCounter = 20;
     private QuestionFragment questionFragment;
     private ProgressBar progressBar;
 

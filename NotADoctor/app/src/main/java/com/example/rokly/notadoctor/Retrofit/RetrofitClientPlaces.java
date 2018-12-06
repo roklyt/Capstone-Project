@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClientPlaces {
 
     private static Retrofit retrofit;
-    private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/";
+    private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/";
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {

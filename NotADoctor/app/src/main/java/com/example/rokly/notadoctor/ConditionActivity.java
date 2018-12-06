@@ -115,8 +115,10 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
 
     @Override
     public void onButtonClicked(Condition condition) {
-        Intent startMaps = new Intent(ConditionActivity.this, DoctorActivity.class);
-        startMaps.putExtra(DoctorActivity.EXTRA_CONDITION_DETAIL, conditionDetail);
+/*        Intent startMaps = new Intent(ConditionActivity.this, DoctorActivity.class);
+        startMaps.putExtra(DoctorActivity.EXTRA_CONDITION_DETAIL, conditionDetail);*/
+        Intent startMaps = new Intent(ConditionActivity.this, FindADoctor.class);
+        startMaps.putExtra(FindADoctor.EXTRA_CONDITION_DETAIL, conditionDetail);
         startActivity(startMaps);
     }
 
