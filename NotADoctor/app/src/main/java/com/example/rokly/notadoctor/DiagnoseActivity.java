@@ -1,5 +1,6 @@
 package com.example.rokly.notadoctor;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.rokly.notadoctor.Database.AppDatabase;
 import com.example.rokly.notadoctor.Database.ConditionEntry;
@@ -21,6 +23,7 @@ import com.example.rokly.notadoctor.Model.Diagnose.Response.Diagnose;
 import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import retrofit2.Call;
@@ -38,9 +41,11 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     private Diagnose diagnose;
     private static final double MINIMUM_PERCENTAGE = 0.85;
     private static int counter = 0;
-    private final static int maxCounter = 20;
+    private final static int maxCounter = 2;
     private QuestionFragment questionFragment;
     private ProgressBar progressBar;
+    private int initialValue = 0;
+    private TextView progressPercentageTextView;
 
 
     @Override
@@ -49,6 +54,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
         setContentView(R.layout.activity_diagnose);
 
         progressBar = findViewById(R.id.pb_question);
+        progressPercentageTextView = findViewById(R.id.tv_progress_percentage);
 
         if (savedInstanceState != null) {
             //Restore the fragment's instance
@@ -62,6 +68,25 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
             currentDiagnose = intent.getParcelableExtra(EXTRA_DIAGNOSE);
             callInfermedica();
         }
+
+
+    }
+
+    public void animateTextView(int initialValue, int finalValue, final TextView textview) {
+
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(initialValue, finalValue);
+        valueAnimator.setDuration(500);
+
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+
+                textview.setText(valueAnimator.getAnimatedValue().toString());
+
+            }
+        });
+        valueAnimator.start();
+
     }
 
     @Override
@@ -101,7 +126,10 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
                 public void onResponse(@NonNull Call<Diagnose> call, @NonNull Response<Diagnose> response) {
                     progressBar.setVisibility(View.GONE);
                     diagnose = response.body();
-
+                    Double myDouble = diagnose.getConditions().get(0).getProbability() * 100;
+                    int percentage = myDouble.intValue();
+                    animateTextView(initialValue, percentage, progressPercentageTextView);
+                    initialValue = percentage;
                     if(counter == 0){
                         addFragment();
                     }else{

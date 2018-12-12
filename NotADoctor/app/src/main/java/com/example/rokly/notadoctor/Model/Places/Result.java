@@ -3,6 +3,7 @@ package com.example.rokly.notadoctor.Model.Places;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.rokly.notadoctor.Model.PlaceDetail.DetailResult;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -43,6 +44,9 @@ public class Result implements Parcelable {
     @SerializedName("reference")
     @Expose
     private String reference;
+    @SerializedName("detail_result")
+    @Expose
+    private DetailResult detailResult;
     @SerializedName("types")
     @Expose
     private List<String> types = null;
@@ -75,6 +79,7 @@ public class Result implements Parcelable {
         this.plusCode = ((PlusCode) in.readValue((PlusCode.class.getClassLoader())));
         this.rating = ((Double) in.readValue((Double.class.getClassLoader())));
         this.reference = ((String) in.readValue((String.class.getClassLoader())));
+        this.detailResult = ((DetailResult) in.readValue((DetailResult.class.getClassLoader())));
         in.readList(this.types, (java.lang.String.class.getClassLoader()));
     }
 
@@ -98,9 +103,10 @@ public class Result implements Parcelable {
      * @param rating
      * @param types
      * @param reference
+     * @param detailResult
      * @param geometry
      */
-    public Result(String formattedAddress, Geometry geometry, String icon, String id, String name, OpeningHours openingHours, List<Photo> photos, String placeId, PlusCode plusCode, Double rating, String reference, List<String> types) {
+    public Result(String formattedAddress, Geometry geometry, String icon, String id, String name, OpeningHours openingHours, List<Photo> photos, String placeId, PlusCode plusCode, Double rating, String reference, DetailResult detailResult, List<String> types) {
         super();
         this.formattedAddress = formattedAddress;
         this.geometry = geometry;
@@ -113,6 +119,7 @@ public class Result implements Parcelable {
         this.plusCode = plusCode;
         this.rating = rating;
         this.reference = reference;
+        this.detailResult = detailResult;
         this.types = types;
     }
 
@@ -200,6 +207,14 @@ public class Result implements Parcelable {
         return reference;
     }
 
+    public void setDetailResult(DetailResult detailResult) {
+        this.detailResult = detailResult;
+    }
+
+    public DetailResult getDetailResult() {
+        return detailResult;
+    }
+
     public void setReference(String reference) {
         this.reference = reference;
     }
@@ -224,6 +239,7 @@ public class Result implements Parcelable {
         dest.writeValue(plusCode);
         dest.writeValue(rating);
         dest.writeValue(reference);
+        dest.writeValue(detailResult);
         dest.writeList(types);
     }
 

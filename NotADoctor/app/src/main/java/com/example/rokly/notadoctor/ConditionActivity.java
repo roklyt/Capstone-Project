@@ -2,23 +2,19 @@ package com.example.rokly.notadoctor;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rokly.notadoctor.Adapter.ConditionsAdapter;
-import com.example.rokly.notadoctor.Adapter.MentionAdpater;
 import com.example.rokly.notadoctor.Model.Condition.ConditionDetail;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Diagnose;
-import com.example.rokly.notadoctor.Model.Parse.Response.Mention;
 import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
 
@@ -50,7 +46,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
             conditionDetail = savedInstanceState.getParcelable(EXTRA_CONDITIONS_DETAIL);
             currentItemPosition = savedInstanceState.getInt(EXTRA_CONDITIONS_POSITION);
 
-            setDetailText(recyclerView.findViewHolderForAdapterPosition(currentItemPosition).itemView, conditionDetail);
+
         }else{
             Intent intent = getIntent();
             if(intent.hasExtra(EXTRA_CONDITIONS)){
@@ -58,6 +54,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
                 findViews();
             }
         }
+
     }
 
     private void findViews(){
@@ -92,7 +89,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
     }
 
     @Override
-    public void onItemExpandChecklist(final View view, Condition condition, int position) {
+    public void onItemExpandChecklist(final View view, Condition condition, final int position) {
         InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance().create(InfermedicaApi.class);
         currentItemPosition = position;
         Call<ConditionDetail> call = infermedicaApi.getConditionById(condition.getId());
@@ -102,7 +99,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
             public void onResponse(@NonNull Call<ConditionDetail> call, @NonNull Response<ConditionDetail> response) {
                 //TODO check for bad response
                 conditionDetail = response.body();
-                setDetailText(view, response.body());
+                setDetailText(view, response.body(), position);
             }
 
             @Override
@@ -115,14 +112,12 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
 
     @Override
     public void onButtonClicked(Condition condition) {
-/*        Intent startMaps = new Intent(ConditionActivity.this, DoctorActivity.class);
-        startMaps.putExtra(DoctorActivity.EXTRA_CONDITION_DETAIL, conditionDetail);*/
         Intent startMaps = new Intent(ConditionActivity.this, FindADoctor.class);
         startMaps.putExtra(FindADoctor.EXTRA_CONDITION_DETAIL, conditionDetail);
         startActivity(startMaps);
     }
 
-    private void setDetailText(View view, ConditionDetail conditionDetail){
+    private void setDetailText(View view, ConditionDetail conditionDetail, int position){
         if(conditionDetail != null){
 
             TextView conditionDetailsNameTextView = view.findViewById(R.id.tv_name_value);

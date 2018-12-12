@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.transition.TransitionManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,19 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
+import com.example.rokly.notadoctor.Model.PlaceDetail.PlaceDetail;
 import com.example.rokly.notadoctor.Model.Places.Result;
 import com.example.rokly.notadoctor.R;
+import com.example.rokly.notadoctor.Retrofit.PlacesApi;
+import com.example.rokly.notadoctor.Retrofit.RetrofitClientPlaces;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdapterViewHolder> {
     private static int expandedPosition = -1;
@@ -24,9 +34,11 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
     private RecyclerView recyclerView;
     /* List for all user*/
     private List<Result> resultList;
+    private Context context;
 
-    public PlacesAdapter(PlacesAdapter.ItemClickListener clickHandler) {
+    public PlacesAdapter(PlacesAdapter.ItemClickListener clickHandler, Context context) {
         this.clickHandler = clickHandler;
+        this.context = context;
     }
 
     @NonNull
@@ -42,8 +54,8 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlacesAdapter.PlacesAdapterViewHolder forecastAdapterViewHolder,final int position) {
-        /*Get the current user */
+    public void onBindViewHolder(final @NonNull PlacesAdapter.PlacesAdapterViewHolder forecastAdapterViewHolder,final int position) {
+        /*Get the current doctor */
         final Result result = resultList.get(position);
 
         forecastAdapterViewHolder.resultNameTextView.setText(result.getName());
@@ -51,21 +63,26 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         final boolean isExpanded = position==expandedPosition;
         forecastAdapterViewHolder.doctorConstraintLayout.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         forecastAdapterViewHolder.itemView.setActivated(isExpanded);
-        final View view = forecastAdapterViewHolder.itemView;
+        forecastAdapterViewHolder.doctorAdressTextView.setText(result.getFormattedAddress());
+        forecastAdapterViewHolder.doctorTelephoneTextView.setText(result.getDetailResult().getFormattedPhoneNumber());
+
         if (isExpanded)
             previousExpandedPosition = position;
 
         forecastAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
+                    expandedPosition = isExpanded ? -1:position;
+                    TransitionManager.beginDelayedTransition(recyclerView);
+                    notifyItemChanged(previousExpandedPosition);
+                    notifyDataSetChanged();
+            }
+        });
 
-                if(!isExpanded){
-                    clickHandler.onItemExpandChecklist(view, result, position);
-                }
-                expandedPosition = isExpanded ? -1:position;
-                TransitionManager.beginDelayedTransition(recyclerView);
-                notifyItemChanged(previousExpandedPosition);
-                notifyDataSetChanged();
+        forecastAdapterViewHolder.callADoctor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickHandler.onCallClickListener(result.getDetailResult().getFormattedPhoneNumber());
             }
         });
     }
@@ -80,7 +97,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
 
     /* Set the new user list to the adapter */
     public void setPlacesData(List<Result> resultData) {
-        resultList = resultData;
+        this.resultList = resultData;
         notifyDataSetChanged();
     }
 
@@ -88,7 +105,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
     public interface ItemClickListener {
         void onItemClickListener(Result currentResult);
 
-        void onItemExpandChecklist(View view, Result result, int position);
+        void onCallClickListener(String phoneNumber);
     }
 
     @Override
@@ -101,11 +118,18 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
     public class PlacesAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView resultNameTextView;
         ConstraintLayout doctorConstraintLayout;
+        TextView doctorAdressTextView;
+        TextView doctorTelephoneTextView;
+        ImageButton callADoctor;
 
         PlacesAdapterViewHolder(View view) {
             super(view);
             resultNameTextView = view.findViewById(R.id.tv_list_result_name);
-            doctorConstraintLayout = view.findViewById(R.id.conditions_detail_layout);
+            doctorConstraintLayout = view.findViewById(R.id.result_detail_layout);
+            doctorAdressTextView = view.findViewById(R.id.tv_result_address);
+            doctorTelephoneTextView = view.findViewById(R.id.tv_result_phone_number);
+            callADoctor = view.findViewById(R.id.ib_call_doctor);
+
             view.setOnClickListener(this);
         }
 

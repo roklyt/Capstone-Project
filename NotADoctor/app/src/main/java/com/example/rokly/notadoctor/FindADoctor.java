@@ -1,43 +1,28 @@
 package com.example.rokly.notadoctor;
 
 import android.Manifest;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rokly.notadoctor.Adapter.PlacesAdapter;
-import com.example.rokly.notadoctor.Adapter.UserAdapter;
-import com.example.rokly.notadoctor.Database.AppDatabase;
-import com.example.rokly.notadoctor.Database.UserEntry;
-import com.example.rokly.notadoctor.Executor.AppExecutor;
 import com.example.rokly.notadoctor.Model.Condition.ConditionDetail;
 import com.example.rokly.notadoctor.Model.PlaceDetail.PlaceDetail;
 import com.example.rokly.notadoctor.Model.Places.Places;
 import com.example.rokly.notadoctor.Model.Places.Result;
-import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
 import com.example.rokly.notadoctor.Retrofit.PlacesApi;
-import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientPlaces;
-import com.example.rokly.notadoctor.ViewModel.MainViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -75,7 +60,7 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
         userRecyclerView = findViewById(R.id.rv_places);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        userAdapter = new PlacesAdapter(this);
+        userAdapter = new PlacesAdapter(this, this);
         userRecyclerView.setAdapter(userAdapter);
 
 
@@ -198,7 +183,7 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onResponse(@NonNull Call<Places> call, @NonNull Response<Places> response) {
                 setMapsMarker(response.body());
-                userAdapter.setPlacesData(response.body().getResults());
+                setPlacesDetail(response.body());
             }
 
             @Override
@@ -207,6 +192,32 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
             }
         });
+
+    }
+
+    private void setPlacesDetail(final Places places){
+
+        final Places getDetailPlaces = places;
+        for(int i = 0; i < places.getResults().size(); i++){
+            PlacesApi placesApi = RetrofitClientPlaces.getRetrofitInstance().create(PlacesApi.class);
+            Call<PlaceDetail> call = placesApi.getPlaceDetail(places.getResults().get(i).getPlaceId(), "name,rating,formatted_phone_number", getResources().getString(R.string.google_maps_key));
+            final int x = i;
+            call.enqueue(new Callback<PlaceDetail>() {
+                @Override
+                public void onResponse(@NonNull Call<PlaceDetail> call, @NonNull Response<PlaceDetail> response) {
+                    getDetailPlaces.getResults().get(x).setDetailResult(response.body().getResult());
+                    if(x  == places.getResults().size() - 1){
+                        userAdapter.setPlacesData(getDetailPlaces.getResults());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<PlaceDetail> call, @NonNull Throwable t) {
+                    Log.e("ConditionActivity","" +  t);
+
+                }
+            });
+        }
 
     }
 
@@ -221,21 +232,17 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
             map.addMarker(new MarkerOptions().position(latLng)
                     .title(markerTitle));
         }
-
-        //map.animateCamera(CameraUpdateFactory.newLatLngZoom(getCurrentLatLng(), getResources().getInteger(R.integer.zoom_level)), getResources().getInteger(R.integer.zoom_level), null);
     }
 
     private void setUserMarker(){
 
-
-            map.addMarker(new MarkerOptions().position(getCurrentLatLng())
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                    .title(getResources().getString(R.string.marker_your_position)));
+        map.addMarker(new MarkerOptions().position(getCurrentLatLng())
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                .title(getResources().getString(R.string.marker_your_position)));
 
 
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(getCurrentLatLng(), getResources().getInteger(R.integer.zoom_level)), getResources().getInteger(R.integer.zoom_level), null);
     }
-
 
     private LatLng getCurrentLatLng(){
         return new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
@@ -247,33 +254,9 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onItemExpandChecklist(final View view, Result result, int position) {
-        this.result = result;
-        PlacesApi placesApi = RetrofitClientInstance.getRetrofitInstance().create(PlacesApi.class);
-        Call<PlaceDetail> call = placesApi.getPlaceDetail(result.getPlaceId(), "name,rating,formatted_phone_number", getResources().getString(R.string.google_maps_key));
-        call.enqueue(new Callback<PlaceDetail>() {
-            @Override
-            public void onResponse(@NonNull Call<PlaceDetail> call, @NonNull Response<PlaceDetail> response) {
-                setDetailText(view, response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<PlaceDetail> call, @NonNull Throwable t) {
-                Log.e("ConditionActivity","" +  t);
-
-            }
-        });
-    }
-
-    private void setDetailText(View view, PlaceDetail placeDetail){
-        if(placeDetail != null){
-
-            TextView doctorAdressTextView = view.findViewById(R.id.tv_result_address);
-            TextView doctorTelephoneTextView = view.findViewById(R.id.tv_result_phone_number);
-
-            doctorAdressTextView.setText(result.getFormattedAddress());
-            doctorTelephoneTextView.setText(placeDetail.getResult().getFormattedPhoneNumber());
-        }
+    public void onCallClickListener(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null));
+        startActivity(intent);
     }
 
     @Override

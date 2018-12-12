@@ -16,7 +16,7 @@ public class DetailResult implements Parcelable {
     private String name;
     @SerializedName("rating")
     @Expose
-    private Integer rating;
+    private Float rating;
     public final static Parcelable.Creator<DetailResult> CREATOR = new Creator<DetailResult>() {
 
 
@@ -37,7 +37,7 @@ public class DetailResult implements Parcelable {
     protected DetailResult(Parcel in) {
         this.formattedPhoneNumber = ((String) in.readValue((String.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
-        this.rating = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.rating = ((Float) in.readValue((Float.class.getClassLoader())));
     }
 
     /**
@@ -53,7 +53,7 @@ public class DetailResult implements Parcelable {
      * @param name
      * @param rating
      */
-    public DetailResult(String formattedPhoneNumber, String name, Integer rating) {
+    public DetailResult(String formattedPhoneNumber, String name, Float rating) {
         super();
         this.formattedPhoneNumber = formattedPhoneNumber;
         this.name = name;
@@ -76,11 +76,11 @@ public class DetailResult implements Parcelable {
         this.name = name;
     }
 
-    public Integer getRating() {
+    public Float getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Float rating) {
         this.rating = rating;
     }
 

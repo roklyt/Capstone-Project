@@ -5,25 +5,17 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.transition.TransitionManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.rokly.notadoctor.Model.Condition.ConditionDetail;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
 import com.example.rokly.notadoctor.R;
-import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
-import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
 
 import java.text.DecimalFormat;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.ConditionsAdapterViewHolder> {
     private static int expandedPosition = -1;
@@ -32,7 +24,6 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
     private RecyclerView recyclerView;
     /* List for all user*/
     private List<Condition> conditionList;
-    private static ConditionDetail conditionDetail;
     public ConditionsAdapter(ConditionsAdapter.ItemClickListener clickHandler) {
         this.clickHandler = clickHandler;
     }
@@ -62,20 +53,23 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
         final boolean isExpanded = position==expandedPosition;
         forecastAdapterViewHolder.detailConstraintLayout.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         forecastAdapterViewHolder.itemView.setActivated(isExpanded);
+
         final View view = forecastAdapterViewHolder.itemView;
         if (isExpanded)
             previousExpandedPosition = position;
 
         forecastAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
 
                 if(!isExpanded){
                     clickHandler.onItemExpandChecklist(view, condition, position);
                 }
+
                 expandedPosition = isExpanded ? -1:position;
+
                 TransitionManager.beginDelayedTransition(recyclerView);
-                notifyItemChanged(previousExpandedPosition);
+                notifyItemChanged(position);
                 notifyDataSetChanged();
             }
         });

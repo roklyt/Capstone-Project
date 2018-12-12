@@ -183,10 +183,6 @@ public class QuestionFragment extends Fragment {
             checkBox.setId(i + 1000);
             checkBox.setText(question.getItems().get(i).getName());
             radioButtonLinearLayout.addView(checkBox);
-/*            RadioButton radioButton = new RadioButton(getContext());
-            radioButton.setId(i + 1000);
-            radioButton.setText(question.getItems().get(i).getName());
-            radioButtonLinearLayout.addView(radioButton);*/
         }
     }
 
