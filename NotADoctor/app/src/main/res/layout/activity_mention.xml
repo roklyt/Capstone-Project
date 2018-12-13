@@ -42,6 +42,7 @@
         android:layout_marginEnd="8dp"
         android:padding="8dp"
         android:text="@string/mentions_page_text_success"
+        android:theme="@style/text_style"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

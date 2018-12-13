@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="text_style">
+         <item name="android:textStyle">bold</item>
+         <item name="android:textColor">@color/question_text</item>
+         <item name="android:textSize">@dimen/text_question_size</item>
+    </style>
 </resources>

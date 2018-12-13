@@ -22,6 +22,8 @@
     <string name="radio_button_smoking">Smoking</string>
 
     <string name="mentions_page_text_success">We found these symptomes. If on of thees symptoms is not correct please delete via swipe. If symptomes are missing please reenter your symptomes and try to be a little more specific. Thanks s a lot.</string>
+    <string name="place_search_critera">name,rating,formatted_phone_number</string>
+    <string name="permission_denied">We can\'t search for any doctors without this permission</string>
     <string name="alert_dialog_delete_user_title">Delete %s ?</string>
     <string name="alert_dialog_delete_user_text">"Do you really want to delete this user?"</string>
     <string name="delete_user_toast">%s was deleted?</string>

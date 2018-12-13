@@ -99,7 +99,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
             public void onResponse(@NonNull Call<ConditionDetail> call, @NonNull Response<ConditionDetail> response) {
                 //TODO check for bad response
                 conditionDetail = response.body();
-                setDetailText(view, response.body(), position);
+                setDetailText(view, response.body());
             }
 
             @Override
@@ -117,7 +117,12 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
         startActivity(startMaps);
     }
 
-    private void setDetailText(View view, ConditionDetail conditionDetail, int position){
+    @Override
+    public void onResetScreen(View view) {
+        setDetailText(view, conditionDetail);
+    }
+
+    private void setDetailText(View view, ConditionDetail conditionDetail){
         if(conditionDetail != null){
 
             TextView conditionDetailsNameTextView = view.findViewById(R.id.tv_name_value);

@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.rokly.notadoctor.Adapter.PlacesAdapter;
@@ -42,6 +44,8 @@ import static com.example.rokly.notadoctor.ConditionActivity.getCategories;
 public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback, LocationListener, PlacesAdapter.ItemClickListener{
 
     public final static String EXTRA_CONDITION_DETAIL = "conditionDetail";
+    private final static String SAVE_PLACES = "savePlaces";
+    private final static String SAVE_LOCATION = "saveLocation";
 
     private PlacesAdapter userAdapter;
     private GoogleMap map;
@@ -49,9 +53,11 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
     private ConditionDetail conditionDetail;
     private LocationManager locationManager;
     private Location currentLocation;
+    private Places allPlaces;
+    private ProgressBar progressBar;
     private final static long LOCATION_REFRESH_TIME = 3000;
     private final static long LOCATION_RADIUS = 1000;
-    private Result result;
+    private boolean onSavedInstanceState = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,21 +68,36 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userAdapter = new PlacesAdapter(this, this);
         userRecyclerView.setAdapter(userAdapter);
-
+        progressBar = findViewById(R.id.pb_find_a_doctor);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        Intent intent = getIntent();
-        if(intent.hasExtra(EXTRA_CONDITION_DETAIL)){
-            conditionDetail = intent.getParcelableExtra(EXTRA_CONDITION_DETAIL);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
         }
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if(savedInstanceState != null){
+            allPlaces = savedInstanceState.getParcelable(SAVE_PLACES);
+            currentLocation = savedInstanceState.getParcelable(SAVE_LOCATION);
+            onSavedInstanceState = true;
+            userAdapter.setPlacesData(allPlaces.getResults());
+        }else{
+            progressBar.setVisibility(View.VISIBLE);
+            Intent intent = getIntent();
+            if(intent.hasExtra(EXTRA_CONDITION_DETAIL)){
+                conditionDetail = intent.getParcelableExtra(EXTRA_CONDITION_DETAIL);
+            }
 
-        currentLocation = getLocation();
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            currentLocation = getLocation();
+        }
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVE_PLACES, allPlaces);
+        outState.putParcelable(SAVE_LOCATION, currentLocation);
     }
 
     public Location getLocation() {
@@ -89,12 +110,6 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
                 ActivityCompat.requestPermissions(FindADoctor.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         1);
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
 
                 return location;
             }
@@ -144,46 +159,40 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
         switch (requestCode) {
             case 1: {
 
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    currentLocation = getLocation();
                 } else {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(FindADoctor.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FindADoctor.this, getResources().getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
                 }
-                return;
             }
 
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
 
     private void callPlaces(){
         String categories = getCategories(conditionDetail);
-        //String queryText = categories + ","  + conditionDetail.getCommonName();
+
         if(categories.contains("Other")){
             categories = "family doctor";
         }
+
         String queryText = categories;
         String location = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
-        long radius = LOCATION_RADIUS;
-
 
         PlacesApi placesApi = RetrofitClientPlaces.getRetrofitInstance().create(PlacesApi.class);
-        Call<Places> call = placesApi.getPlaces(queryText,getResources().getString(R.string.google_places_type), location,  radius, getResources().getString(R.string.google_maps_key));
+        Call<Places> call = placesApi.getPlaces(queryText,getResources().getString(R.string.google_places_type), location, LOCATION_RADIUS, getResources().getString(R.string.google_maps_key));
         call.enqueue(new Callback<Places>() {
 
             @Override
             public void onResponse(@NonNull Call<Places> call, @NonNull Response<Places> response) {
-                setMapsMarker(response.body());
-                setPlacesDetail(response.body());
+                if(response.body() != null){
+                    setMapsMarker(response.body());
+                    setPlacesDetail(response.body());
+                }
             }
 
             @Override
@@ -197,17 +206,20 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
     private void setPlacesDetail(final Places places){
 
-        final Places getDetailPlaces = places;
         for(int i = 0; i < places.getResults().size(); i++){
             PlacesApi placesApi = RetrofitClientPlaces.getRetrofitInstance().create(PlacesApi.class);
-            Call<PlaceDetail> call = placesApi.getPlaceDetail(places.getResults().get(i).getPlaceId(), "name,rating,formatted_phone_number", getResources().getString(R.string.google_maps_key));
+            Call<PlaceDetail> call = placesApi.getPlaceDetail(places.getResults().get(i).getPlaceId(), getResources().getString(R.string.place_search_critera), getResources().getString(R.string.google_maps_key));
             final int x = i;
             call.enqueue(new Callback<PlaceDetail>() {
                 @Override
                 public void onResponse(@NonNull Call<PlaceDetail> call, @NonNull Response<PlaceDetail> response) {
-                    getDetailPlaces.getResults().get(x).setDetailResult(response.body().getResult());
-                    if(x  == places.getResults().size() - 1){
-                        userAdapter.setPlacesData(getDetailPlaces.getResults());
+                    if(response.body() != null){
+                        places.getResults().get(x).setDetailResult(response.body().getResult());
+                        if(x  == places.getResults().size() - 1){
+                            userAdapter.setPlacesData(places.getResults());
+                            progressBar.setVisibility(View.GONE);
+                            allPlaces = places;
+                        }
                     }
                 }
 
@@ -222,16 +234,15 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void setMapsMarker(Places places){
+            List<Result> results = places.getResults();
 
-        List<Result> results = places.getResults();
+            for(Result result:results){
+                LatLng latLng = new LatLng(result.getGeometry().getLocation().getLat(), result.getGeometry().getLocation().getLng());
+                String markerTitle = result.getName();
 
-        for(Result result:results){
-            LatLng latLng = new LatLng(result.getGeometry().getLocation().getLat(), result.getGeometry().getLocation().getLng());
-            String markerTitle = result.getName();
-
-            map.addMarker(new MarkerOptions().position(latLng)
-                    .title(markerTitle));
-        }
+                map.addMarker(new MarkerOptions().position(latLng)
+                        .title(markerTitle));
+            }
     }
 
     private void setUserMarker(){
@@ -286,5 +297,9 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        if(onSavedInstanceState){
+            setUserMarker();
+            setMapsMarker(allPlaces);
+        }
     }
 }

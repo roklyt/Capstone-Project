@@ -3,12 +3,6 @@
     package="com.example.rokly.notadoctor">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
-    -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -43,11 +37,34 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/. 
         -->
-
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
         <activity android:name=".FindADoctor"></activity>
 
 
     </application>
+
+
+
+    //TODO Navigation between the pages
+    //TODO error handling for http requests in search mention, diagnose, get conditions detail, get places, get detail places.
+    //TODO check for internetconection
+    //TODO generell Material Desing text, aligment, appbar, Logo, elevation
+    //TODO Widget
+    //TODO add admob
+    //TODO add Triage color
+    //TODO Get rid of the yellow suggestions
+    //TODO app is equeppied with a signing configuration
+    //TODO Tablet layout
+    //TODO Animations and style for buttons
+    //TODO Animations for side change
+    //TODO content description navigation using d-pad
+
+    //TODO decrease the min level.
+    //TODO put header in the intercept
+
+
 
 </manifest>

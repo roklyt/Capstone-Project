@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
     <color name="default_background">#00000000</color>
     <color name="error_background">#FFA6A6</color>
+    <color name="question_text">#808080</color>
 </resources>

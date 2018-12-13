@@ -285,6 +285,10 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         sex = adapterView.getItemAtPosition(i).toString();
+        if(sex.equals("diverse")){
+            sex = "male";
+        }
+
     }
 
     @Override

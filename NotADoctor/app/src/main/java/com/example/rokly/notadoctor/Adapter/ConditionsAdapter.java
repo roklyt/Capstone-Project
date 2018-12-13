@@ -55,8 +55,11 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
         forecastAdapterViewHolder.itemView.setActivated(isExpanded);
 
         final View view = forecastAdapterViewHolder.itemView;
-        if (isExpanded)
+        if (isExpanded){
             previousExpandedPosition = position;
+            clickHandler.onResetScreen(view);
+        }
+
 
         forecastAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +106,8 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
         void onItemExpandChecklist(View view, Condition condition, int position);
 
         void onButtonClicked(Condition condition);
+
+        void onResetScreen(View view);
     }
 
     @Override

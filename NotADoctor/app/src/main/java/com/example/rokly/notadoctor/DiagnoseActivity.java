@@ -41,7 +41,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     private Diagnose diagnose;
     private static final double MINIMUM_PERCENTAGE = 0.85;
     private static int counter = 0;
-    private final static int maxCounter = 2;
+    private final static int maxCounter = 15;
     private QuestionFragment questionFragment;
     private ProgressBar progressBar;
     private int initialValue = 0;
@@ -62,13 +62,11 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
         }
 
         Intent intent = getIntent();
-
         if (intent != null && intent.hasExtra(EXTRA_DIAGNOSE)) {
             currentUser = intent.getParcelableExtra(EXTRA_USER);
             currentDiagnose = intent.getParcelableExtra(EXTRA_DIAGNOSE);
             callInfermedica();
         }
-
 
     }
 
@@ -81,12 +79,11 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
 
-                textview.setText(valueAnimator.getAnimatedValue().toString());
+                textview.setText(valueAnimator.getAnimatedValue().toString() + "%");
 
             }
         });
         valueAnimator.start();
-
     }
 
     @Override
@@ -102,18 +99,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
         }
 
         writeEvidenceIntoDatabse(evidences);
-
-        //TODO check why solution is always null
-        if(counter < maxCounter && !isMinimumPercentage()){
-            callInfermedica();
-            counter ++;
-        }else{
-            writeFinalConditionsIntoDb(diagnose.getConditions());
-            Intent conditionActivity = new Intent(DiagnoseActivity.this, ConditionActivity.class);
-            conditionActivity.putExtra(EXTRA_CONDITIONS, diagnose);
-            startActivity(conditionActivity);
-        }
-
+        callInfermedica();
     }
 
     private void callInfermedica(){
@@ -126,14 +112,24 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
                 public void onResponse(@NonNull Call<Diagnose> call, @NonNull Response<Diagnose> response) {
                     progressBar.setVisibility(View.GONE);
                     diagnose = response.body();
+
                     Double myDouble = diagnose.getConditions().get(0).getProbability() * 100;
                     int percentage = myDouble.intValue();
                     animateTextView(initialValue, percentage, progressPercentageTextView);
                     initialValue = percentage;
-                    if(counter == 0){
-                        addFragment();
+
+                    if(counter < maxCounter && !isMinimumPercentage()){
+                        if(counter == 0){
+                            addFragment();
+                        }else{
+                            replaceFragment();
+                        }
+                        counter++;
                     }else{
-                        replaceFragment();
+                        writeFinalConditionsIntoDb(diagnose.getConditions());
+                        Intent conditionActivity = new Intent(DiagnoseActivity.this, ConditionActivity.class);
+                        conditionActivity.putExtra(EXTRA_CONDITIONS, diagnose);
+                        startActivity(conditionActivity);
                     }
                 }
 
