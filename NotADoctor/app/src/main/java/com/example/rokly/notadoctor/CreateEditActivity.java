@@ -153,9 +153,11 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
                         user.setId(UserId);
                         notADoctorDB.databaseDao().updateUser(user);
                     }
-                    finish();
+
                 }
             });
+
+            supportFinishAfterTransition();
         }else{
             Toast.makeText(this, R.string.error_some_entrys_missing, Toast.LENGTH_SHORT).show();
         }

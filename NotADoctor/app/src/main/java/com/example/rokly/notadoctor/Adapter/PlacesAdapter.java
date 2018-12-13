@@ -1,14 +1,18 @@
 package com.example.rokly.notadoctor.Adapter;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.transition.TransitionManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -23,6 +27,7 @@ import org.w3c.dom.Text;
 
 import java.util.List;
 
+import butterknife.internal.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -65,7 +70,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         forecastAdapterViewHolder.itemView.setActivated(isExpanded);
         forecastAdapterViewHolder.doctorAdressTextView.setText(result.getFormattedAddress());
         forecastAdapterViewHolder.doctorTelephoneTextView.setText(result.getDetailResult().getFormattedPhoneNumber());
-
+        runEnterAnimation(forecastAdapterViewHolder.itemView);
         if (isExpanded)
             previousExpandedPosition = position;
 
@@ -86,6 +91,22 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
             }
         });
     }
+
+    private void runEnterAnimation(View view) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int height = size.y;
+
+        view.setTranslationY(height);
+        view.animate()
+                .translationY(0)
+                .setInterpolator(new DecelerateInterpolator(3.f))
+                .setDuration(700)
+                .start();
+    }
+
 
     @Override
     public int getItemCount() {

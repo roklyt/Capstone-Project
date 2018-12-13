@@ -1,5 +1,7 @@
 package com.example.rokly.notadoctor;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
@@ -29,15 +31,17 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
 
     private UserAdapter userAdapter;
     private RecyclerView userRecyclerView;
+    private Activity activity;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-
+        activity = this;
         userRecyclerView = findViewById(R.id.recyclerview_user);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
 
         userAdapter = new UserAdapter(this);
         userRecyclerView.setAdapter(userAdapter);
@@ -49,7 +53,7 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
             @Override
             public void onClick(View view) {
                 Intent addUserIntent = new Intent(WelcomeActivity.this, CreateEditActivity.class);
-                startActivity(addUserIntent);
+                startActivity(addUserIntent, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
             }
         });
 
@@ -68,10 +72,14 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
     }
 
     @Override
-    public void onItemClickListener(UserEntry currentUser) {
+    public void onItemClickListener(UserEntry currentUser, View sharedView) {
         Intent symptomeIntent = new Intent(WelcomeActivity.this, SymptomActivity.class);
         symptomeIntent.putExtra(SymptomActivity.EXTRA_USER, currentUser);
-        startActivity(symptomeIntent);
+        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this,
+                sharedView,
+                getResources().getString(R.string.transition_name))
+                .toBundle();
+        startActivity(symptomeIntent, bundle);
     }
 
     @Override
@@ -99,9 +107,14 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
     }
 
     @Override
-    public void onEditClickListener(UserEntry currentUser) {
+    public void onEditClickListener(UserEntry currentUser, View sharedView) {
         Intent editUserIntent = new Intent(WelcomeActivity.this, CreateEditActivity.class);
         editUserIntent.putExtra(CreateEditActivity.EXTRA_USER_ID, currentUser.getId());
-        startActivity(editUserIntent);
+        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this,
+                sharedView,
+                getResources().getString(R.string.transition_name))
+                .toBundle();
+
+        startActivity(editUserIntent, bundle);
     }
 }

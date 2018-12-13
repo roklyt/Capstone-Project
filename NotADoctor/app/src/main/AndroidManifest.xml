@@ -26,9 +26,12 @@
         </activity>
         <activity android:name=".CreateEditActivity" />
         <activity android:name=".SymptomActivity" />
-        <activity android:name=".MentionActivity" />
-        <activity android:name=".DiagnoseActivity" />
-        <activity android:name=".ConditionActivity" />
+        <activity android:name=".MentionActivity"
+            android:theme="@style/SlideTheme"/>
+        <activity android:name=".DiagnoseActivity"
+            android:theme="@style/SlideTheme"/>
+        <activity android:name=".ConditionActivity"
+            android:theme="@style/SlideTheme"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -41,7 +44,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".FindADoctor"></activity>
+        <activity android:name=".FindADoctor"
+            android:theme="@style/SlideTheme"></activity>
 
 
     </application>
@@ -61,7 +65,7 @@
     //TODO Animations and style for buttons
     //TODO Animations for side change
     //TODO content description navigation using d-pad
-
+    //TODO animate map marker if doctor is clicked
     //TODO decrease the min level.
     //TODO put header in the intercept
 

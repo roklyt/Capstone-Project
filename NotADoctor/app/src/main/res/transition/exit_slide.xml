@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    android:startDelay="200"
+    android:transitionOrdering="sequential">
+
+    <slide
+        android:duration="500"
+        android:slideEdge="left"
+        />
+
+</transitionSet>

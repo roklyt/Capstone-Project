@@ -1,5 +1,7 @@
 package com.example.rokly.notadoctor;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -34,12 +36,13 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
     private ConditionsAdapter conditionsAdapter;
     private ConditionDetail conditionDetail;
     private int currentItemPosition;
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_condition);
-
+        activity = this;
         if(savedInstanceState != null){
             diagnose = savedInstanceState.getParcelable(EXTRA_CONDITIONS);
             findViews();
@@ -114,7 +117,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
     public void onButtonClicked(Condition condition) {
         Intent startMaps = new Intent(ConditionActivity.this, FindADoctor.class);
         startMaps.putExtra(FindADoctor.EXTRA_CONDITION_DETAIL, conditionDetail);
-        startActivity(startMaps);
+        startActivity(startMaps, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
     }
 
     @Override

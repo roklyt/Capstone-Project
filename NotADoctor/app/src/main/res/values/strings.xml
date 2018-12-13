@@ -21,7 +21,7 @@
     <string name="radio_button_hypertension">Hypertension</string>
     <string name="radio_button_smoking">Smoking</string>
 
-    <string name="mentions_page_text_success">We found these symptomes. If on of thees symptoms is not correct please delete via swipe. If symptomes are missing please reenter your symptomes and try to be a little more specific. Thanks s a lot.</string>
+    <string name="mentions_page_text_success">We found these symptoms. If on of thees symptoms is not correct please delete via swipe. If symptomes are missing please reenter your symptoms and try to be a little more specific. Thanks s a lot.</string>
     <string name="place_search_critera">name,rating,formatted_phone_number</string>
     <string name="permission_denied">We can\'t search for any doctors without this permission</string>
     <string name="alert_dialog_delete_user_title">Delete %s ?</string>
@@ -38,7 +38,7 @@
     <string name="hint_create_edit_age">Age</string>
     <string name="hint_create_edit_height">Height in cm</string>
     <string name="hint_create_edit_weight">Weight in kg</string>
-    <string name="hint_symptome_enter_symptome">Enter Symptome here</string>
+    <string name="hint_symptome_enter_symptome">Enter your symptoms here</string>
 
     <integer name="max_lenght_symptome_edit_text">400</integer>
     <integer name="max_lenght_create_name_edit_text">20</integer>
@@ -60,4 +60,8 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_doctor">Map</string>
+
+    <string name="call_this_doctor">Call  this doctor</string>
+
+    <string name="transition_name">name</string>
 </resources>

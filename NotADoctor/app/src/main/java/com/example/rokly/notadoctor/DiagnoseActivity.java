@@ -1,11 +1,15 @@
 package com.example.rokly.notadoctor;
 
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.transition.Slide;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,18 +45,19 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     private Diagnose diagnose;
     private static final double MINIMUM_PERCENTAGE = 0.85;
     private static int counter = 0;
-    private final static int maxCounter = 15;
+    private final static int maxCounter = 3;
     private QuestionFragment questionFragment;
     private ProgressBar progressBar;
     private int initialValue = 0;
     private TextView progressPercentageTextView;
+    private Activity activity;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagnose);
-
+        activity = this;
         progressBar = findViewById(R.id.pb_question);
         progressPercentageTextView = findViewById(R.id.tv_progress_percentage);
 
@@ -129,7 +134,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
                         writeFinalConditionsIntoDb(diagnose.getConditions());
                         Intent conditionActivity = new Intent(DiagnoseActivity.this, ConditionActivity.class);
                         conditionActivity.putExtra(EXTRA_CONDITIONS, diagnose);
-                        startActivity(conditionActivity);
+                        startActivity(conditionActivity, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
                     }
                 }
 
@@ -145,6 +150,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     private void replaceFragment(){
         questionFragment = new QuestionFragment();
         questionFragment.setQuestion(diagnose.getQuestion());
+        questionFragment.setEnterTransition(new Slide(Gravity.RIGHT));
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.question_container, questionFragment)
                 .commit();
@@ -153,6 +159,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     private void addFragment(){
         questionFragment = new QuestionFragment();
         questionFragment.setQuestion(diagnose.getQuestion());
+        questionFragment.setEnterTransition(new Slide(Gravity.RIGHT));
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.question_container, questionFragment)
                 .commit();

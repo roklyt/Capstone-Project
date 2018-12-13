@@ -54,7 +54,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
         forecastAdapterViewHolder.editUserImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickHandler.onEditClickListener(user);
+                clickHandler.onEditClickListener(user, view);
             }
         });
     }
@@ -75,11 +75,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
 
     /* Interface for the on click handler */
     public interface ItemClickListener {
-        void onItemClickListener(UserEntry currentUser);
+        void onItemClickListener(UserEntry currentUser, View sharedView);
 
         void onDeleteClickListener(UserEntry currentUser);
 
-        void onEditClickListener(UserEntry currentUser);
+        void onEditClickListener(UserEntry currentUser, View view);
     }
 
     public class UserAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -98,7 +98,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
         @Override
         public void onClick(View v) {
             UserEntry currentUser = userList.get(getAdapterPosition());
-            clickHandler.onItemClickListener(currentUser);
+            clickHandler.onItemClickListener(currentUser, v);
         }
     }
 }

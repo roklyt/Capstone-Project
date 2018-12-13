@@ -1,5 +1,7 @@
 package com.example.rokly.notadoctor;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.PersistableBundle;
@@ -23,6 +25,7 @@ public class SymptomActivity extends AppCompatActivity {
     private EditText enterSymptomeEditText;
     private Button submitSymptomeButton;
     private UserEntry currentUser;
+    private Activity activity;
 
     AppDatabase UserDb;
 
@@ -30,7 +33,7 @@ public class SymptomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptom);
-
+        activity = this;
         findViews();
 
 
@@ -48,7 +51,7 @@ public class SymptomActivity extends AppCompatActivity {
                         Intent submitSymptomes = new Intent(SymptomActivity.this, MentionActivity.class);
                         submitSymptomes.putExtra(EXTRA_USER, currentUser);
                         submitSymptomes.putExtra(EXTRA_USER_SYMPTOME_TEXT, enterSymptomeEditText.getText().toString());
-                        startActivity(submitSymptomes);
+                        startActivity(submitSymptomes, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
                     }else{
                         Toast.makeText(SymptomActivity.this, getResources().getString(R.string.error_some_entrys_missing), Toast.LENGTH_SHORT).show();
                     }

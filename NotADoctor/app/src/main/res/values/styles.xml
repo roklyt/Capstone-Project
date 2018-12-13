@@ -2,10 +2,21 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@transition/enter</item>
+        <item name="android:windowExitTransition">@transition/exit</item>
+        <item name="android:windowContentTransitions">true</item>
+
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="SlideTheme" parent="AppTheme">
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@transition/enter_slide</item>
+        <item name="android:windowExitTransition">@transition/exit_slide</item>
     </style>
 
     <style name="text_style">

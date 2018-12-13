@@ -1,5 +1,7 @@
 package com.example.rokly.notadoctor;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -48,6 +50,7 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
     Button reEnterButton;
     Button startDiagnoseButton;
     private DiagnoseReq currentDiagnose;
+    private Activity activity;
 
     private AppDatabase notADoctorDB;
     private static final int DEFAULT_DIAGNOSE_ID = -1;
@@ -61,7 +64,7 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
         setContentView(R.layout.activity_mention);
         findViews();
         showProgress();
-
+        activity = this;
         Intent intent = getIntent();
 
         if (intent != null && intent.hasExtra(SymptomActivity.EXTRA_USER)) {
@@ -155,7 +158,7 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
                 Intent startDiagnose = new Intent(MentionActivity.this, DiagnoseActivity.class);
                 startDiagnose.putExtra(DiagnoseActivity.EXTRA_USER, currentUser);
                 startDiagnose.putExtra(DiagnoseActivity.EXTRA_DIAGNOSE, currentDiagnose);
-                startActivity(startDiagnose);
+                startActivity(startDiagnose, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
 
 
 
