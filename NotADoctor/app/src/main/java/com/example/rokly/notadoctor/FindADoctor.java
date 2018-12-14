@@ -19,8 +19,17 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.rokly.notadoctor.Adapter.PlacesAdapter;
+import com.example.rokly.notadoctor.Database.AppDatabase;
+import com.example.rokly.notadoctor.Database.DiagnoseEntry;
+import com.example.rokly.notadoctor.Database.DoctorEntry;
+import com.example.rokly.notadoctor.Database.EvidenceEntry;
+import com.example.rokly.notadoctor.Database.UserEntry;
+import com.example.rokly.notadoctor.Executor.AppExecutor;
 import com.example.rokly.notadoctor.Model.Condition.ConditionDetail;
+import com.example.rokly.notadoctor.Model.Diagnose.Request.Evidence;
+import com.example.rokly.notadoctor.Model.PlaceDetail.DetailResult;
 import com.example.rokly.notadoctor.Model.PlaceDetail.PlaceDetail;
+import com.example.rokly.notadoctor.Model.Places.Geometry;
 import com.example.rokly.notadoctor.Model.Places.Places;
 import com.example.rokly.notadoctor.Model.Places.Result;
 import com.example.rokly.notadoctor.Retrofit.PlacesApi;
@@ -33,6 +42,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,10 +50,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.example.rokly.notadoctor.ConditionActivity.getCategories;
+import static com.example.rokly.notadoctor.helper.ChoiceId.getChoiceIdInt;
 
 public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback, LocationListener, PlacesAdapter.ItemClickListener{
 
     public final static String EXTRA_CONDITION_DETAIL = "conditionDetail";
+    public final static String EXTRA_IS_WIDGET = "isWidget";
+
     private final static String SAVE_PLACES = "savePlaces";
     private final static String SAVE_LOCATION = "saveLocation";
 
@@ -58,6 +71,9 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
     private final static long LOCATION_REFRESH_TIME = 3000;
     private final static long LOCATION_RADIUS = 1000;
     private boolean onSavedInstanceState = false;
+    private UserEntry currentUser;
+    private boolean isWidget;
+    private int counter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,13 +95,21 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
         if(savedInstanceState != null){
             allPlaces = savedInstanceState.getParcelable(SAVE_PLACES);
             currentLocation = savedInstanceState.getParcelable(SAVE_LOCATION);
+            currentUser = savedInstanceState.getParcelable(DiagnoseActivity.EXTRA_USER);
             onSavedInstanceState = true;
+            progressBar.setVisibility(View.GONE);
             userAdapter.setPlacesData(allPlaces.getResults());
         }else{
             progressBar.setVisibility(View.VISIBLE);
             Intent intent = getIntent();
-            if(intent.hasExtra(EXTRA_CONDITION_DETAIL)){
-                conditionDetail = intent.getParcelableExtra(EXTRA_CONDITION_DETAIL);
+
+
+            if(!intent.hasExtra(EXTRA_IS_WIDGET)){
+                counter = intent.getIntExtra(ListWidgetService.EXTRA_DIAGNOSE, 1);
+                if(intent.hasExtra(EXTRA_CONDITION_DETAIL)) {
+                    conditionDetail = intent.getParcelableExtra(EXTRA_CONDITION_DETAIL);
+                    currentUser = intent.getParcelableExtra(DiagnoseActivity.EXTRA_USER);
+                }
             }
 
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -98,6 +122,7 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
         super.onSaveInstanceState(outState);
         outState.putParcelable(SAVE_PLACES, allPlaces);
         outState.putParcelable(SAVE_LOCATION, currentLocation);
+        outState.putParcelable(DiagnoseActivity.EXTRA_USER, currentUser);
     }
 
     public Location getLocation() {
@@ -219,6 +244,7 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
                             userAdapter.setPlacesData(places.getResults());
                             progressBar.setVisibility(View.GONE);
                             allPlaces = places;
+                            writeDoctorsToDB();
                         }
                     }
                 }
@@ -245,6 +271,44 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
             }
     }
 
+    private void getDoctorsFromDatabse(){
+        final AppDatabase NotADoctor = AppDatabase.getInstance(this);
+        AppExecutor.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<Result> result = new ArrayList<>();
+                List<DoctorEntry> doctorEntrys = NotADoctor.databaseDao().loadDoctorsByDiagnoseId(counter);
+                for(DoctorEntry doctorEntry:doctorEntrys){
+                    DetailResult detailResult = new DetailResult();
+                    detailResult.setFormattedPhoneNumber(doctorEntry.getDoctorPhoneNumber());
+
+
+                    com.example.rokly.notadoctor.Model.Places.Location location = new com.example.rokly.notadoctor.Model.Places.Location();
+                    location.setLng(doctorEntry.getLng());
+                    location.setLat(doctorEntry.getLat());
+
+                    Geometry geometry = new Geometry();
+                    geometry.setLocation(location);
+
+                    Result doctor = new Result();
+                    doctor.setDetailResult(detailResult);
+                    doctor.setGeometry(geometry);
+                    doctor.setFormattedAddress(doctorEntry.getDoctorAddress());
+                    doctor.setName(doctorEntry.getDoctorName());
+                    doctor.setPlaceId(doctorEntry.getPlaceId());
+                    result.add(doctor);
+                }
+
+                Places allPlaces = new Places();
+                allPlaces.setResults(result);
+
+                setMapsMarker(allPlaces);
+                userAdapter.setPlacesData(result);
+
+            }
+        });
+    }
+
     private void setUserMarker(){
 
         map.addMarker(new MarkerOptions().position(getCurrentLatLng())
@@ -253,6 +317,34 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
 
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(getCurrentLatLng(), getResources().getInteger(R.integer.zoom_level)), getResources().getInteger(R.integer.zoom_level), null);
+    }
+
+    private void writeDoctorsToDB(){
+        final AppDatabase NotADoctor = AppDatabase.getInstance(this);
+        AppExecutor.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                DiagnoseEntry diagnoseEntry =  NotADoctor.databaseDao().loadDiagnoseByUserId(currentUser.getId());
+
+                for(Result currentDoctor:allPlaces.getResults()){
+                    String formattedPhoneNumber = "";
+                    if(currentDoctor.getDetailResult().getFormattedPhoneNumber() != null){
+                        formattedPhoneNumber = currentDoctor.getDetailResult().getFormattedPhoneNumber();
+                    }
+
+                    final DoctorEntry doctorEntry= new DoctorEntry(diagnoseEntry.getId(), currentDoctor.getName(), currentDoctor.getFormattedAddress(), currentDoctor.getGeometry().getLocation().getLat(), currentDoctor.getGeometry().getLocation().getLng(), formattedPhoneNumber, currentDoctor.getPlaceId());
+                    AppExecutor.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            NotADoctor.databaseDao().insertDoctor(doctorEntry);
+                        }
+                    });
+                }
+
+                DoctorAppWidgetService.startActionUpdateDoctorWidget(FindADoctor.this, diagnoseEntry);
+            }
+        });
+
     }
 
     private LatLng getCurrentLatLng(){
@@ -272,10 +364,14 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(FindADoctor.this, "Location changed: Lat: " + location.getLatitude() + " Lng: " + location.getLongitude(), Toast.LENGTH_SHORT).show();
         currentLocation = location;
         setUserMarker();
-        callPlaces();
+        if(!isWidget){
+            callPlaces();
+        }else{
+
+        }
+
         locationManager.removeUpdates(this);
     }
 

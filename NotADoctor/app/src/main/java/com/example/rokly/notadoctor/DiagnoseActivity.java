@@ -94,7 +94,9 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, "myFragmentName", questionFragment);
+        if(getSupportFragmentManager() != null){
+            getSupportFragmentManager().putFragment(outState, "myFragmentName", questionFragment);
+        }
     }
 
     @Override
@@ -109,7 +111,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
 
     private void callInfermedica(){
             progressBar.setVisibility(View.VISIBLE);
-            InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance().create(InfermedicaApi.class);
+            InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance(DiagnoseActivity.this).create(InfermedicaApi.class);
             Call<Diagnose> call = infermedicaApi.getQuestion(currentDiagnose);
             call.enqueue(new Callback<Diagnose>() {
 
@@ -134,6 +136,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
                         writeFinalConditionsIntoDb(diagnose.getConditions());
                         Intent conditionActivity = new Intent(DiagnoseActivity.this, ConditionActivity.class);
                         conditionActivity.putExtra(EXTRA_CONDITIONS, diagnose);
+                        conditionActivity.putExtra(EXTRA_USER, currentUser);
                         startActivity(conditionActivity, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
                     }
                 }

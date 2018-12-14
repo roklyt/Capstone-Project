@@ -26,12 +26,15 @@
         </activity>
         <activity android:name=".CreateEditActivity" />
         <activity android:name=".SymptomActivity" />
-        <activity android:name=".MentionActivity"
-            android:theme="@style/SlideTheme"/>
-        <activity android:name=".DiagnoseActivity"
-            android:theme="@style/SlideTheme"/>
-        <activity android:name=".ConditionActivity"
-            android:theme="@style/SlideTheme"/>
+        <activity
+            android:name=".MentionActivity"
+            android:theme="@style/SlideTheme" />
+        <activity
+            android:name=".DiagnoseActivity"
+            android:theme="@style/SlideTheme" />
+        <activity
+            android:name=".ConditionActivity"
+            android:theme="@style/SlideTheme" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -44,19 +47,35 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".FindADoctor"
-            android:theme="@style/SlideTheme"></activity>
+        <activity
+            android:name=".FindADoctor"
+            android:theme="@style/SlideTheme" />
 
+        <receiver android:name=".DoctorAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/doctor_app_widget_info" />
+        </receiver>
+
+        <service android:name=".DoctorAppWidgetService" />
+
+        <service
+            android:name=".ListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 
-
     //TODO Navigation between the pages
-    //TODO error handling for http requests in search mention, diagnose, get conditions detail, get places, get detail places.
+    //TODO delete all databse entrys from a deleted user.
+    //TODO error handling for http requests in search mention, diagnose, get conditions detail, get
+    places, get detail places.
     //TODO check for internetconection
     //TODO generell Material Desing text, aligment, appbar, Logo, elevation
-    //TODO Widget
+    //TODO Widget endpoint
     //TODO add admob
     //TODO add Triage color
     //TODO Get rid of the yellow suggestions
@@ -68,7 +87,5 @@
     //TODO animate map marker if doctor is clicked
     //TODO decrease the min level.
     //TODO put header in the intercept
-
-
 
 </manifest>

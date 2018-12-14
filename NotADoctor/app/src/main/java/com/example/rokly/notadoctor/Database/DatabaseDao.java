@@ -33,7 +33,7 @@ public interface DatabaseDao {
     @Insert
     void insertDiagnose(DiagnoseEntry diagnoseEntry);
 
-    @Query("SELECT * FROM diagnose WHERE userId = :userId")
+    @Query("SELECT * FROM diagnose WHERE userId = :userId ORDER BY createdAt DESC")
     DiagnoseEntry loadDiagnoseByUserId(int userId);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
@@ -69,5 +69,12 @@ public interface DatabaseDao {
 
     @Delete
     void deleteCondition(ConditionEntry ConditionEntry);
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertDoctor(DoctorEntry doctorEntry);
+
+    @Query("SELECT * FROM doctor WHERE diagnoseId = :diagnoseId")
+    List<DoctorEntry> loadDoctorsByDiagnoseId(int diagnoseId);
 
 }

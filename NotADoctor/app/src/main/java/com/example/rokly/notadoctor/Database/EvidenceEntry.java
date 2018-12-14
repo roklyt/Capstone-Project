@@ -46,9 +46,9 @@ public class EvidenceEntry implements Parcelable {
 
     private EvidenceEntry(Parcel in) {
         id = in.readInt();
-        this.diagnoseId = diagnoseId;
-        this.evidenceId = evidenceId;
-        this.choiceId =choiceId;
+        diagnoseId = in.readInt();
+        evidenceId = in.readString();
+        choiceId = in.readInt();
     }
 
     public int getId() {

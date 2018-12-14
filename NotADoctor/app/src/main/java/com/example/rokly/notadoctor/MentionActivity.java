@@ -76,7 +76,7 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
             parse.setCorrectSpelling(false);
             parse.setIncludeTokens(false);
 
-            InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance().create(InfermedicaApi.class);
+            InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance(MentionActivity.this).create(InfermedicaApi.class);
             Call<Mention> call = infermedicaApi.getMention(parse);
             call.enqueue(new Callback<Mention>() {
 

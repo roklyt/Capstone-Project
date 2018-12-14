@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rokly.notadoctor.Adapter.ConditionsAdapter;
+import com.example.rokly.notadoctor.Database.UserEntry;
 import com.example.rokly.notadoctor.Model.Condition.ConditionDetail;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Diagnose;
@@ -33,6 +34,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
     private List<Condition> conditionList;
     private Diagnose diagnose;
     private RecyclerView recyclerView;
+    private UserEntry currentUser;
     private ConditionsAdapter conditionsAdapter;
     private ConditionDetail conditionDetail;
     private int currentItemPosition;
@@ -48,12 +50,13 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
             findViews();
             conditionDetail = savedInstanceState.getParcelable(EXTRA_CONDITIONS_DETAIL);
             currentItemPosition = savedInstanceState.getInt(EXTRA_CONDITIONS_POSITION);
-
+            currentUser = savedInstanceState.getParcelable(DiagnoseActivity.EXTRA_USER);
 
         }else{
             Intent intent = getIntent();
             if(intent.hasExtra(EXTRA_CONDITIONS)){
                 diagnose = intent.getParcelableExtra(EXTRA_CONDITIONS);
+                currentUser = intent.getParcelableExtra(DiagnoseActivity.EXTRA_USER);
                 findViews();
             }
         }
@@ -84,6 +87,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
         outState.putParcelable(EXTRA_CONDITIONS, diagnose);
         outState.putParcelable(EXTRA_CONDITIONS_DETAIL, conditionDetail );
         outState.putInt(EXTRA_CONDITIONS_POSITION, currentItemPosition);
+        outState.putParcelable(DiagnoseActivity.EXTRA_USER, currentUser);
     }
 
     @Override
@@ -93,7 +97,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
 
     @Override
     public void onItemExpandChecklist(final View view, Condition condition, final int position) {
-        InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance().create(InfermedicaApi.class);
+        InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance(ConditionActivity.this).create(InfermedicaApi.class);
         currentItemPosition = position;
         Call<ConditionDetail> call = infermedicaApi.getConditionById(condition.getId());
         call.enqueue(new Callback<ConditionDetail>() {
@@ -117,6 +121,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
     public void onButtonClicked(Condition condition) {
         Intent startMaps = new Intent(ConditionActivity.this, FindADoctor.class);
         startMaps.putExtra(FindADoctor.EXTRA_CONDITION_DETAIL, conditionDetail);
+        startMaps.putExtra(DiagnoseActivity.EXTRA_USER, currentUser);
         startActivity(startMaps, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
     }
 

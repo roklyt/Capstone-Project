@@ -27,7 +27,6 @@ public class SymptomActivity extends AppCompatActivity {
     private UserEntry currentUser;
     private Activity activity;
 
-    AppDatabase UserDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
