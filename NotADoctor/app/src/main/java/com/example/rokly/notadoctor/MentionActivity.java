@@ -28,6 +28,7 @@ import com.example.rokly.notadoctor.Model.Parse.Response.Mentions;
 import com.example.rokly.notadoctor.Model.Parse.Request.Parse;
 import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
+import com.example.rokly.notadoctor.helper.CheckNetwork;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,7 @@ import static com.example.rokly.notadoctor.helper.ChoiceId.getChoiceIdInt;
 import static com.example.rokly.notadoctor.helper.ChoiceId.getChoiceIdString;
 
 public class MentionActivity extends AppCompatActivity implements MentionAdpater.ItemClickListener{
+    private static final String SAVE_MENTION = "mentionsList";
     private MentionAdpater mentionAdpater;
     private RecyclerView recyclerView;
     ProgressBar progressBar;
@@ -51,7 +53,6 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
     Button startDiagnoseButton;
     private DiagnoseReq currentDiagnose;
     private Activity activity;
-
     private AppDatabase notADoctorDB;
     private static final int DEFAULT_DIAGNOSE_ID = -1;
     private int diagnoseId = DEFAULT_DIAGNOSE_ID;
@@ -67,7 +68,13 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
         activity = this;
         Intent intent = getIntent();
 
-        if (intent != null && intent.hasExtra(SymptomActivity.EXTRA_USER)) {
+        if(savedInstanceState != null){
+            currentUser = savedInstanceState.getParcelable(SymptomActivity.EXTRA_USER);
+            Mention mention = savedInstanceState.getParcelable(SAVE_MENTION);
+            mentionsList = mention.getMentions();
+            showRecyclerView();
+            setMentionAdpater();
+        }else if (intent != null && intent.hasExtra(SymptomActivity.EXTRA_USER)) {
 
             currentUser = intent.getParcelableExtra(SymptomActivity.EXTRA_USER);
 
@@ -76,22 +83,8 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
             parse.setCorrectSpelling(false);
             parse.setIncludeTokens(false);
 
-            InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance(MentionActivity.this).create(InfermedicaApi.class);
-            Call<Mention> call = infermedicaApi.getMention(parse);
-            call.enqueue(new Callback<Mention>() {
-
-                @Override
-                public void onResponse(@NonNull Call<Mention> call, @NonNull Response<Mention> response) {
-                    showRecyclerView();
-                    setMentionAdpater(response.body());
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<Mention> call, @NonNull Throwable t) {
-                    Log.e("MentionActivity","" +  t);
-
-                }
-            });
+            callInfermedica(parse);
+        }
 
             new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
                 @Override
@@ -106,9 +99,49 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
                 }
             }).attachToRecyclerView(recyclerView);
 
-        }
+
 
         notADoctorDB = AppDatabase.getInstance(getApplicationContext());
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Mention mention = new Mention(mentionsList,null, false);
+        outState.putParcelable(SAVE_MENTION,mention);
+        outState.putParcelable(SymptomActivity.EXTRA_USER, currentUser);
+    }
+
+    private void callInfermedica(Parse parse){
+        CheckNetwork checkNetwork = new CheckNetwork();
+        if(checkNetwork.isNetworkConnected(this)){
+            InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance(MentionActivity.this).create(InfermedicaApi.class);
+            Call<Mention> call = infermedicaApi.getMention(parse);
+            call.enqueue(new Callback<Mention>() {
+
+                @Override
+                public void onResponse(@NonNull Call<Mention> call, @NonNull Response<Mention> response) {
+                    if(response.body()!=null){
+                        showRecyclerView();
+                        mentionsList = response.body().getMentions();
+                        setMentionAdpater();
+                    }else{
+                        Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<Mention> call, @NonNull Throwable t) {
+                    Log.e("MentionActivity","" +  t);
+                    Toast.makeText(getApplicationContext(), R.string.error_no_mentions, Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            });
+        }else{
+            Toast.makeText(getApplicationContext(), R.string.error_no_network, Toast.LENGTH_LONG).show();
+            finish();
+        }
 
     }
 
@@ -159,9 +192,6 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
                 startDiagnose.putExtra(DiagnoseActivity.EXTRA_USER, currentUser);
                 startDiagnose.putExtra(DiagnoseActivity.EXTRA_DIAGNOSE, currentDiagnose);
                 startActivity(startDiagnose, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
-
-
-
             }
         });
 
@@ -180,9 +210,8 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
         progressBar.setVisibility(View.GONE);
     }
 
-    private void setMentionAdpater(Mention mention){
-        mentionsList = mention.getMentions();
-        if(mention.getMentions().size() == 0){
+    private void setMentionAdpater(){
+        if((mentionsList == null) || (mentionsList.size() == 0)){
             Toast.makeText(getApplicationContext(), R.string.error_no_mentions, Toast.LENGTH_LONG).show();
             finish();
         }else{
@@ -191,7 +220,6 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
     }
 
     private void createDiagnose(){
-
 
         Evidence bmiOver30 = new Evidence("p_7", getChoiceIdString(currentUser.getBmiOver30()));
         Evidence bmiUnder19 = new Evidence("p_6", getChoiceIdString(currentUser.getBmiUnder19()));

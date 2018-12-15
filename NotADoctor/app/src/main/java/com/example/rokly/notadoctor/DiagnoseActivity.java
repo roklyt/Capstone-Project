@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rokly.notadoctor.Database.AppDatabase;
 import com.example.rokly.notadoctor.Database.ConditionEntry;
@@ -26,6 +27,7 @@ import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Diagnose;
 import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
+import com.example.rokly.notadoctor.helper.CheckNetwork;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -40,6 +42,7 @@ import static com.example.rokly.notadoctor.helper.ChoiceId.getChoiceIdInt;
 public class DiagnoseActivity extends AppCompatActivity implements QuestionFragment.OnFragmentInteractionListener {
     public static final String EXTRA_DIAGNOSE = "extraDiagnose";
     public static final String EXTRA_USER = "extraUser";
+    private static final String EXTRA_DIAGNOSE_RESP = "extraDiagnoseResp";
     private DiagnoseReq currentDiagnose;
     private UserEntry currentUser;
     private Diagnose diagnose;
@@ -61,34 +64,21 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
         progressBar = findViewById(R.id.pb_question);
         progressPercentageTextView = findViewById(R.id.tv_progress_percentage);
 
+        Intent intent = getIntent();
+
         if (savedInstanceState != null) {
             //Restore the fragment's instance
             questionFragment = (QuestionFragment) getSupportFragmentManager().getFragment(savedInstanceState, "myFragmentName");
-        }
+            currentUser = savedInstanceState.getParcelable(EXTRA_USER);
+            currentDiagnose = savedInstanceState.getParcelable(EXTRA_DIAGNOSE);
+            diagnose = savedInstanceState.getParcelable(EXTRA_DIAGNOSE_RESP);
 
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra(EXTRA_DIAGNOSE)) {
+            showDiagnose();
+        }else if(intent != null && intent.hasExtra(EXTRA_DIAGNOSE)) {
             currentUser = intent.getParcelableExtra(EXTRA_USER);
             currentDiagnose = intent.getParcelableExtra(EXTRA_DIAGNOSE);
             callInfermedica();
         }
-
-    }
-
-    public void animateTextView(int initialValue, int finalValue, final TextView textview) {
-
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(initialValue, finalValue);
-        valueAnimator.setDuration(500);
-
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-
-                textview.setText(valueAnimator.getAnimatedValue().toString() + "%");
-
-            }
-        });
-        valueAnimator.start();
     }
 
     @Override
@@ -97,16 +87,24 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
         if(getSupportFragmentManager() != null){
             getSupportFragmentManager().putFragment(outState, "myFragmentName", questionFragment);
         }
+        outState.putParcelable(EXTRA_DIAGNOSE, currentDiagnose);
+        outState.putParcelable(EXTRA_USER, currentUser);
+        outState.putParcelable(EXTRA_DIAGNOSE_RESP, diagnose);
     }
 
     @Override
     public void onFragmentInteraction(List<Evidence> evidences) {
-        for(Evidence evidence:evidences){
-            currentDiagnose.getEvidence().add(evidence);
-        }
+        CheckNetwork checkNetwork = new CheckNetwork();
+        if(checkNetwork.isNetworkConnected(activity)){
+            for(Evidence evidence:evidences){
+                currentDiagnose.getEvidence().add(evidence);
+            }
 
-        writeEvidenceIntoDatabse(evidences);
-        callInfermedica();
+            writeEvidenceIntoDatabse(evidences);
+            callInfermedica();
+        }else{
+            Toast.makeText(getApplicationContext(), R.string.error_no_network, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void callInfermedica(){
@@ -117,37 +115,43 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
 
                 @Override
                 public void onResponse(@NonNull Call<Diagnose> call, @NonNull Response<Diagnose> response) {
-                    progressBar.setVisibility(View.GONE);
-                    diagnose = response.body();
-
-                    Double myDouble = diagnose.getConditions().get(0).getProbability() * 100;
-                    int percentage = myDouble.intValue();
-                    animateTextView(initialValue, percentage, progressPercentageTextView);
-                    initialValue = percentage;
-
-                    if(counter < maxCounter && !isMinimumPercentage()){
-                        if(counter == 0){
-                            addFragment();
-                        }else{
-                            replaceFragment();
-                        }
+                    if(response.body() != null){
+                        diagnose = response.body();
+                        showDiagnose();
                         counter++;
-                    }else{
-                        writeFinalConditionsIntoDb(diagnose.getConditions());
-                        Intent conditionActivity = new Intent(DiagnoseActivity.this, ConditionActivity.class);
-                        conditionActivity.putExtra(EXTRA_CONDITIONS, diagnose);
-                        conditionActivity.putExtra(EXTRA_USER, currentUser);
-                        startActivity(conditionActivity, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
+                    } else{
+                    Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<Diagnose> call, @NonNull Throwable t) {
                     Log.e("DiagnoseActivity","Counter : " + counter + ":" +  t);
-
+                    Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
                 }
             });
+    }
 
+    private void showDiagnose(){
+        progressBar.setVisibility(View.GONE);
+        Double myDouble = diagnose.getConditions().get(0).getProbability() * 100;
+        int percentage = myDouble.intValue();
+        animateTextView(initialValue, percentage, progressPercentageTextView);
+        initialValue = percentage;
+
+        if(counter < maxCounter && !isMinimumPercentage()){
+            if(counter == 0){
+                addFragment();
+            }else{
+                replaceFragment();
+            }
+        }else{
+            writeFinalConditionsIntoDb(diagnose.getConditions());
+            Intent conditionActivity = new Intent(DiagnoseActivity.this, ConditionActivity.class);
+            conditionActivity.putExtra(EXTRA_CONDITIONS, diagnose);
+            conditionActivity.putExtra(EXTRA_USER, currentUser);
+            startActivity(conditionActivity, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
+        }
     }
 
     private void replaceFragment(){
@@ -222,4 +226,20 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
                 }
             });
         }
+
+    public void animateTextView(int initialValue, int finalValue, final TextView textview) {
+
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(initialValue, finalValue);
+        valueAnimator.setDuration(500);
+
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+
+                textview.setText(valueAnimator.getAnimatedValue().toString() + "%");
+
+            }
+        });
+        valueAnimator.start();
+    }
 }

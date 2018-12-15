@@ -43,7 +43,7 @@ public class DoctorAppWidget extends AppWidgetProvider {
 
         // Set the RecipeDetailActivity intent to launch when clicked
         Intent appIntent;
-            appIntent = new Intent(context, WelcomeActivity.class);
+            appIntent = new Intent(context, FindADoctor.class);
             appIntent.putExtra(FindADoctor.EXTRA_IS_WIDGET, true);
             appIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             appIntent.putExtra(ListWidgetService.EXTRA_DIAGNOSE, i);

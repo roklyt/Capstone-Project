@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +24,7 @@ public class SymptomActivity extends AppCompatActivity {
 
     private TextView askForSymptomeTextView;
     private EditText enterSymptomeEditText;
-    private Button submitSymptomeButton;
+    private ImageButton submitSymptomeButton;
     private UserEntry currentUser;
     private Activity activity;
 
@@ -35,6 +36,9 @@ public class SymptomActivity extends AppCompatActivity {
         activity = this;
         findViews();
 
+        submitSymptomeButton.animate().setStartDelay(1500);
+        submitSymptomeButton.animate().setDuration(500);
+        submitSymptomeButton.animate().alpha(1);
 
         final Resources res = getResources();
 

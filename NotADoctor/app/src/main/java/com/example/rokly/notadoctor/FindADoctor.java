@@ -34,6 +34,9 @@ import com.example.rokly.notadoctor.Model.Places.Places;
 import com.example.rokly.notadoctor.Model.Places.Result;
 import com.example.rokly.notadoctor.Retrofit.PlacesApi;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientPlaces;
+import com.example.rokly.notadoctor.helper.CheckNetwork;
+import com.example.rokly.notadoctor.helper.ConvertDocEntryIntoResult;
+import com.example.rokly.notadoctor.helper.LocationHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -52,7 +55,7 @@ import retrofit2.Response;
 import static com.example.rokly.notadoctor.ConditionActivity.getCategories;
 import static com.example.rokly.notadoctor.helper.ChoiceId.getChoiceIdInt;
 
-public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback, LocationListener, PlacesAdapter.ItemClickListener{
+public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback, LocationHelper.OnLocationListener, PlacesAdapter.ItemClickListener{
 
     public final static String EXTRA_CONDITION_DETAIL = "conditionDetail";
     public final static String EXTRA_IS_WIDGET = "isWidget";
@@ -63,6 +66,7 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
     private PlacesAdapter userAdapter;
     private GoogleMap map;
     private RecyclerView userRecyclerView;
+    private LocationHelper locationHelper;
     private ConditionDetail conditionDetail;
     private LocationManager locationManager;
     private Location currentLocation;
@@ -104,16 +108,20 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
             Intent intent = getIntent();
 
 
-            if(!intent.hasExtra(EXTRA_IS_WIDGET)){
+            if(intent.hasExtra(EXTRA_IS_WIDGET)){
                 counter = intent.getIntExtra(ListWidgetService.EXTRA_DIAGNOSE, 1);
-                if(intent.hasExtra(EXTRA_CONDITION_DETAIL)) {
-                    conditionDetail = intent.getParcelableExtra(EXTRA_CONDITION_DETAIL);
-                    currentUser = intent.getParcelableExtra(DiagnoseActivity.EXTRA_USER);
-                }
+                isWidget = intent.getBooleanExtra(EXTRA_IS_WIDGET, true);
+                getDoctorsFromDatabse();
             }
 
+            if(intent.hasExtra(EXTRA_CONDITION_DETAIL)) {
+                conditionDetail = intent.getParcelableExtra(EXTRA_CONDITION_DETAIL);
+                currentUser = intent.getParcelableExtra(DiagnoseActivity.EXTRA_USER);
+            }
+
+            locationHelper = new LocationHelper(this);
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            currentLocation = getLocation();
+            currentLocation = locationHelper.getLocation(this, locationManager);
         }
     }
 
@@ -125,59 +133,6 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
         outState.putParcelable(DiagnoseActivity.EXTRA_USER, currentUser);
     }
 
-    public Location getLocation() {
-        Location location = null;
-
-
-        try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                ActivityCompat.requestPermissions(FindADoctor.this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        1);
-
-                return location;
-            }
-
-            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-            // getting GPS status
-            boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-            // getting network status
-            boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                // no network provider is enabled
-            } else {
-                // First get location from Network Provider
-                if (isNetworkEnabled) {
-                    locationManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER,  LOCATION_REFRESH_TIME,  10, this);
-                    Log.d("Network", "Network");
-                    if (locationManager != null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-                    }
-                }
-                //get the location by gps
-                if (isGPSEnabled) {
-                    if (location == null) {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,LOCATION_REFRESH_TIME,10, this);
-                        Log.d("GPS Enabled", "GPS Enabled");
-                        if (locationManager != null) {location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                        }
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return location;
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -185,90 +140,86 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
             case 1: {
 
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    currentLocation = getLocation();
+                    locationHelper.getLocation(this, locationManager);
                 } else {
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Toast.makeText(FindADoctor.this, getResources().getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getResources().getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
                 }
             }
-
         }
     }
-
 
     private void callPlaces(){
-        String categories = getCategories(conditionDetail);
+        CheckNetwork checkNetwork = new CheckNetwork();
+        if(checkNetwork.isNetworkConnected(this)){
+            String categories = getCategories(conditionDetail);
 
-        if(categories.contains("Other")){
-            categories = "family doctor";
-        }
-
-        String queryText = categories;
-        String location = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
-
-        PlacesApi placesApi = RetrofitClientPlaces.getRetrofitInstance().create(PlacesApi.class);
-        Call<Places> call = placesApi.getPlaces(queryText,getResources().getString(R.string.google_places_type), location, LOCATION_RADIUS, getResources().getString(R.string.google_maps_key));
-        call.enqueue(new Callback<Places>() {
-
-            @Override
-            public void onResponse(@NonNull Call<Places> call, @NonNull Response<Places> response) {
-                if(response.body() != null){
-                    setMapsMarker(response.body());
-                    setPlacesDetail(response.body());
-                }
+            if(categories.contains("Other")){
+                categories = "family doctor";
             }
 
-            @Override
-            public void onFailure(@NonNull Call<Places> call, @NonNull Throwable t) {
-                Log.e("DoctorActivity","Counter :" +  t);
+            String queryText = categories;
+            String location = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
 
-            }
-        });
-
-    }
-
-    private void setPlacesDetail(final Places places){
-
-        for(int i = 0; i < places.getResults().size(); i++){
             PlacesApi placesApi = RetrofitClientPlaces.getRetrofitInstance().create(PlacesApi.class);
-            Call<PlaceDetail> call = placesApi.getPlaceDetail(places.getResults().get(i).getPlaceId(), getResources().getString(R.string.place_search_critera), getResources().getString(R.string.google_maps_key));
-            final int x = i;
-            call.enqueue(new Callback<PlaceDetail>() {
+            Call<Places> call = placesApi.getPlaces(queryText,getResources().getString(R.string.google_places_type), location, LOCATION_RADIUS, getResources().getString(R.string.google_maps_key));
+            call.enqueue(new Callback<Places>() {
+
                 @Override
-                public void onResponse(@NonNull Call<PlaceDetail> call, @NonNull Response<PlaceDetail> response) {
+                public void onResponse(@NonNull Call<Places> call, @NonNull Response<Places> response) {
                     if(response.body() != null){
-                        places.getResults().get(x).setDetailResult(response.body().getResult());
-                        if(x  == places.getResults().size() - 1){
-                            userAdapter.setPlacesData(places.getResults());
-                            progressBar.setVisibility(View.GONE);
-                            allPlaces = places;
-                            writeDoctorsToDB();
-                        }
+                        setMapsMarker(response.body());
+                        setUserMarker();
+                        setPlacesDetail(response.body());
+                    }else{
+                        Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<PlaceDetail> call, @NonNull Throwable t) {
-                    Log.e("ConditionActivity","" +  t);
-
+                public void onFailure(@NonNull Call<Places> call, @NonNull Throwable t) {
+                    Log.e("DoctorActivity","Counter :" +  t);
+                    Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
                 }
             });
+        } else{
+            Toast.makeText(getApplicationContext(), R.string.error_no_network, Toast.LENGTH_LONG).show();
         }
-
     }
 
-    private void setMapsMarker(Places places){
-            List<Result> results = places.getResults();
+    private void setPlacesDetail(final Places places){
+        CheckNetwork checkNetwork = new CheckNetwork();
+        if(checkNetwork.isNetworkConnected(this)){
+            for(int i = 0; i < places.getResults().size(); i++){
+                PlacesApi placesApi = RetrofitClientPlaces.getRetrofitInstance().create(PlacesApi.class);
+                Call<PlaceDetail> call = placesApi.getPlaceDetail(places.getResults().get(i).getPlaceId(), getResources().getString(R.string.place_search_critera), getResources().getString(R.string.google_maps_key));
+                final int x = i;
+                call.enqueue(new Callback<PlaceDetail>() {
+                    @Override
+                    public void onResponse(@NonNull Call<PlaceDetail> call, @NonNull Response<PlaceDetail> response) {
+                        if(response.body() != null){
+                            places.getResults().get(x).setDetailResult(response.body().getResult());
+                            if(x  == places.getResults().size() - 1){
+                                userAdapter.setPlacesData(places.getResults());
+                                progressBar.setVisibility(View.GONE);
+                                allPlaces = places;
+                                writeDoctorsToDB();
+                            }else{
+                                Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
 
-            for(Result result:results){
-                LatLng latLng = new LatLng(result.getGeometry().getLocation().getLat(), result.getGeometry().getLocation().getLng());
-                String markerTitle = result.getName();
-
-                map.addMarker(new MarkerOptions().position(latLng)
-                        .title(markerTitle));
+                    @Override
+                    public void onFailure(@NonNull Call<PlaceDetail> call, @NonNull Throwable t) {
+                        Log.e("ConditionActivity","" +  t);
+                        Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
+        }else{
+            Toast.makeText(getApplicationContext(), R.string.error_no_network, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void getDoctorsFromDatabse(){
@@ -276,47 +227,22 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
         AppExecutor.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                List<Result> result = new ArrayList<>();
                 List<DoctorEntry> doctorEntrys = NotADoctor.databaseDao().loadDoctorsByDiagnoseId(counter);
-                for(DoctorEntry doctorEntry:doctorEntrys){
-                    DetailResult detailResult = new DetailResult();
-                    detailResult.setFormattedPhoneNumber(doctorEntry.getDoctorPhoneNumber());
+                ConvertDocEntryIntoResult convertDocEntryIntoResult = new ConvertDocEntryIntoResult();
 
+                allPlaces = new Places();
+                allPlaces.setResults(convertDocEntryIntoResult.convertDocEntryIntoResult(doctorEntrys));
 
-                    com.example.rokly.notadoctor.Model.Places.Location location = new com.example.rokly.notadoctor.Model.Places.Location();
-                    location.setLng(doctorEntry.getLng());
-                    location.setLat(doctorEntry.getLat());
-
-                    Geometry geometry = new Geometry();
-                    geometry.setLocation(location);
-
-                    Result doctor = new Result();
-                    doctor.setDetailResult(detailResult);
-                    doctor.setGeometry(geometry);
-                    doctor.setFormattedAddress(doctorEntry.getDoctorAddress());
-                    doctor.setName(doctorEntry.getDoctorName());
-                    doctor.setPlaceId(doctorEntry.getPlaceId());
-                    result.add(doctor);
-                }
-
-                Places allPlaces = new Places();
-                allPlaces.setResults(result);
-
-                setMapsMarker(allPlaces);
-                userAdapter.setPlacesData(result);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        userAdapter.setPlacesData(allPlaces.getResults());
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+                });
 
             }
         });
-    }
-
-    private void setUserMarker(){
-
-        map.addMarker(new MarkerOptions().position(getCurrentLatLng())
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                .title(getResources().getString(R.string.marker_your_position)));
-
-
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(getCurrentLatLng(), getResources().getInteger(R.integer.zoom_level)), getResources().getInteger(R.integer.zoom_level), null);
     }
 
     private void writeDoctorsToDB(){
@@ -328,7 +254,7 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
                 for(Result currentDoctor:allPlaces.getResults()){
                     String formattedPhoneNumber = "";
-                    if(currentDoctor.getDetailResult().getFormattedPhoneNumber() != null){
+                    if(currentDoctor.getDetailResult() != null){
                         formattedPhoneNumber = currentDoctor.getDetailResult().getFormattedPhoneNumber();
                     }
 
@@ -347,10 +273,6 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-    private LatLng getCurrentLatLng(){
-        return new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-    }
-
     @Override
     public void onItemClickListener(Result currentResult) {
 
@@ -362,38 +284,47 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
         startActivity(intent);
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        currentLocation = location;
-        setUserMarker();
-        if(!isWidget){
-            callPlaces();
-        }else{
-
-        }
-
-        locationManager.removeUpdates(this);
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        if(onSavedInstanceState){
+        if(onSavedInstanceState && !isWidget){
+            setUserMarker();
+            setMapsMarker(allPlaces);
+        }
+    }
+
+    private void setMapsMarker(Places places){
+        List<Result> results = places.getResults();
+
+        for(Result result:results){
+            LatLng latLng = new LatLng(result.getGeometry().getLocation().getLat(), result.getGeometry().getLocation().getLng());
+            String markerTitle = result.getName();
+
+            map.addMarker(new MarkerOptions().position(latLng)
+                    .title(markerTitle));
+        }
+    }
+
+    private void setUserMarker(){
+
+        map.addMarker(new MarkerOptions().position(getCurrentLatLng())
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                .title(getResources().getString(R.string.marker_your_position)));
+
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(getCurrentLatLng(), getResources().getInteger(R.integer.zoom_level)), getResources().getInteger(R.integer.zoom_level), null);
+    }
+
+    private LatLng getCurrentLatLng(){
+        return new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+        currentLocation = location;
+        if(!isWidget){
+            callPlaces();
+        }else{
             setUserMarker();
             setMapsMarker(allPlaces);
         }

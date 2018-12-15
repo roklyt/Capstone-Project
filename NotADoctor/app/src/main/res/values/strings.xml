@@ -16,7 +16,7 @@
     <string name="button_proceed_question">Proceed</string>
     <string name="button_pass_question">Pass</string>
     <string name="button_find_a_docotor">Find A Doctor</string>
-
+    <string name="up_side_view">Expand condition</string>
 
     <string name="radio_button_hypertension">Hypertension</string>
     <string name="radio_button_smoking">Smoking</string>
@@ -29,6 +29,8 @@
     <string name="delete_user_toast">%s was deleted?</string>
     <string name="error_no_user">Please choose a valid user</string>
     <string name="error_no_mentions">We could not find any mentions pleas try again.</string>
+    <string name="error_no_network">You are not connected to the Internet, please try again later.</string>
+    <string name="error_something">Ooops something went wrong, please try again</string>
     <string name="error_no_conditions">We could not find any conditions please try again.</string>
     <string name="error_some_entrys_missing">Some entry are missing.</string>
 

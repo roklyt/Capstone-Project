@@ -29,7 +29,6 @@ public interface DatabaseDao {
     LiveData<UserEntry> loadUserById(int id);
 
 
-
     @Insert
     void insertDiagnose(DiagnoseEntry diagnoseEntry);
 

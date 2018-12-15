@@ -12,14 +12,27 @@
 
     <TextView
         android:id="@+id/tv_list_result_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:paddingBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/upside_down_view"
+        app:layout_constraintEnd_toStartOf="@+id/upside_down_view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/upside_down_view" />
+
+    <ImageView
+        android:id="@+id/upside_down_view"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_down"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/up_side_view" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/result_detail_layout"
@@ -30,7 +43,7 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_list_result_name">
+        app:layout_constraintTop_toBottomOf="@+id/upside_down_view">
 
 
         <TextView
@@ -61,13 +74,13 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:contentDescription="@string/call_this_doctor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_result_phone_number"
-            app:srcCompat="@android:drawable/ic_menu_call"
-            android:contentDescription="@string/call_this_doctor" />
+            app:srcCompat="@android:drawable/ic_menu_call" />
 
 
     </android.support.constraint.ConstraintLayout>

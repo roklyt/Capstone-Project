@@ -1,6 +1,7 @@
 package com.example.rokly.notadoctor.Adapter;
 
 import android.content.Context;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.transition.TransitionManager;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
@@ -24,8 +26,13 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
     private RecyclerView recyclerView;
     /* List for all user*/
     private List<Condition> conditionList;
-    public ConditionsAdapter(ConditionsAdapter.ItemClickListener clickHandler) {
+    private AnimatedVectorDrawable downToUp;
+    private AnimatedVectorDrawable upToDown;
+    private Context context;
+
+    public ConditionsAdapter(ConditionsAdapter.ItemClickListener clickHandler, Context context) {
         this.clickHandler = clickHandler;
+        this.context = context;
     }
 
     @NonNull
@@ -45,6 +52,9 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
         /*Get the current user */
         final Condition condition = conditionList.get(position);
 
+        downToUp = (AnimatedVectorDrawable) context.getResources().getDrawable(R.drawable.avd_down_to_up);
+        upToDown = (AnimatedVectorDrawable) context.getResources().getDrawable(R.drawable.avd_up_to_down);
+
 
         forecastAdapterViewHolder.conditionNameTextView.setText(condition.getName());
         String percentage = new DecimalFormat("#.##").format(condition.getProbability() * 100);
@@ -56,6 +66,10 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
 
         final View view = forecastAdapterViewHolder.itemView;
         if (isExpanded){
+            AnimatedVectorDrawable drawable = downToUp;
+            forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
+            drawable.start();
+
             previousExpandedPosition = position;
             clickHandler.onResetScreen(view);
         }
@@ -69,6 +83,9 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
                     clickHandler.onItemExpandChecklist(view, condition, position);
                 }
 
+                AnimatedVectorDrawable drawable = upToDown;
+                forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
+                drawable.start();
                 expandedPosition = isExpanded ? -1:position;
 
                 TransitionManager.beginDelayedTransition(recyclerView);
@@ -122,6 +139,7 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
         TextView conditionProbabilityTextView;
         ConstraintLayout detailConstraintLayout;
         Button findADoctorButton;
+        ImageView upDownView;
 
         ConditionsAdapterViewHolder(View view) {
             super(view);
@@ -129,6 +147,7 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
             conditionProbabilityTextView = view.findViewById(R.id.tv_condition_probability);
             detailConstraintLayout = view.findViewById(R.id.conditions_detail_layout);
             findADoctorButton = view.findViewById(R.id.bt_find_a_doctor);
+            upDownView = view.findViewById(R.id.upside_down_view);
             view.setOnClickListener(this);
         }
 

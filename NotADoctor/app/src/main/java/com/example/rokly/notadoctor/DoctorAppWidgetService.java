@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.example.rokly.notadoctor.Database.DiagnoseEntry;
-import com.example.rokly.notadoctor.Model.Diagnose.Request.DiagnoseReq;
-import com.example.rokly.notadoctor.Model.Places.Places;
 
 public class DoctorAppWidgetService extends IntentService {
 

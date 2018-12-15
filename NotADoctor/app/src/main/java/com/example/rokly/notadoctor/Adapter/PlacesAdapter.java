@@ -2,11 +2,11 @@ package com.example.rokly.notadoctor.Adapter;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.transition.TransitionManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,23 +14,12 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
-import com.example.rokly.notadoctor.Model.PlaceDetail.PlaceDetail;
 import com.example.rokly.notadoctor.Model.Places.Result;
 import com.example.rokly.notadoctor.R;
-import com.example.rokly.notadoctor.Retrofit.PlacesApi;
-import com.example.rokly.notadoctor.Retrofit.RetrofitClientPlaces;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
-
-import butterknife.internal.Utils;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdapterViewHolder> {
     private static int expandedPosition = -1;
@@ -40,6 +29,8 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
     /* List for all user*/
     private List<Result> resultList;
     private Context context;
+    private AnimatedVectorDrawable downToUp;
+    private AnimatedVectorDrawable upToDown;
 
     public PlacesAdapter(PlacesAdapter.ItemClickListener clickHandler, Context context) {
         this.clickHandler = clickHandler;
@@ -63,6 +54,9 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         /*Get the current doctor */
         final Result result = resultList.get(position);
 
+        downToUp = (AnimatedVectorDrawable) context.getResources().getDrawable(R.drawable.avd_down_to_up);
+        upToDown = (AnimatedVectorDrawable) context.getResources().getDrawable(R.drawable.avd_up_to_down);
+
         forecastAdapterViewHolder.resultNameTextView.setText(result.getName());
 
         final boolean isExpanded = position==expandedPosition;
@@ -70,13 +64,23 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         forecastAdapterViewHolder.itemView.setActivated(isExpanded);
         forecastAdapterViewHolder.doctorAdressTextView.setText(result.getFormattedAddress());
         forecastAdapterViewHolder.doctorTelephoneTextView.setText(result.getDetailResult().getFormattedPhoneNumber());
-        runEnterAnimation(forecastAdapterViewHolder.itemView);
-        if (isExpanded)
+        //runEnterAnimation(forecastAdapterViewHolder.itemView);
+
+        if (isExpanded){
+            AnimatedVectorDrawable drawable = downToUp;
+            forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
+            drawable.start();
+
             previousExpandedPosition = position;
+        }
 
         forecastAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                AnimatedVectorDrawable drawable = upToDown;
+                forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
+                drawable.start();
+
                     expandedPosition = isExpanded ? -1:position;
                     TransitionManager.beginDelayedTransition(recyclerView);
                     notifyItemChanged(previousExpandedPosition);
@@ -142,6 +146,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         TextView doctorAdressTextView;
         TextView doctorTelephoneTextView;
         ImageButton callADoctor;
+        ImageView upDownView;
 
         PlacesAdapterViewHolder(View view) {
             super(view);
@@ -150,6 +155,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
             doctorAdressTextView = view.findViewById(R.id.tv_result_address);
             doctorTelephoneTextView = view.findViewById(R.id.tv_result_phone_number);
             callADoctor = view.findViewById(R.id.ib_call_doctor);
+            upDownView = view.findViewById(R.id.upside_down_view);
 
             view.setOnClickListener(this);
         }

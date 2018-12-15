@@ -70,19 +70,13 @@
 
 
     //TODO Navigation between the pages
-    //TODO delete all databse entrys from a deleted user.
-    //TODO error handling for http requests in search mention, diagnose, get conditions detail, get
-    places, get detail places.
-    //TODO check for internetconection
+    //TODO delete all databse entrys from a deleted user rework database querys.
     //TODO generell Material Desing text, aligment, appbar, Logo, elevation
-    //TODO Widget endpoint
-    //TODO add admob
     //TODO add Triage color
     //TODO Get rid of the yellow suggestions
     //TODO app is equeppied with a signing configuration
     //TODO Tablet layout
     //TODO Animations and style for buttons
-    //TODO Animations for side change
     //TODO content description navigation using d-pad
     //TODO animate map marker if doctor is clicked
     //TODO decrease the min level.

@@ -3,6 +3,7 @@ package com.example.rokly.notadoctor;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Diagnose;
 import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
+import com.example.rokly.notadoctor.helper.CheckNetwork;
 
 import java.util.List;
 
@@ -65,7 +67,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
 
     private void findViews(){
         recyclerView = findViewById(R.id.rv_conditions);
-        conditionsAdapter = new ConditionsAdapter(this);
+        conditionsAdapter = new ConditionsAdapter(this, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(conditionsAdapter);
         setConditionsAdpater(diagnose);
@@ -97,24 +99,32 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
 
     @Override
     public void onItemExpandChecklist(final View view, Condition condition, final int position) {
-        InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance(ConditionActivity.this).create(InfermedicaApi.class);
-        currentItemPosition = position;
-        Call<ConditionDetail> call = infermedicaApi.getConditionById(condition.getId());
-        call.enqueue(new Callback<ConditionDetail>() {
+        CheckNetwork checkNetwork = new CheckNetwork();
+        if(checkNetwork.isNetworkConnected(activity)){
+            InfermedicaApi infermedicaApi = RetrofitClientInstance.getRetrofitInstance(ConditionActivity.this).create(InfermedicaApi.class);
+            currentItemPosition = position;
+            Call<ConditionDetail> call = infermedicaApi.getConditionById(condition.getId());
+            call.enqueue(new Callback<ConditionDetail>() {
 
-            @Override
-            public void onResponse(@NonNull Call<ConditionDetail> call, @NonNull Response<ConditionDetail> response) {
-                //TODO check for bad response
-                conditionDetail = response.body();
-                setDetailText(view, response.body());
-            }
+                @Override
+                public void onResponse(@NonNull Call<ConditionDetail> call, @NonNull Response<ConditionDetail> response) {
+                    if(response.body() != null){
+                        conditionDetail = response.body();
+                        setDetailText(view, response.body());
+                    }else{
+                        Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
+                    }
+                }
 
-            @Override
-            public void onFailure(@NonNull Call<ConditionDetail> call, @NonNull Throwable t) {
-                Log.e("ConditionActivity","" +  t);
-
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<ConditionDetail> call, @NonNull Throwable t) {
+                    Log.e("ConditionActivity","" +  t);
+                    Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
+                }
+            });
+        }else{
+            Toast.makeText(getApplicationContext(), R.string.error_no_network, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -131,6 +141,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
     }
 
     private void setDetailText(View view, ConditionDetail conditionDetail){
+
         if(conditionDetail != null){
 
             TextView conditionDetailsNameTextView = view.findViewById(R.id.tv_name_value);
