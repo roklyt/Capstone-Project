@@ -6,21 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".CreateEditActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tool_bar_height"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/et_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:maxLength="@integer/max_lenght_create_name_edit_text"
-        android:inputType="textPersonName"
         android:hint="@string/hint_create_edit_name"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        android:maxLength="@integer/max_lenght_create_name_edit_text"
         android:transitionName="@string/transition_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
 
     <Spinner
         android:id="@+id/sp_sex"
@@ -40,7 +52,8 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/hint_create_edit_age"
-        android:inputType="numberDecimal"
+        android:importantForAutofill="no"
+        android:inputType="numberSigned"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sp_sex" />
@@ -54,10 +67,11 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/hint_create_edit_height"
-        android:inputType="numberDecimal"
+        android:importantForAutofill="no"
+        android:inputType="numberSigned"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_age"/>
+        app:layout_constraintTop_toBottomOf="@+id/et_age" />
 
 
     <EditText
@@ -69,7 +83,8 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/hint_create_edit_weight"
-        android:inputType="numberDecimal"
+        android:importantForAutofill="no"
+        android:inputType="numberSigned"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_height" />
@@ -90,10 +105,10 @@
 
         <TextView
             android:layout_width="110dp"
+            android:layout_height="wrap_content"
             android:paddingStart="16dp"
             android:paddingEnd="8dp"
-            android:layout_height="wrap_content"
-            android:text="@string/radio_button_hypertension"/>
+            android:text="@string/radio_button_hypertension" />
 
         <RadioButton
             android:id="@+id/rb_1"
@@ -128,10 +143,10 @@
 
         <TextView
             android:layout_width="110dp"
+            android:layout_height="wrap_content"
             android:paddingStart="16dp"
             android:paddingEnd="8dp"
-            android:layout_height="wrap_content"
-            android:text="@string/radio_button_smoking"/>
+            android:text="@string/radio_button_smoking" />
 
         <RadioButton
             android:id="@id/rb_1"
@@ -150,28 +165,33 @@
 
     </RadioGroup>
 
-    <Button
+    <ImageButton
         android:id="@+id/bt_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/button_save"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="@string/button_save"
+        android:src="@drawable/baseline_save_black_48"
+        android:theme="@style/button_style"
+        android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/rg_smoking"
+        app:layout_constraintEnd_toEndOf="@+id/et_weight"
         app:layout_constraintTop_toBottomOf="@+id/rg_smoking" />
 
-    <Button
+    <ImageButton
         android:id="@+id/bt_abort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/button_abort"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="@string/button_abort"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/baseline_cancel_black_48"
+        android:theme="@style/button_style"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/rg_smoking"
+        app:layout_constraintStart_toStartOf="@+id/et_weight"
         app:layout_constraintTop_toBottomOf="@+id/rg_smoking" />
-
 
 </android.support.constraint.ConstraintLayout>

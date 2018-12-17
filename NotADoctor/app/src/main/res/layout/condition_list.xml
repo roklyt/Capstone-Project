@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    android:elevation="4dp"
     android:background="@drawable/recycler_border"
+    android:elevation="4dp"
     tools:layout_editor_absoluteY="81dp">
 
 
@@ -35,11 +35,11 @@
         android:layout_height="42dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:contentDescription="@string/up_side_view"
         android:scaleType="fitXY"
         android:src="@drawable/ic_down"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/up_side_view" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/conditions_detail_layout"
@@ -169,7 +169,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_severity_label" />
 
-        <Button
+        <ImageButton
             android:id="@+id/bt_find_a_doctor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -177,7 +177,10 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/button_find_a_docotor"
+            android:theme="@style/button_style"
+            android:contentDescription="@string/button_find_a_docotor"
+            android:src="@drawable/baseline_search_black_48"
+            android:background="?attr/selectableItemBackgroundBorderless"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

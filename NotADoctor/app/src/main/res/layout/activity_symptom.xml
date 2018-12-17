@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".SymptomActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tool_bar_height"
+        android:elevation="4dp"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/et_enter_symptome"
         android:layout_width="0dp"
@@ -19,7 +31,7 @@
         android:importantForAutofill="no"
         android:inputType="textMultiLine"
         android:background="@drawable/symptome_edit_back"
-        android:paddingLeft="8dp"
+        android:paddingStart="8dp"
         android:maxLength="@integer/max_lenght_symptome_edit_text"
         app:layout_constraintBottom_toTopOf="@+id/bt_submit"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,27 +44,29 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:theme="@style/text_style"
         android:transitionName="@string/transition_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
 
     <ImageButton
         android:id="@+id/bt_submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:theme="@style/button_style"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:alpha="0"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_enter_symptome"
-        app:srcCompat="@android:drawable/ic_media_play" />
+        app:srcCompat="@drawable/baseline_play_circle_outline_black_48"
+        android:contentDescription="@string/button_proceed_question" />
 
 </android.support.constraint.ConstraintLayout>

@@ -8,15 +8,16 @@ import android.os.PersistableBundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.rokly.notadoctor.Database.AppDatabase;
 import com.example.rokly.notadoctor.Database.UserEntry;
+import com.example.rokly.notadoctor.helper.ButtonAnimator;
+import com.example.rokly.notadoctor.helper.ToolBarHelper;
 
 public class SymptomActivity extends AppCompatActivity {
     public static final String EXTRA_USER = "currentUser";
@@ -33,12 +34,13 @@ public class SymptomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptom);
+
+        setToolBarNavigation();
+
         activity = this;
         findViews();
 
-        submitSymptomeButton.animate().setStartDelay(1500);
-        submitSymptomeButton.animate().setDuration(500);
-        submitSymptomeButton.animate().alpha(1);
+        ButtonAnimator.imageButtonAnimator(submitSymptomeButton);
 
         final Resources res = getResources();
 
@@ -89,5 +91,23 @@ public class SymptomActivity extends AppCompatActivity {
         askForSymptomeTextView = findViewById(R.id.tv_ask_for_symptome);
         enterSymptomeEditText = findViewById(R.id.et_enter_symptome);
         submitSymptomeButton = findViewById(R.id.bt_submit);
+    }
+
+    private void setToolBarNavigation(){
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar.setLogo(R.drawable.not_a_docotor_icon);
+        setSupportActionBar(myToolbar);
+
+        View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
+        if (logoView != null) {
+            logoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SymptomActivity.this, WelcomeActivity.class);
+                    startActivity(intent);
+                    supportFinishAfterTransition();
+                }
+            });
+        }
     }
 }

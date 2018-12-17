@@ -17,6 +17,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:padding="8dp"
             android:theme="@style/text_style"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,22 +55,26 @@
                 android:id="@+id/rb_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </RadioGroup>
 
 
-        <Button
+        <ImageButton
             android:id="@+id/bt_procced"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/button_proceed_question"
+            android:layout_marginBottom="24dp"
+            android:contentDescription="@string/button_proceed_question"
+            android:src="@drawable/baseline_play_circle_outline_black_48"
+            android:theme="@style/button_style"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rg_question" />
 
     </android.support.constraint.ConstraintLayout>
 

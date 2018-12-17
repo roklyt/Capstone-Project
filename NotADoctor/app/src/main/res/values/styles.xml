@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- specify enter and exit transitions -->
         <item name="android:windowEnterTransition">@transition/enter</item>
         <item name="android:windowExitTransition">@transition/exit</item>
@@ -21,13 +21,25 @@
 
     <style name="SlideTheme" parent="AppTheme">
         <!-- specify enter and exit transitions -->
+        <item name="actionBarTheme">@style/AppBarTheme</item>
         <item name="android:windowEnterTransition">@transition/enter_slide</item>
         <item name="android:windowExitTransition">@transition/exit_slide</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
     </style>
 
     <style name="text_style">
          <item name="android:textStyle">bold</item>
          <item name="android:textColor">@color/question_text</item>
          <item name="android:textSize">@dimen/text_question_size</item>
+    </style>
+
+    <style name="button_style">
+        <item name="android:tint">@color/colorPrimary</item>
+        <item name="android:backgroundTint">@color/default_background</item>
+        <item name="android:alpha">0</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
 </resources>

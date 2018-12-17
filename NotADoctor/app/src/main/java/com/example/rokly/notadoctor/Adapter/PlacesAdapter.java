@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.rokly.notadoctor.Model.Places.Result;
 import com.example.rokly.notadoctor.R;
+import com.example.rokly.notadoctor.helper.ButtonAnimator;
 
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         forecastAdapterViewHolder.itemView.setActivated(isExpanded);
         forecastAdapterViewHolder.doctorAdressTextView.setText(result.getFormattedAddress());
         forecastAdapterViewHolder.doctorTelephoneTextView.setText(result.getDetailResult().getFormattedPhoneNumber());
-        //runEnterAnimation(forecastAdapterViewHolder.itemView);
+        ButtonAnimator.imageButtonAnimator(forecastAdapterViewHolder.callADoctor);
 
         if (isExpanded){
             AnimatedVectorDrawable drawable = downToUp;
@@ -95,22 +96,6 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
             }
         });
     }
-
-    private void runEnterAnimation(View view) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int height = size.y;
-
-        view.setTranslationY(height);
-        view.animate()
-                .translationY(0)
-                .setInterpolator(new DecelerateInterpolator(3.f))
-                .setDuration(700)
-                .start();
-    }
-
 
     @Override
     public int getItemCount() {

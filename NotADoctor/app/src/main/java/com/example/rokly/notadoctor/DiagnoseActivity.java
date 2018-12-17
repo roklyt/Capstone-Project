@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.transition.Slide;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -28,8 +29,8 @@ import com.example.rokly.notadoctor.Model.Diagnose.Response.Diagnose;
 import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
 import com.example.rokly.notadoctor.helper.CheckNetwork;
+import com.example.rokly.notadoctor.helper.ToolBarHelper;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import retrofit2.Call;
@@ -60,6 +61,9 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagnose);
+
+        setToolBarNavigation();
+
         activity = this;
         progressBar = findViewById(R.id.pb_question);
         progressPercentageTextView = findViewById(R.id.tv_progress_percentage);
@@ -241,5 +245,23 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
             }
         });
         valueAnimator.start();
+    }
+
+    private void setToolBarNavigation(){
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar.setLogo(R.drawable.not_a_docotor_icon);
+        setSupportActionBar(myToolbar);
+
+        View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
+        if (logoView != null) {
+            logoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DiagnoseActivity.this, WelcomeActivity.class);
+                    startActivity(intent);
+                    supportFinishAfterTransition();
+                }
+            });
+        }
     }
 }

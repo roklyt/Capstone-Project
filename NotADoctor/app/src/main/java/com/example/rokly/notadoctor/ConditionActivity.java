@@ -3,14 +3,15 @@ package com.example.rokly.notadoctor;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +22,9 @@ import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Diagnose;
 import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
+import com.example.rokly.notadoctor.helper.ButtonAnimator;
 import com.example.rokly.notadoctor.helper.CheckNetwork;
+import com.example.rokly.notadoctor.helper.ToolBarHelper;
 
 import java.util.List;
 
@@ -46,6 +49,9 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_condition);
+
+        setToolBarNavigation();
+
         activity = this;
         if(savedInstanceState != null){
             diagnose = savedInstanceState.getParcelable(EXTRA_CONDITIONS);
@@ -150,6 +156,9 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
             TextView conditionDetailsAcutenessTextView = view.findViewById(R.id.tv_acuteness_value);
             TextView conditionDetailsNameSeverityView = view.findViewById(R.id.tv_severity_value);
             TextView conditionDetailsHintTextView = view.findViewById(R.id.tv_hint);
+            ImageButton conditionDetailSearchButton = view.findViewById(R.id.bt_find_a_doctor);
+
+            ButtonAnimator.imageButtonAnimator(conditionDetailSearchButton);
 
             conditionDetailsNameTextView.setText(conditionDetail.getCommonName());
             conditionDetailsCategoriesTextView.setText(getCategories(conditionDetail));
@@ -171,5 +180,23 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
         }
 
         return categories;
+    }
+
+    private void setToolBarNavigation(){
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar.setLogo(R.drawable.not_a_docotor_icon);
+        setSupportActionBar(myToolbar);
+
+        View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
+        if (logoView != null) {
+            logoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ConditionActivity.this, WelcomeActivity.class);
+                    startActivity(intent);
+                    supportFinishAfterTransition();
+                }
+            });
+        }
     }
 }

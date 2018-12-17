@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
 import com.example.rokly.notadoctor.R;
+import com.example.rokly.notadoctor.helper.ButtonAnimator;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -138,7 +140,7 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
         TextView conditionNameTextView;
         TextView conditionProbabilityTextView;
         ConstraintLayout detailConstraintLayout;
-        Button findADoctorButton;
+        ImageButton findADoctorButton;
         ImageView upDownView;
 
         ConditionsAdapterViewHolder(View view) {

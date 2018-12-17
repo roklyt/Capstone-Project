@@ -15,7 +15,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:textStyle="bold"
-        android:textSize="24dp"
+        android:textSize="24sp"
         android:transitionName="@string/transition_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ib_delete_user"

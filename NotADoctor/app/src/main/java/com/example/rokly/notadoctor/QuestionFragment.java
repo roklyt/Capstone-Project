@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.rokly.notadoctor.Model.Diagnose.Request.Evidence;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Question;
+import com.example.rokly.notadoctor.helper.ButtonAnimator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +33,9 @@ public class QuestionFragment extends Fragment {
     private static final String QUESTION_KIND_GROUP_MULTIPLE = "group_multiple";
     private Question question;
     private TextView questionTextView;
-    private Button proceedButton;
+    private ImageButton proceedButton;
     private RadioGroup radioGroup;
-    private Button passButton;
+    private ImageButton passButton;
     private LinearLayout radioButtonLinearLayout;
 
     private OnFragmentInteractionListener mListener;
@@ -128,7 +130,7 @@ public class QuestionFragment extends Fragment {
                     break;
             }
 
-
+        ButtonAnimator.imageButtonAnimator(proceedButton);
 
 
         return rootView;
@@ -168,6 +170,7 @@ public class QuestionFragment extends Fragment {
             radioButton.setText(question.getItems().get(i).getName());
             radioGroup.addView(radioButton);
         }
+        ButtonAnimator.imageButtonAnimator(passButton);
     }
 
     private void findGroupMulitpleView(View rootView){
@@ -184,6 +187,7 @@ public class QuestionFragment extends Fragment {
             checkBox.setText(question.getItems().get(i).getName());
             radioButtonLinearLayout.addView(checkBox);
         }
+        ButtonAnimator.imageButtonAnimator(passButton);
     }
 
 

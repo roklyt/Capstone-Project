@@ -7,11 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -21,6 +22,8 @@ import com.example.rokly.notadoctor.Database.UserEntry;
 import com.example.rokly.notadoctor.Executor.AppExecutor;
 import com.example.rokly.notadoctor.ViewModel.CreateEditViewModel;
 import com.example.rokly.notadoctor.ViewModel.CreateEditViewModelFactory;
+import com.example.rokly.notadoctor.helper.ButtonAnimator;
+import com.example.rokly.notadoctor.helper.ToolBarHelper;
 
 import java.util.Locale;
 
@@ -28,7 +31,7 @@ import static com.example.rokly.notadoctor.helper.ChoiceId.CHOICEID_INT_ABSENT;
 import static com.example.rokly.notadoctor.helper.ChoiceId.CHOICEID_INT_PRESENT;
 
 
-public class CreateEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class CreateEditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     public static final String EXTRA_USER_ID = "userExtraId";
     public static final String INSTANCE_USER_ID = "userInstanceId";
     private static final String SEX_TYPE_M = "male";
@@ -36,7 +39,6 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     private static final String SEX_TYPE_D = "diverse";
     private static final int DEFAULT_USER_ID = -1;
     private int UserId = DEFAULT_USER_ID;
-
 
     private EditText nameEditField;
     private Spinner sexSpinner;
@@ -46,8 +48,7 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     private EditText heightEditField;
     private EditText weightEditField;
 
-    private Button abortButton;
-    private Button saveButton;
+    private ImageButton saveButton;
 
     private AppDatabase notADoctorDB;
 
@@ -57,6 +58,8 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_edit);
+
+        setToolBarNavigation();
 
         findViews();
 
@@ -68,7 +71,8 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(EXTRA_USER_ID)) {
-            saveButton.setText(R.string.button_update);
+            saveButton.setContentDescription(getResources().getString(R.string.button_update));
+            saveButton.setImageResource(R.drawable.baseline_update_black_48);
             if (UserId == DEFAULT_USER_ID) {
                 UserId = intent.getIntExtra(EXTRA_USER_ID, DEFAULT_USER_ID);
 
@@ -115,7 +119,7 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
         heightEditField = findViewById(R.id.et_height);
         weightEditField = findViewById(R.id.et_weight);
 
-        abortButton = findViewById(R.id.bt_abort);
+        ImageButton abortButton = findViewById(R.id.bt_abort);
         abortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,6 +134,9 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
                 saveButtonClicked();
             }
         });
+
+        ButtonAnimator.imageButtonAnimator(abortButton);
+        ButtonAnimator.imageButtonAnimator(saveButton);
     }
 
     private void saveButtonClicked(){
@@ -296,5 +303,23 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
         sex = "male";
+    }
+
+    private void setToolBarNavigation(){
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar.setLogo(R.drawable.not_a_docotor_icon);
+        setSupportActionBar(myToolbar);
+
+        View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
+        if (logoView != null) {
+            logoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(CreateEditActivity.this, WelcomeActivity.class);
+                    startActivity(intent);
+                    supportFinishAfterTransition();
+                }
+            });
+        }
     }
 }

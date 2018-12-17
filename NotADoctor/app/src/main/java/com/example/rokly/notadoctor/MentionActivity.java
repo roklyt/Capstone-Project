@@ -8,9 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import com.example.rokly.notadoctor.Adapter.MentionAdpater;
@@ -22,13 +23,14 @@ import com.example.rokly.notadoctor.Executor.AppExecutor;
 import com.example.rokly.notadoctor.Model.Diagnose.Request.DiagnoseReq;
 import com.example.rokly.notadoctor.Model.Diagnose.Request.Evidence;
 import com.example.rokly.notadoctor.Model.Diagnose.Request.Extras;
-import com.example.rokly.notadoctor.Model.Diagnose.Response.Diagnose;
 import com.example.rokly.notadoctor.Model.Parse.Response.Mention;
 import com.example.rokly.notadoctor.Model.Parse.Response.Mentions;
 import com.example.rokly.notadoctor.Model.Parse.Request.Parse;
 import com.example.rokly.notadoctor.Retrofit.InfermedicaApi;
 import com.example.rokly.notadoctor.Retrofit.RetrofitClientInstance;
+import com.example.rokly.notadoctor.helper.ButtonAnimator;
 import com.example.rokly.notadoctor.helper.CheckNetwork;
+import com.example.rokly.notadoctor.helper.ToolBarHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +51,8 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
     private RecyclerView recyclerView;
     ProgressBar progressBar;
     private List<Mentions> mentionsList;
-    Button reEnterButton;
-    Button startDiagnoseButton;
+    ImageButton reEnterButton;
+    ImageButton startDiagnoseButton;
     private DiagnoseReq currentDiagnose;
     private Activity activity;
     private AppDatabase notADoctorDB;
@@ -63,6 +65,9 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mention);
+
+        setToolBarNavigation();
+
         findViews();
         showProgress();
         activity = this;
@@ -161,43 +166,51 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
         startDiagnoseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final DiagnoseEntry diagnose = new DiagnoseEntry(currentUser.getId(), System.currentTimeMillis() / 1000L);
-                AppExecutor.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(diagnoseId == DEFAULT_DIAGNOSE_ID){
-                            notADoctorDB.databaseDao().insertDiagnose(diagnose);
-                        }else{
-                            diagnose.setId(diagnoseId);
-                            notADoctorDB.databaseDao().updateDiagnose(diagnose);
-                        }
-                    }
-                });
-
-
-                for(Mentions oneMention: mentionsList){
-                    final EvidenceEntry evidenceEntry = new EvidenceEntry(currentUser.getId(), oneMention.getId(), getChoiceIdInt(oneMention.getChoiceId()));
-
+                if(mentionsList.size() != 0){
+                    final DiagnoseEntry diagnose = new DiagnoseEntry(currentUser.getId(), System.currentTimeMillis() / 1000L);
                     AppExecutor.getInstance().diskIO().execute(new Runnable() {
                         @Override
                         public void run() {
-                            notADoctorDB.databaseDao().insertEvidence(evidenceEntry);
+                            if(diagnoseId == DEFAULT_DIAGNOSE_ID){
+                                notADoctorDB.databaseDao().insertDiagnose(diagnose);
+                            }else{
+                                diagnose.setId(diagnoseId);
+                                notADoctorDB.databaseDao().updateDiagnose(diagnose);
+                            }
                         }
                     });
+
+
+                    for(Mentions oneMention: mentionsList){
+                        final EvidenceEntry evidenceEntry = new EvidenceEntry(currentUser.getId(), oneMention.getId(), getChoiceIdInt(oneMention.getChoiceId()));
+
+                        AppExecutor.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                notADoctorDB.databaseDao().insertEvidence(evidenceEntry);
+                            }
+                        });
+                    }
+
+                    createDiagnose();
+
+                    Intent startDiagnose = new Intent(MentionActivity.this, DiagnoseActivity.class);
+                    startDiagnose.putExtra(DiagnoseActivity.EXTRA_USER, currentUser);
+                    startDiagnose.putExtra(DiagnoseActivity.EXTRA_DIAGNOSE, currentDiagnose);
+                    startActivity(startDiagnose, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
+                }else{
+                    Toast.makeText(getApplicationContext(), R.string.error_no_mentions, Toast.LENGTH_LONG).show();
+                    finish();
                 }
-
-                createDiagnose();
-
-                Intent startDiagnose = new Intent(MentionActivity.this, DiagnoseActivity.class);
-                startDiagnose.putExtra(DiagnoseActivity.EXTRA_USER, currentUser);
-                startDiagnose.putExtra(DiagnoseActivity.EXTRA_DIAGNOSE, currentDiagnose);
-                startActivity(startDiagnose, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
             }
         });
 
         mentionAdpater = new MentionAdpater(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mentionAdpater);
+
+        ButtonAnimator.imageButtonAnimator(reEnterButton);
+        ButtonAnimator.imageButtonAnimator(startDiagnoseButton);
     }
 
     private void showProgress() {
@@ -248,5 +261,23 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
     @Override
     public void onItemClickListener(Mentions mention) {
 
+    }
+
+    private void setToolBarNavigation(){
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar.setLogo(R.drawable.not_a_docotor_icon);
+        setSupportActionBar(myToolbar);
+
+        View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
+        if (logoView != null) {
+            logoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MentionActivity.this, WelcomeActivity.class);
+                    startActivity(intent);
+                    supportFinishAfterTransition();
+                }
+            });
+        }
     }
 }

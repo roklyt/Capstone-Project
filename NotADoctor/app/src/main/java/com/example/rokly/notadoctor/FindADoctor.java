@@ -1,18 +1,16 @@
 package com.example.rokly.notadoctor;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -22,14 +20,10 @@ import com.example.rokly.notadoctor.Adapter.PlacesAdapter;
 import com.example.rokly.notadoctor.Database.AppDatabase;
 import com.example.rokly.notadoctor.Database.DiagnoseEntry;
 import com.example.rokly.notadoctor.Database.DoctorEntry;
-import com.example.rokly.notadoctor.Database.EvidenceEntry;
 import com.example.rokly.notadoctor.Database.UserEntry;
 import com.example.rokly.notadoctor.Executor.AppExecutor;
 import com.example.rokly.notadoctor.Model.Condition.ConditionDetail;
-import com.example.rokly.notadoctor.Model.Diagnose.Request.Evidence;
-import com.example.rokly.notadoctor.Model.PlaceDetail.DetailResult;
 import com.example.rokly.notadoctor.Model.PlaceDetail.PlaceDetail;
-import com.example.rokly.notadoctor.Model.Places.Geometry;
 import com.example.rokly.notadoctor.Model.Places.Places;
 import com.example.rokly.notadoctor.Model.Places.Result;
 import com.example.rokly.notadoctor.Retrofit.PlacesApi;
@@ -37,6 +31,7 @@ import com.example.rokly.notadoctor.Retrofit.RetrofitClientPlaces;
 import com.example.rokly.notadoctor.helper.CheckNetwork;
 import com.example.rokly.notadoctor.helper.ConvertDocEntryIntoResult;
 import com.example.rokly.notadoctor.helper.LocationHelper;
+import com.example.rokly.notadoctor.helper.ToolBarHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,7 +40,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -53,7 +47,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.example.rokly.notadoctor.ConditionActivity.getCategories;
-import static com.example.rokly.notadoctor.helper.ChoiceId.getChoiceIdInt;
 
 public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback, LocationHelper.OnLocationListener, PlacesAdapter.ItemClickListener{
 
@@ -65,7 +58,6 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
     private PlacesAdapter userAdapter;
     private GoogleMap map;
-    private RecyclerView userRecyclerView;
     private LocationHelper locationHelper;
     private ConditionDetail conditionDetail;
     private LocationManager locationManager;
@@ -84,7 +76,9 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_adoctor);
 
-        userRecyclerView = findViewById(R.id.rv_places);
+        setToolBarNavigation();
+
+        RecyclerView userRecyclerView = findViewById(R.id.rv_places);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userAdapter = new PlacesAdapter(this, this);
         userRecyclerView.setAdapter(userAdapter);
@@ -327,6 +321,24 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
         }else{
             setUserMarker();
             setMapsMarker(allPlaces);
+        }
+    }
+
+    private void setToolBarNavigation(){
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar.setLogo(R.drawable.not_a_docotor_icon);
+        setSupportActionBar(myToolbar);
+
+        View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
+        if (logoView != null) {
+            logoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(FindADoctor.this, WelcomeActivity.class);
+                    startActivity(intent);
+                    supportFinishAfterTransition();
+                }
+            });
         }
     }
 }

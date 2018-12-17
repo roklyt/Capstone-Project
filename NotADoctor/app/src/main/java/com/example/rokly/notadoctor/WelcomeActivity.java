@@ -38,6 +38,10 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        
+        if(getActionBar() != null){        getActionBar().hide();}
+
+
         activity = this;
         userRecyclerView = findViewById(R.id.recyclerview_user);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
