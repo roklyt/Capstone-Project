@@ -16,7 +16,7 @@
     <string name="groupUpDown">groupUpDown</string>
 
     <!-- drawing -->
-    <color name="stroke_color">#999</color>
+    <color name="stroke_color">@color/colorAccent</color>
 
     <!-- timing -->
     <integer name="duration">450</integer>

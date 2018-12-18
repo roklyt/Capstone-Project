@@ -9,7 +9,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -53,10 +55,7 @@ public class SymptomActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if(checkEntry()){
-                        Intent submitSymptomes = new Intent(SymptomActivity.this, MentionActivity.class);
-                        submitSymptomes.putExtra(EXTRA_USER, currentUser);
-                        submitSymptomes.putExtra(EXTRA_USER_SYMPTOME_TEXT, enterSymptomeEditText.getText().toString());
-                        startActivity(submitSymptomes, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
+                        sendSymptomes();
                     }else{
                         Toast.makeText(SymptomActivity.this, getResources().getString(R.string.error_some_entrys_missing), Toast.LENGTH_SHORT).show();
                     }
@@ -67,6 +66,7 @@ public class SymptomActivity extends AppCompatActivity {
         }else{
             Toast.makeText(getApplicationContext(), R.string.error_no_user, Toast.LENGTH_LONG).show();
         }
+
     }
 
     private boolean checkEntry(){
@@ -109,5 +109,12 @@ public class SymptomActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void sendSymptomes(){
+        Intent submitSymptomes = new Intent(SymptomActivity.this, MentionActivity.class);
+        submitSymptomes.putExtra(EXTRA_USER, currentUser);
+        submitSymptomes.putExtra(EXTRA_USER_SYMPTOME_TEXT, enterSymptomeEditText.getText().toString());
+        startActivity(submitSymptomes, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
     }
 }

@@ -1,13 +1,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/appwidget_content"
+        android:src="@drawable/not_a_docotor_icon"
+        android:background="#09C"
+        android:elevation="4dp"/>
 
     <!-- ListView to be shown on widget -->
     <ListView
         android:id="@+id/list_widget_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="#6AA8D8"/>
 
     <!-- Empty view is show if list items are empty -->
     <TextView
@@ -16,7 +26,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/widget_default_text"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@android:color/white"
         android:textSize="20sp"
         android:visibility="gone" />
 

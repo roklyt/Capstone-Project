@@ -23,57 +23,46 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <RadioGroup
-            android:id="@+id/rg_question"
+        <LinearLayout
+            android:id="@+id/ll_question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:orientation="vertical"
-            android:weightSum="3"
-            app:layout_constraintBottom_toTopOf="@+id/bt_procced"
             app:layout_constraintEnd_toEndOf="@+id/tv_question"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.466"
             app:layout_constraintStart_toStartOf="@+id/tv_question"
             app:layout_constraintTop_toBottomOf="@+id/tv_question">
 
-            <RadioButton
-                android:id="@+id/rb_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true" />
-
-            <RadioButton
-                android:id="@+id/rb_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:id="@+id/rb_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-        </RadioGroup>
+        </LinearLayout>
 
 
         <ImageButton
             android:id="@+id/bt_procced"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
             android:contentDescription="@string/button_proceed_question"
             android:src="@drawable/baseline_play_circle_outline_black_48"
             android:theme="@style/button_style"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/ll_question"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rg_question" />
+            app:layout_constraintTop_toBottomOf="@+id/bt_pass" />
+
+        <ImageButton
+            android:id="@+id/bt_pass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:contentDescription="@string/button_pass_question"
+            android:src="@drawable/baseline_skip_next_black_48"
+            android:theme="@style/button_style"
+            app:layout_constraintBottom_toTopOf="@+id/bt_procced"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_question" />
 
     </android.support.constraint.ConstraintLayout>
 

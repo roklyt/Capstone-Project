@@ -47,9 +47,9 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     private DiagnoseReq currentDiagnose;
     private UserEntry currentUser;
     private Diagnose diagnose;
-    private static final double MINIMUM_PERCENTAGE = 0.85;
+    private static final double MINIMUM_PERCENTAGE = 0.95;
     private static int counter = 0;
-    private final static int maxCounter = 3;
+    private final static int maxCounter = 20;
     private QuestionFragment questionFragment;
     private ProgressBar progressBar;
     private int initialValue = 0;
@@ -125,6 +125,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
                         counter++;
                     } else{
                     Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
+                    finish();
                     }
                 }
 
@@ -132,6 +133,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
                 public void onFailure(@NonNull Call<Diagnose> call, @NonNull Throwable t) {
                     Log.e("DiagnoseActivity","Counter : " + counter + ":" +  t);
                     Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
+                    finish();
                 }
             });
     }

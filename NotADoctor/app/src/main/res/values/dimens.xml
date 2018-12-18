@@ -11,4 +11,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
 
     <dimen name="tool_bar_height">100dp</dimen>
 
+    <dimen name="tablet_width">500dp</dimen>
+
 </resources>

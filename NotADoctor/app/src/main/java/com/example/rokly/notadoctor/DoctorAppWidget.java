@@ -24,9 +24,10 @@ public class DoctorAppWidget extends AppWidgetProvider {
             views = getDoctorListRemoteView(context, currentDiagnose);
         }else{
             views = new RemoteViews(context.getPackageName(), R.layout.doctor_app_widget);
-            views.setTextViewText(R.id.appwidget_text, "Depp");
+            Intent intent = new Intent(context, WelcomeActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            views.setOnClickPendingIntent(R.id.appwidget_image, pendingIntent);
         }
-
 
 
         // Instruct the widget manager to update the widget

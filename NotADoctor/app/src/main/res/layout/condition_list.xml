@@ -59,6 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:textStyle="bold"
             android:text="@string/condition_name_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -69,9 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_name_label"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -80,6 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:textStyle="bold"
             android:text="@string/condition_categories_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_name_label" />
@@ -90,9 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_categories_label"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/tv_name_value" />
 
         <TextView
@@ -101,6 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:textStyle="bold"
             android:text="@string/condition_prevalence_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_categories_label" />
@@ -111,15 +110,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_prevalence_label"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/tv_categories_value" />
 
         <TextView
             android:id="@+id/tv_acuteness_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/condition_acuteness_label"
@@ -132,15 +130,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_acuteness_label"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/tv_prevalence_value" />
 
         <TextView
             android:id="@+id/tv_severity_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/condition_severity_label"
@@ -153,18 +150,18 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_severity_label"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/tv_acuteness_value" />
 
         <TextView
             android:id="@+id/tv_hint"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_severity_label" />
@@ -177,15 +174,25 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:theme="@style/button_style"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/button_find_a_docotor"
             android:src="@drawable/baseline_search_black_48"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:theme="@style/button_style"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_hint" />
 
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="200dp" />
+
     </android.support.constraint.ConstraintLayout>
+
+
 
 </android.support.constraint.ConstraintLayout>

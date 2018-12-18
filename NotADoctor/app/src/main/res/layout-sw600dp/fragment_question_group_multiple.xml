@@ -28,14 +28,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.522"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_question">
+            app:layout_constraintBottom_toTopOf="@+id/bt_procced"
+            app:layout_constraintEnd_toEndOf="@+id/tv_question"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/tv_question"
+            app:layout_constraintTop_toTopOf="parent">
 
         </LinearLayout>
 
@@ -61,16 +60,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="24dp"
             android:contentDescription="@string/button_pass_question"
             android:src="@drawable/baseline_skip_next_black_48"
             android:theme="@style/button_style"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/bt_procced"
             app:layout_constraintEnd_toStartOf="@+id/bt_procced"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_question" />
+            app:layout_constraintTop_toTopOf="@+id/bt_procced" />
 
     </android.support.constraint.ConstraintLayout>
 

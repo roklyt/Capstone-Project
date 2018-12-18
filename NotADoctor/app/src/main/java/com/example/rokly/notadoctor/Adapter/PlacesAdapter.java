@@ -6,6 +6,7 @@ import android.graphics.drawable.AnimatedVectorDrawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.transition.TransitionManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -55,8 +56,8 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         /*Get the current doctor */
         final Result result = resultList.get(position);
 
-        downToUp = (AnimatedVectorDrawable) context.getResources().getDrawable(R.drawable.avd_down_to_up);
-        upToDown = (AnimatedVectorDrawable) context.getResources().getDrawable(R.drawable.avd_up_to_down);
+        downToUp = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_down_to_up);
+        upToDown = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_up_to_down);
 
         forecastAdapterViewHolder.resultNameTextView.setText(result.getName());
 
@@ -82,6 +83,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
                 forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
                 drawable.start();
 
+                    clickHandler.onExpandClickListener(result.getName());
                     expandedPosition = isExpanded ? -1:position;
                     TransitionManager.beginDelayedTransition(recyclerView);
                     notifyItemChanged(previousExpandedPosition);
@@ -116,6 +118,8 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         void onItemClickListener(Result currentResult);
 
         void onCallClickListener(String phoneNumber);
+
+        void onExpandClickListener(String name);
     }
 
     @Override

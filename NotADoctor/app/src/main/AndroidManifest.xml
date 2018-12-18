@@ -71,21 +71,16 @@
 
 
     //TODO delete all databse entrys from a deleted user rework database querys.
-    //TODO coordinatior Layout for findadocotr
-    //TODO check if hypertensioan smoking is send correctly
-    //TODO eingabe felder auf 3 zeichen
     //TODO found not always a doctor endless spinning
-    //TODO toast message in find a doctor
     //TODO crashes navigate back and forward
 
     //TODO Get rid of the yellow suggestions
     //TODO app is equeppied with a signing configuration
-    //TODO Tablet layout
-    //TODO Animations and style for buttons
 
+    //TODO keyboard implement return
     //TODO add Triage color
-    //TODO animate map marker if doctor is clicked
-    //TODO decrease the min level.
     //TODO put header in the intercept
+    //TODO voice input
+
 
 </manifest>

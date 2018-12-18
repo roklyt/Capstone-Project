@@ -5,6 +5,7 @@ import android.graphics.drawable.AnimatedVectorDrawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.transition.TransitionManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,19 +44,18 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.condition_list;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
         return new ConditionsAdapter.ConditionsAdapterViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ConditionsAdapter.ConditionsAdapterViewHolder forecastAdapterViewHolder, final int position) {
+    public void onBindViewHolder(@NonNull final ConditionsAdapter.ConditionsAdapterViewHolder forecastAdapterViewHolder, int position) {
         /*Get the current user */
         final Condition condition = conditionList.get(position);
 
-        downToUp = (AnimatedVectorDrawable) context.getResources().getDrawable(R.drawable.avd_down_to_up);
-        upToDown = (AnimatedVectorDrawable) context.getResources().getDrawable(R.drawable.avd_up_to_down);
+        downToUp = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_down_to_up);
+        upToDown = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_up_to_down);
 
 
         forecastAdapterViewHolder.conditionNameTextView.setText(condition.getName());
@@ -72,7 +72,7 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
             forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
             drawable.start();
 
-            previousExpandedPosition = position;
+            previousExpandedPosition = forecastAdapterViewHolder.getAdapterPosition();
             clickHandler.onResetScreen(view);
         }
 

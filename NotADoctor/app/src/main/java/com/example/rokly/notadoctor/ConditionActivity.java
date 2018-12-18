@@ -161,10 +161,10 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
             ButtonAnimator.imageButtonAnimator(conditionDetailSearchButton);
 
             conditionDetailsNameTextView.setText(conditionDetail.getCommonName());
-            conditionDetailsCategoriesTextView.setText(getCategories(conditionDetail));
-            conditionDetailsPrevalenceTextView.setText(conditionDetail.getPrevalence());
-            conditionDetailsAcutenessTextView.setText(conditionDetail.getAcuteness());
-            conditionDetailsNameSeverityView.setText(conditionDetail.getSeverity());
+            conditionDetailsCategoriesTextView.setText(getCategories(conditionDetail).replace("_", " "));
+            conditionDetailsPrevalenceTextView.setText(conditionDetail.getPrevalence().replace("_", " "));
+            conditionDetailsAcutenessTextView.setText(conditionDetail.getAcuteness().replace("_", " "));
+            conditionDetailsNameSeverityView.setText(conditionDetail.getSeverity().replace("_", " "));
             conditionDetailsHintTextView.setText(conditionDetail.getExtras().getHint());
         }
     }

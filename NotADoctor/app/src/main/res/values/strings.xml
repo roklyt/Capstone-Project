@@ -20,12 +20,12 @@
     <string name="up_side_view">Expand condition</string>
     <string name="indicator_content">Indicates if condition is true or falls</string>
     <string name="welcome_title">Hello,\nwelcome to NotADoctor</string>
-    <string name="welcome_text">I hope we can help you with this small app to find a suitable doctor in your area for your complaints. Please keep in mind that this app cannot replace the diagnosis by a doctor.</string>
+    <string name="welcome_text">I hope i can help you with this small app to find a suitable doctor in your area for your complaints. Please keep in mind that this app cannot replace the diagnosis by a doctor.</string>
 
     <string name="radio_button_hypertension">Hypertension</string>
     <string name="radio_button_smoking">Smoking</string>
 
-    <string name="mentions_page_text_success">We found these symptoms. If one of these symptoms is not correct please delete via swipe. If symptoms are missing please reenter your symptoms and try to be a little more specific. Thanks a lot.</string>
+    <string name="mentions_page_text_success">I found these symptoms. If one of these symptoms is not correct please delete via swipe. If symptoms are missing please reenter your symptoms and try to be a little more specific. Thanks a lot.</string>
     <string name="place_search_critera">name,rating,formatted_phone_number</string>
     <string name="permission_denied">We can\'t search for any doctors without this permission</string>
     <string name="alert_dialog_delete_user_title">Delete %s ?</string>
@@ -41,7 +41,6 @@
     <string name="welcome_to_the_symptomes">Hi %s tell me your problems</string>
 
 
-
     <string name="hint_create_edit_name">Name</string>
     <string name="hint_create_edit_age">Age</string>
     <string name="hint_create_edit_height">Height in cm</string>
@@ -50,6 +49,8 @@
 
     <integer name="max_lenght_symptome_edit_text">400</integer>
     <integer name="max_lenght_create_name_edit_text">20</integer>
+    <integer name="max_lenght_weight_height_edit_text">3</integer>
+    <integer name="max_lenght_age_edit_text">2</integer>
 
     <string name="condition_name_label">Name:</string>
     <string name="condition_categories_label">Categories:</string>
@@ -72,7 +73,8 @@
     <string name="call_this_doctor">Call  this doctor</string>
 
     <string name="transition_name">name</string>
-    <string name="appwidget_text">EXAMPLE</string>
+    <string name="appwidget_content">NotADoctorApp</string>
+    <string name="appwidget_default_text">Make a diagnose</string>
     <string name="add_widget">Add widget</string>
 
     <string name="widget_default_text">No data for the widget list.</string>

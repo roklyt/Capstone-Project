@@ -38,9 +38,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,7 +51,7 @@ import retrofit2.Response;
 
 import static com.example.rokly.notadoctor.ConditionActivity.getCategories;
 
-public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback, LocationHelper.OnLocationListener, PlacesAdapter.ItemClickListener{
+public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback, LocationHelper.OnLocationListener, PlacesAdapter.ItemClickListener, GoogleMap.OnMarkerClickListener {
 
     public final static String EXTRA_CONDITION_DETAIL = "conditionDetail";
     public final static String EXTRA_IS_WIDGET = "isWidget";
@@ -70,6 +73,8 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
     private UserEntry currentUser;
     private boolean isWidget;
     private int counter;
+    private List<Marker> markers = new ArrayList<>();
+    private RecyclerView userRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +83,12 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
         setToolBarNavigation();
 
-        RecyclerView userRecyclerView = findViewById(R.id.rv_places);
+        userRecyclerView = findViewById(R.id.rv_places);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userAdapter = new PlacesAdapter(this, this);
         userRecyclerView.setAdapter(userAdapter);
         progressBar = findViewById(R.id.pb_find_a_doctor);
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -100,7 +106,6 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
         }else{
             progressBar.setVisibility(View.VISIBLE);
             Intent intent = getIntent();
-
 
             if(intent.hasExtra(EXTRA_IS_WIDGET)){
                 counter = intent.getIntExtra(ListWidgetService.EXTRA_DIAGNOSE, 1);
@@ -165,6 +170,7 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
                         setMapsMarker(response.body());
                         setUserMarker();
                         setPlacesDetail(response.body());
+                        progressBar.setVisibility(View.GONE);
                     }else{
                         Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
                     }
@@ -195,11 +201,8 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
                             places.getResults().get(x).setDetailResult(response.body().getResult());
                             if(x  == places.getResults().size() - 1){
                                 userAdapter.setPlacesData(places.getResults());
-                                progressBar.setVisibility(View.GONE);
                                 allPlaces = places;
                                 writeDoctorsToDB();
-                            }else{
-                                Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
                             }
                         }
                     }
@@ -278,14 +281,40 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
         startActivity(intent);
     }
 
+    @Override
+    public void onExpandClickListener(String name) {
+        for (Marker marker : markers) {
+            if (marker.getTitle().equals(name)) {
+                marker.showInfoWindow();
+                map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), 250, null);
+            }
+        }
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        map.setOnMarkerClickListener(this);
         if(onSavedInstanceState && !isWidget){
             setUserMarker();
             setMapsMarker(allPlaces);
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        try{
+            for(int i = 0;i < allPlaces.getResults().size(); i++){
+                if(allPlaces.getResults().get(i).getName().equals(marker.getTitle())){
+                    userRecyclerView.scrollToPosition(i);
+                    Objects.requireNonNull(userRecyclerView.findViewHolderForAdapterPosition(i)).itemView.performClick();
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     private void setMapsMarker(Places places){
@@ -295,8 +324,10 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
             LatLng latLng = new LatLng(result.getGeometry().getLocation().getLat(), result.getGeometry().getLocation().getLng());
             String markerTitle = result.getName();
 
-            map.addMarker(new MarkerOptions().position(latLng)
+            Marker newMarker = map.addMarker(new MarkerOptions().position(latLng)
                     .title(markerTitle));
+
+            markers.add(newMarker);
         }
     }
 
