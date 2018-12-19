@@ -31,9 +31,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.user_list;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
         return new UserAdapterViewHolder(view);
     }
 

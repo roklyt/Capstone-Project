@@ -1,12 +1,22 @@
 package com.example.rokly.notadoctor.Database;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-@Entity(tableName = "evidence")
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "evidence",
+        foreignKeys = @ForeignKey(entity = DiagnoseEntry.class,
+                parentColumns = "id",
+                childColumns = "diagnoseId",
+                onDelete = CASCADE),
+        indices = {@Index("diagnoseId")})
 public class EvidenceEntry implements Parcelable {
 
     public static final String PARCELABLE_KEY = "parcelable_key";
@@ -25,6 +35,7 @@ public class EvidenceEntry implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+    @ColumnInfo(name = "diagnoseId")
     private int diagnoseId;
     private String evidenceId;
     private int choiceId;

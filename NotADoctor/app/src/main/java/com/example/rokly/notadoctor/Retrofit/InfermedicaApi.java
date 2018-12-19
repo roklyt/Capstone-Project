@@ -4,7 +4,6 @@ package com.example.rokly.notadoctor.Retrofit;
 
 import com.example.rokly.notadoctor.Model.Condition.ConditionDetail;
 import com.example.rokly.notadoctor.Model.Diagnose.Request.DiagnoseReq;
-import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Diagnose;
 import com.example.rokly.notadoctor.Model.Parse.Response.Mention;
 import com.example.rokly.notadoctor.Model.Parse.Response.Mentions;
@@ -20,8 +19,8 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface InfermedicaApi {
-    String appId = "app_id";
-    String appKey = "app_key";
+    String appId = "appId";
+    String appKey = "appKey";
 
     @Headers({
             "Content-Type: application/json",

@@ -21,6 +21,7 @@
     <string name="indicator_content">Indicates if condition is true or falls</string>
     <string name="welcome_title">Hello,\nwelcome to NotADoctor</string>
     <string name="welcome_text">I hope i can help you with this small app to find a suitable doctor in your area for your complaints. Please keep in mind that this app cannot replace the diagnosis by a doctor.</string>
+    <string name="welcome_empty_view">Please add a user via the plus button to start.</string>
 
     <string name="radio_button_hypertension">Hypertension</string>
     <string name="radio_button_smoking">Smoking</string>

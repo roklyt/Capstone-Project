@@ -241,8 +241,8 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-
-                textview.setText(valueAnimator.getAnimatedValue().toString() + "%");
+                String percentageText = valueAnimator.getAnimatedValue().toString() + "%";
+                textview.setText(percentageText);
 
             }
         });
@@ -260,6 +260,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(DiagnoseActivity.this, WelcomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     supportFinishAfterTransition();
                 }

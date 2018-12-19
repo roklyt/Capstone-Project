@@ -1,6 +1,5 @@
 package com.example.rokly.notadoctor.Retrofit;
 
-import com.example.rokly.notadoctor.Model.Condition.ConditionDetail;
 import com.example.rokly.notadoctor.Model.PlaceDetail.PlaceDetail;
 import com.example.rokly.notadoctor.Model.Places.Places;
 

@@ -6,7 +6,7 @@ public class ChoiceId {
     public static final String CHOICEID_UNKNOWN = "unknown";
     public static final int CHOICEID_INT_PRESENT = 1;
     public static final int CHOICEID_INT_ABSENT = 0;
-    public static final int CHOICEID_INT_UNKNOWN = -1;
+    private static final int CHOICEID_INT_UNKNOWN = -1;
 
     public static int getChoiceIdInt(String choiceId){
         int choiceInt;

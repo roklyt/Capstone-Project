@@ -1,5 +1,6 @@
 package com.example.rokly.notadoctor;
 
+import android.app.ActivityOptions;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -316,7 +317,8 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(CreateEditActivity.this, WelcomeActivity.class);
-                    startActivity(intent);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(CreateEditActivity.this).toBundle());
                     supportFinishAfterTransition();
                 }
             });

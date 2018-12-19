@@ -35,7 +35,7 @@ public class LocationHelper implements LocationListener {
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         1);
 
-                return location;
+                return null;
             }
 
             // getting GPS status
@@ -45,25 +45,18 @@ public class LocationHelper implements LocationListener {
             boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
             if (!isGPSEnabled && !isNetworkEnabled) {
-                // no network provider is enabled
+               return null;
             } else {
-                // First get location from Network Provider
                 if (isNetworkEnabled) {
                     locationManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER,  LOCATION_REFRESH_TIME,  10, this);
                     Log.d("Network", "Network");
-                    if (locationManager != null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-                    }
+                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 }
-                //get the location by gps
                 if (isGPSEnabled) {
                     if (location == null) {
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,LOCATION_REFRESH_TIME,10, this);
                         Log.d("GPS Enabled", "GPS Enabled");
-                        if (locationManager != null) {location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                        }
+                        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     }
                 }
             }

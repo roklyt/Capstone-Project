@@ -33,9 +33,8 @@ public class MentionAdpater extends RecyclerView.Adapter<MentionAdpater.MentionA
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.mention_list;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
         return new MentionAdpater.MentionAdpaterViewHolder(view);
     }
 

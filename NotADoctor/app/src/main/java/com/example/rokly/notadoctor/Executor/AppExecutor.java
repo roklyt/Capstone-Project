@@ -8,7 +8,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class AppExecutor {
-    // For Singleton instantiation
     private static final Object LOCK = new Object();
     private static AppExecutor sInstance;
     private final Executor diskIO;

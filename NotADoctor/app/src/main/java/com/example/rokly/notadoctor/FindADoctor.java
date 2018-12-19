@@ -172,13 +172,14 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
                         setPlacesDetail(response.body());
                         progressBar.setVisibility(View.GONE);
                     }else{
+                        Log.e("FindADoctor_callPlaces", "failure");
                         Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<Places> call, @NonNull Throwable t) {
-                    Log.e("DoctorActivity","Counter :" +  t);
+                    Log.e("FindADoctor_callPlaces","Counter :" +  t);
                     Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
                 }
             });
@@ -204,12 +205,14 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
                                 allPlaces = places;
                                 writeDoctorsToDB();
                             }
+                        }else{
+                            Log.e("FindADoctor_setPlacesDetail", "failure");
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<PlaceDetail> call, @NonNull Throwable t) {
-                        Log.e("ConditionActivity","" +  t);
+                        Log.e("FindADoctor","" +  t);
                         Toast.makeText(getApplicationContext(), R.string.error_something, Toast.LENGTH_LONG).show();
                     }
                 });

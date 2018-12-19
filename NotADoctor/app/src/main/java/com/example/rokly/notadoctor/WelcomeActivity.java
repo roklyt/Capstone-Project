@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rokly.notadoctor.Adapter.UserAdapter;
@@ -30,7 +31,7 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
     AppDatabase notADoctorDB;
 
     private UserAdapter userAdapter;
-    private RecyclerView userRecyclerView;
+    private TextView emptyView;
     private Activity activity;
 
 
@@ -42,8 +43,11 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
         if(getActionBar() != null){        getActionBar().hide();}
 
 
+        emptyView = findViewById(R.id.tv_empty_view);
+        emptyView.setVisibility(View.VISIBLE);
+
         activity = this;
-        userRecyclerView = findViewById(R.id.recyclerview_user);
+        RecyclerView userRecyclerView = findViewById(R.id.recyclerview_user);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
@@ -71,6 +75,11 @@ public class WelcomeActivity extends AppCompatActivity implements UserAdapter.It
             @Override
             public void onChanged(@Nullable List<UserEntry> userEntries) {
                 userAdapter.setUserData(userEntries);
+                if(userEntries != null && userEntries.size() == 0){
+                    emptyView.setVisibility(View.VISIBLE);
+                }else{
+                    emptyView.setVisibility(View.GONE);
+                }
             }
         });
     }

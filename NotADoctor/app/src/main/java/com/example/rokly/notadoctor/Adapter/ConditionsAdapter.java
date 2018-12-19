@@ -10,26 +10,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.rokly.notadoctor.Model.Diagnose.Response.Condition;
 import com.example.rokly.notadoctor.R;
-import com.example.rokly.notadoctor.helper.ButtonAnimator;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
 public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.ConditionsAdapterViewHolder> {
     private static int expandedPosition = -1;
-    private static int previousExpandedPosition = -1;
     private final ConditionsAdapter.ItemClickListener clickHandler;
     private RecyclerView recyclerView;
     /* List for all user*/
     private List<Condition> conditionList;
-    private AnimatedVectorDrawable downToUp;
     private AnimatedVectorDrawable upToDown;
     private Context context;
 
@@ -52,27 +48,30 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
     @Override
     public void onBindViewHolder(@NonNull final ConditionsAdapter.ConditionsAdapterViewHolder forecastAdapterViewHolder, int position) {
         /*Get the current user */
-        final Condition condition = conditionList.get(position);
+        final Condition condition = conditionList.get(forecastAdapterViewHolder.getAdapterPosition());
 
-        downToUp = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_down_to_up);
+        AnimatedVectorDrawable downToUp = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_down_to_up);
         upToDown = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_up_to_down);
 
 
         forecastAdapterViewHolder.conditionNameTextView.setText(condition.getName());
         String percentage = new DecimalFormat("#.##").format(condition.getProbability() * 100);
-        forecastAdapterViewHolder.conditionProbabilityTextView.setText(percentage + "%");
+        percentage = percentage + "%";
 
-        final boolean isExpanded = position==expandedPosition;
+        forecastAdapterViewHolder.conditionProbabilityTextView.setText(percentage);
+
+        final boolean isExpanded = forecastAdapterViewHolder.getAdapterPosition()==expandedPosition;
         forecastAdapterViewHolder.detailConstraintLayout.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         forecastAdapterViewHolder.itemView.setActivated(isExpanded);
 
         final View view = forecastAdapterViewHolder.itemView;
         if (isExpanded){
-            AnimatedVectorDrawable drawable = downToUp;
-            forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
-            drawable.start();
+            forecastAdapterViewHolder.upDownView.setImageDrawable(downToUp);
 
-            previousExpandedPosition = forecastAdapterViewHolder.getAdapterPosition();
+            assert downToUp != null;
+            downToUp.start();
+
+
             clickHandler.onResetScreen(view);
         }
 
@@ -82,16 +81,16 @@ public class ConditionsAdapter extends RecyclerView.Adapter<ConditionsAdapter.Co
             public void onClick(final View v) {
 
                 if(!isExpanded){
-                    clickHandler.onItemExpandChecklist(view, condition, position);
+                    clickHandler.onItemExpandChecklist(view, condition, forecastAdapterViewHolder.getAdapterPosition());
                 }
 
                 AnimatedVectorDrawable drawable = upToDown;
                 forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
                 drawable.start();
-                expandedPosition = isExpanded ? -1:position;
+                expandedPosition = isExpanded ? -1:forecastAdapterViewHolder.getAdapterPosition();
 
                 TransitionManager.beginDelayedTransition(recyclerView);
-                notifyItemChanged(position);
+                notifyItemChanged(forecastAdapterViewHolder.getAdapterPosition());
                 notifyDataSetChanged();
             }
         });

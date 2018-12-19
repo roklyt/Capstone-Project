@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.rokly.notadoctor">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -7,13 +8,14 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        android:windowSoftInputMode="stateHidden|adjustResize">
+        android:theme="@style/AppTheme"
+        android:windowSoftInputMode="stateHidden|adjustResize"
+        tools:ignore="GoogleAppIndexingWarning"
+        android:allowBackup="false">
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -25,25 +27,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateEditActivity" />
+        <activity android:name=".CreateEditActivity"
+            android:theme="@style/SlideTheme"/>
 
         <activity android:name=".SymptomActivity" />
         <activity
             android:name=".MentionActivity"/>
         <activity
             android:name=".DiagnoseActivity"
-            android:theme="@style/SlideTheme" />
+            android:theme="@style/SlideTheme"/>
         <activity
             android:name=".ConditionActivity"
             android:theme="@style/SlideTheme" />
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
-        -->
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -68,19 +64,4 @@
             android:name=".ListWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
-
-
-    //TODO delete all databse entrys from a deleted user rework database querys.
-    //TODO found not always a doctor endless spinning
-    //TODO crashes navigate back and forward
-
-    //TODO Get rid of the yellow suggestions
-    //TODO app is equeppied with a signing configuration
-
-    //TODO keyboard implement return
-    //TODO add Triage color
-    //TODO put header in the intercept
-    //TODO voice input
-
-
 </manifest>

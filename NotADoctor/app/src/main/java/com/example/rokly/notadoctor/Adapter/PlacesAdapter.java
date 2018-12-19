@@ -1,19 +1,15 @@
 package com.example.rokly.notadoctor.Adapter;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.transition.TransitionManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,23 +41,22 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.result_list;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
         return new PlacesAdapter.PlacesAdapterViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final @NonNull PlacesAdapter.PlacesAdapterViewHolder forecastAdapterViewHolder,final int position) {
         /*Get the current doctor */
-        final Result result = resultList.get(position);
+        final Result result = resultList.get(forecastAdapterViewHolder.getAdapterPosition());
 
         downToUp = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_down_to_up);
         upToDown = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_up_to_down);
 
         forecastAdapterViewHolder.resultNameTextView.setText(result.getName());
 
-        final boolean isExpanded = position==expandedPosition;
+        final boolean isExpanded = forecastAdapterViewHolder.getAdapterPosition()==expandedPosition;
         forecastAdapterViewHolder.doctorConstraintLayout.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         forecastAdapterViewHolder.itemView.setActivated(isExpanded);
         forecastAdapterViewHolder.doctorAdressTextView.setText(result.getFormattedAddress());
@@ -73,7 +68,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
             forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
             drawable.start();
 
-            previousExpandedPosition = position;
+            previousExpandedPosition = forecastAdapterViewHolder.getAdapterPosition();
         }
 
         forecastAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +79,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
                 drawable.start();
 
                     clickHandler.onExpandClickListener(result.getName());
-                    expandedPosition = isExpanded ? -1:position;
+                    expandedPosition = isExpanded ? -1:forecastAdapterViewHolder.getAdapterPosition();
                     TransitionManager.beginDelayedTransition(recyclerView);
                     notifyItemChanged(previousExpandedPosition);
                     notifyDataSetChanged();

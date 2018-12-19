@@ -39,36 +39,16 @@ public interface DatabaseDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateDiagnose(DiagnoseEntry diagnoseEntry);
 
-    @Delete
-    void deleteDiagnose(DiagnoseEntry diagnoseEntry);
-
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertEvidence(EvidenceEntry evidenceEntry);
 
-    @Query("SELECT * FROM evidence WHERE diagnoseId = :diagnoseId")
-    LiveData<List<EvidenceEntry>> loadEvidenceByDiagnoseId(int diagnoseId);
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateEvidence(EvidenceEntry evidenceEntry);
-
-    @Delete
-    void deleteEvidence(EvidenceEntry evidenceEntry);
 
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCondition(ConditionEntry conditionEntry);
-
-    @Query("SELECT * FROM condition WHERE diagnoseId = :diagnoseId")
-    LiveData<List<ConditionEntry>> loadConditionByDiagnoseId(int diagnoseId);
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateCondition(ConditionEntry ConditionEntry);
-
-    @Delete
-    void deleteCondition(ConditionEntry ConditionEntry);
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

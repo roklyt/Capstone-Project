@@ -274,6 +274,7 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MentionActivity.this, WelcomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     supportFinishAfterTransition();
                 }

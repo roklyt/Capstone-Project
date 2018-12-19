@@ -36,9 +36,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
     public static final String EXTRA_CONDITIONS = "extraConditions";
     public static final String EXTRA_CONDITIONS_DETAIL = "extraConditionDetail";
     public static final String EXTRA_CONDITIONS_POSITION = "extraConditionPosition";
-    private List<Condition> conditionList;
     private Diagnose diagnose;
-    private RecyclerView recyclerView;
     private UserEntry currentUser;
     private ConditionsAdapter conditionsAdapter;
     private ConditionDetail conditionDetail;
@@ -72,7 +70,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
     }
 
     private void findViews(){
-        recyclerView = findViewById(R.id.rv_conditions);
+        RecyclerView recyclerView = findViewById(R.id.rv_conditions);
         conditionsAdapter = new ConditionsAdapter(this, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(conditionsAdapter);
@@ -80,7 +78,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
     }
 
     private void setConditionsAdpater(Diagnose diagnose){
-        conditionList = diagnose.getConditions();
+        List<Condition> conditionList = diagnose.getConditions();
         if(diagnose.getConditions().size() == 0){
             Toast.makeText(getApplicationContext(), R.string.error_no_conditions, Toast.LENGTH_LONG).show();
             finish();
@@ -193,6 +191,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(ConditionActivity.this, WelcomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     supportFinishAfterTransition();
                 }
