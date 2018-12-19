@@ -32,9 +32,7 @@ public class DoctorAppWidgetService extends IntentService {
         context.startService(intent);
     }
 
-    /**
-     * @param intent
-     */
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -56,7 +54,7 @@ public class DoctorAppWidgetService extends IntentService {
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_widget_view);
 
         //Now update all widgets
-        DoctorAppWidget.updateDoctorWidgets(this, appWidgetManager, currentDiagnose , appWidgetIds, true);
+        DoctorAppWidget.updateDoctorWidgets(this, appWidgetManager, currentDiagnose , appWidgetIds);
 
 
     }

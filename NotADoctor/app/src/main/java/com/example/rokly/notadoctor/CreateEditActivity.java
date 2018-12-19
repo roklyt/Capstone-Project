@@ -121,20 +121,10 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
         weightEditField = findViewById(R.id.et_weight);
 
         ImageButton abortButton = findViewById(R.id.bt_abort);
-        abortButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        abortButton.setOnClickListener(view -> onBackPressed());
 
         saveButton = findViewById(R.id.bt_save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveButtonClicked();
-            }
-        });
+        saveButton.setOnClickListener(view -> saveButtonClicked());
 
         ButtonAnimator.imageButtonAnimator(abortButton);
         ButtonAnimator.imageButtonAnimator(saveButton);
@@ -152,17 +142,14 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
 
         if(checkEntrys(name, age, height, weight)){
             final UserEntry user = new UserEntry(name, sex, age, bmiOver30, bmiUnder19, hypertension, smoking, height, weight);
-            AppExecutor.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    if(UserId == DEFAULT_USER_ID){
-                        notADoctorDB.databaseDao().insertUser(user);
-                    }else{
-                        user.setId(UserId);
-                        notADoctorDB.databaseDao().updateUser(user);
-                    }
-
+            AppExecutor.getInstance().diskIO().execute(() -> {
+                if(UserId == DEFAULT_USER_ID){
+                    notADoctorDB.databaseDao().insertUser(user);
+                }else{
+                    user.setId(UserId);
+                    notADoctorDB.databaseDao().updateUser(user);
                 }
+
             });
 
             supportFinishAfterTransition();
@@ -313,14 +300,11 @@ public class CreateEditActivity extends AppCompatActivity implements AdapterView
 
         View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
         if (logoView != null) {
-            logoView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(CreateEditActivity.this, WelcomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(CreateEditActivity.this).toBundle());
-                    supportFinishAfterTransition();
-                }
+            logoView.setOnClickListener(v -> {
+                Intent intent = new Intent(CreateEditActivity.this, WelcomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(CreateEditActivity.this).toBundle());
+                supportFinishAfterTransition();
             });
         }
     }

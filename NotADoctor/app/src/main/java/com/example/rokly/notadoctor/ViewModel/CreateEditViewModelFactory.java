@@ -2,6 +2,7 @@ package com.example.rokly.notadoctor.ViewModel;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
+import android.support.annotation.NonNull;
 
 import com.example.rokly.notadoctor.Database.AppDatabase;
 
@@ -15,6 +16,7 @@ public class CreateEditViewModelFactory extends ViewModelProvider.NewInstanceFac
         UserId = userId;
     }
 
+    @NonNull
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
         //noinspection unchecked

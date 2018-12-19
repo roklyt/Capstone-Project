@@ -98,7 +98,7 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
 
     @Override
     public void onItemClickListener(Condition condition) {
-        Toast.makeText(this, condition.getName().toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, condition.getName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -168,16 +168,16 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
     }
 
     public static String getCategories(ConditionDetail conditionDetail){
-        String categories = "";
+        StringBuilder categories = new StringBuilder();
         for(int i = 0;i < conditionDetail.getCategories().size();i++){
             if(i == 0){
-                categories = conditionDetail.getCategories().get(i);
+                categories = new StringBuilder(conditionDetail.getCategories().get(i));
             }else{
-                categories = categories + ", "+ conditionDetail.getCategories().get(i);
+                categories.append(", ").append(conditionDetail.getCategories().get(i));
             }
         }
 
-        return categories;
+        return categories.toString();
     }
 
     private void setToolBarNavigation(){
@@ -187,14 +187,11 @@ public class ConditionActivity extends AppCompatActivity implements ConditionsAd
 
         View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
         if (logoView != null) {
-            logoView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ConditionActivity.this, WelcomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    supportFinishAfterTransition();
-                }
+            logoView.setOnClickListener(v -> {
+                Intent intent = new Intent(ConditionActivity.this, WelcomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                supportFinishAfterTransition();
             });
         }
     }

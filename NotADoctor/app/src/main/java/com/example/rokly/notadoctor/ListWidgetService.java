@@ -7,10 +7,6 @@ import android.widget.RemoteViewsService;
 
 import com.example.rokly.notadoctor.Database.AppDatabase;
 import com.example.rokly.notadoctor.Database.DoctorEntry;
-import com.example.rokly.notadoctor.Executor.AppExecutor;
-import com.example.rokly.notadoctor.Model.PlaceDetail.DetailResult;
-import com.example.rokly.notadoctor.Model.Places.Geometry;
-import com.example.rokly.notadoctor.Model.Places.Location;
 import com.example.rokly.notadoctor.Model.Places.Result;
 import com.example.rokly.notadoctor.helper.ConvertDocEntryIntoResult;
 
@@ -35,7 +31,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private List<Result> doctores = new ArrayList<>();
     private int currentDiagnose;
 
-    public ListRemoteViewsFactory(Context context, int currentDiagnose) {
+    ListRemoteViewsFactory(Context context, int currentDiagnose) {
         this.context = context;
         this.currentDiagnose = currentDiagnose;
     }

@@ -67,7 +67,6 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
     private Location currentLocation;
     private Places allPlaces;
     private ProgressBar progressBar;
-    private final static long LOCATION_REFRESH_TIME = 3000;
     private final static long LOCATION_RADIUS = 1000;
     private boolean onSavedInstanceState = false;
     private UserEntry currentUser;
@@ -134,7 +133,7 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1: {
 
@@ -224,51 +223,37 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
     private void getDoctorsFromDatabse(){
         final AppDatabase NotADoctor = AppDatabase.getInstance(this);
-        AppExecutor.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                List<DoctorEntry> doctorEntrys = NotADoctor.databaseDao().loadDoctorsByDiagnoseId(counter);
-                ConvertDocEntryIntoResult convertDocEntryIntoResult = new ConvertDocEntryIntoResult();
+        AppExecutor.getInstance().diskIO().execute(() -> {
+            List<DoctorEntry> doctorEntrys = NotADoctor.databaseDao().loadDoctorsByDiagnoseId(counter);
+            ConvertDocEntryIntoResult convertDocEntryIntoResult = new ConvertDocEntryIntoResult();
 
-                allPlaces = new Places();
-                allPlaces.setResults(convertDocEntryIntoResult.convertDocEntryIntoResult(doctorEntrys));
+            allPlaces = new Places();
+            allPlaces.setResults(convertDocEntryIntoResult.convertDocEntryIntoResult(doctorEntrys));
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        userAdapter.setPlacesData(allPlaces.getResults());
-                        progressBar.setVisibility(View.INVISIBLE);
-                    }
-                });
+            runOnUiThread(() -> {
+                userAdapter.setPlacesData(allPlaces.getResults());
+                progressBar.setVisibility(View.INVISIBLE);
+            });
 
-            }
         });
     }
 
     private void writeDoctorsToDB(){
         final AppDatabase NotADoctor = AppDatabase.getInstance(this);
-        AppExecutor.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                DiagnoseEntry diagnoseEntry =  NotADoctor.databaseDao().loadDiagnoseByUserId(currentUser.getId());
+        AppExecutor.getInstance().diskIO().execute(() -> {
+            DiagnoseEntry diagnoseEntry =  NotADoctor.databaseDao().loadDiagnoseByUserId(currentUser.getId());
 
-                for(Result currentDoctor:allPlaces.getResults()){
-                    String formattedPhoneNumber = "";
-                    if(currentDoctor.getDetailResult() != null){
-                        formattedPhoneNumber = currentDoctor.getDetailResult().getFormattedPhoneNumber();
-                    }
-
-                    final DoctorEntry doctorEntry= new DoctorEntry(diagnoseEntry.getId(), currentDoctor.getName(), currentDoctor.getFormattedAddress(), currentDoctor.getGeometry().getLocation().getLat(), currentDoctor.getGeometry().getLocation().getLng(), formattedPhoneNumber, currentDoctor.getPlaceId());
-                    AppExecutor.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            NotADoctor.databaseDao().insertDoctor(doctorEntry);
-                        }
-                    });
+            for(Result currentDoctor:allPlaces.getResults()){
+                String formattedPhoneNumber = "";
+                if(currentDoctor.getDetailResult() != null){
+                    formattedPhoneNumber = currentDoctor.getDetailResult().getFormattedPhoneNumber();
                 }
 
-                DoctorAppWidgetService.startActionUpdateDoctorWidget(FindADoctor.this, diagnoseEntry);
+                final DoctorEntry doctorEntry= new DoctorEntry(diagnoseEntry.getId(), currentDoctor.getName(), currentDoctor.getFormattedAddress(), currentDoctor.getGeometry().getLocation().getLat(), currentDoctor.getGeometry().getLocation().getLng(), formattedPhoneNumber, currentDoctor.getPlaceId());
+                AppExecutor.getInstance().diskIO().execute(() -> NotADoctor.databaseDao().insertDoctor(doctorEntry));
             }
+
+            DoctorAppWidgetService.startActionUpdateDoctorWidget(FindADoctor.this, diagnoseEntry);
         });
 
     }
@@ -365,13 +350,10 @@ public class FindADoctor extends AppCompatActivity implements OnMapReadyCallback
 
         View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
         if (logoView != null) {
-            logoView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(FindADoctor.this, WelcomeActivity.class);
-                    startActivity(intent);
-                    supportFinishAfterTransition();
-                }
+            logoView.setOnClickListener(v -> {
+                Intent intent = new Intent(FindADoctor.this, WelcomeActivity.class);
+                startActivity(intent);
+                supportFinishAfterTransition();
             });
         }
     }

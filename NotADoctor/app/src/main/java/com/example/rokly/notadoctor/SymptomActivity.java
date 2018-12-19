@@ -9,9 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -51,14 +49,11 @@ public class SymptomActivity extends AppCompatActivity {
             currentUser = intent.getParcelableExtra(EXTRA_USER);
             askForSymptomeTextView.setText(res.getString(R.string.welcome_to_the_symptomes, currentUser.getName()));
 
-            submitSymptomeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(checkEntry()){
-                        sendSymptomes();
-                    }else{
-                        Toast.makeText(SymptomActivity.this, getResources().getString(R.string.error_some_entrys_missing), Toast.LENGTH_SHORT).show();
-                    }
+            submitSymptomeButton.setOnClickListener(view -> {
+                if(checkEntry()){
+                    sendSymptomes();
+                }else{
+                    Toast.makeText(SymptomActivity.this, getResources().getString(R.string.error_some_entrys_missing), Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -100,14 +95,11 @@ public class SymptomActivity extends AppCompatActivity {
 
         View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
         if (logoView != null) {
-            logoView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(SymptomActivity.this, WelcomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    supportFinishAfterTransition();
-                }
+            logoView.setOnClickListener(v -> {
+                Intent intent = new Intent(SymptomActivity.this, WelcomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                supportFinishAfterTransition();
             });
         }
     }

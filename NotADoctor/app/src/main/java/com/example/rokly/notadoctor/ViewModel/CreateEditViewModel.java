@@ -10,7 +10,7 @@ public class CreateEditViewModel extends ViewModel {
 
     private LiveData<UserEntry> user;
 
-    public CreateEditViewModel(AppDatabase database, int userId) {
+    CreateEditViewModel(AppDatabase database, int userId) {
         user = database.databaseDao().loadUserById(userId);
     }
 

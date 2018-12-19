@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.example.rokly.notadoctor.Database.DiagnoseEntry;
-import com.example.rokly.notadoctor.Model.Places.Places;
 
 /**
  * Implementation of App Widget functionality.
@@ -16,7 +15,7 @@ import com.example.rokly.notadoctor.Model.Places.Places;
 public class DoctorAppWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, DiagnoseEntry currentDiagnose,
-                                int appWidgetId, boolean hasDiagnose) {
+                                int appWidgetId) {
 
         RemoteViews views;
 
@@ -61,9 +60,9 @@ public class DoctorAppWidget extends AppWidgetProvider {
 
 
     public static void updateDoctorWidgets(Context context, AppWidgetManager appWidgetManager,
-                                           DiagnoseEntry currentDiagnose, int[] appWidgetIds, boolean hasDiagnose) {
+                                           DiagnoseEntry currentDiagnose, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, currentDiagnose, appWidgetId, hasDiagnose);
+            updateAppWidget(context, appWidgetManager, currentDiagnose, appWidgetId);
         }
     }
 
@@ -72,7 +71,7 @@ public class DoctorAppWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, null, appWidgetId, true);
+            updateAppWidget(context, appWidgetManager, null, appWidgetId);
         }
     }
 

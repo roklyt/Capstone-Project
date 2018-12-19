@@ -76,6 +76,7 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
         if(savedInstanceState != null){
             currentUser = savedInstanceState.getParcelable(SymptomActivity.EXTRA_USER);
             Mention mention = savedInstanceState.getParcelable(SAVE_MENTION);
+            assert mention != null;
             mentionsList = mention.getMentions();
             showRecyclerView();
             setMentionAdpater();
@@ -155,53 +156,37 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
         recyclerView = findViewById(R.id.rv_mentions);
 
         reEnterButton = findViewById(R.id.bt_back_to_symptome);
-        reEnterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        reEnterButton.setOnClickListener(view -> onBackPressed());
 
         startDiagnoseButton = findViewById(R.id.bt_start_diagnose);
-        startDiagnoseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mentionsList.size() != 0){
-                    final DiagnoseEntry diagnose = new DiagnoseEntry(currentUser.getId(), System.currentTimeMillis() / 1000L);
-                    AppExecutor.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(diagnoseId == DEFAULT_DIAGNOSE_ID){
-                                notADoctorDB.databaseDao().insertDiagnose(diagnose);
-                            }else{
-                                diagnose.setId(diagnoseId);
-                                notADoctorDB.databaseDao().updateDiagnose(diagnose);
-                            }
-                        }
-                    });
-
-
-                    for(Mentions oneMention: mentionsList){
-                        final EvidenceEntry evidenceEntry = new EvidenceEntry(currentUser.getId(), oneMention.getId(), getChoiceIdInt(oneMention.getChoiceId()));
-
-                        AppExecutor.getInstance().diskIO().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                notADoctorDB.databaseDao().insertEvidence(evidenceEntry);
-                            }
-                        });
+        startDiagnoseButton.setOnClickListener(view -> {
+            if(mentionsList.size() != 0){
+                final DiagnoseEntry diagnose = new DiagnoseEntry(currentUser.getId(), System.currentTimeMillis() / 1000L);
+                AppExecutor.getInstance().diskIO().execute(() -> {
+                    if(diagnoseId == DEFAULT_DIAGNOSE_ID){
+                        notADoctorDB.databaseDao().insertDiagnose(diagnose);
+                    }else{
+                        diagnose.setId(diagnoseId);
+                        notADoctorDB.databaseDao().updateDiagnose(diagnose);
                     }
+                });
 
-                    createDiagnose();
 
-                    Intent startDiagnose = new Intent(MentionActivity.this, DiagnoseActivity.class);
-                    startDiagnose.putExtra(DiagnoseActivity.EXTRA_USER, currentUser);
-                    startDiagnose.putExtra(DiagnoseActivity.EXTRA_DIAGNOSE, currentDiagnose);
-                    startActivity(startDiagnose, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
-                }else{
-                    Toast.makeText(getApplicationContext(), R.string.error_no_mentions, Toast.LENGTH_LONG).show();
-                    finish();
+                for(Mentions oneMention: mentionsList){
+                    final EvidenceEntry evidenceEntry = new EvidenceEntry(currentUser.getId(), oneMention.getId(), getChoiceIdInt(oneMention.getChoiceId()));
+
+                    AppExecutor.getInstance().diskIO().execute(() -> notADoctorDB.databaseDao().insertEvidence(evidenceEntry));
                 }
+
+                createDiagnose();
+
+                Intent startDiagnose = new Intent(MentionActivity.this, DiagnoseActivity.class);
+                startDiagnose.putExtra(DiagnoseActivity.EXTRA_USER, currentUser);
+                startDiagnose.putExtra(DiagnoseActivity.EXTRA_DIAGNOSE, currentDiagnose);
+                startActivity(startDiagnose, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle());
+            }else{
+                Toast.makeText(getApplicationContext(), R.string.error_no_mentions, Toast.LENGTH_LONG).show();
+                finish();
             }
         });
 
@@ -270,14 +255,11 @@ public class MentionActivity extends AppCompatActivity implements MentionAdpater
 
         View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
         if (logoView != null) {
-            logoView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(MentionActivity.this, WelcomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    supportFinishAfterTransition();
-                }
+            logoView.setOnClickListener(v -> {
+                Intent intent = new Intent(MentionActivity.this, WelcomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                supportFinishAfterTransition();
             });
         }
     }

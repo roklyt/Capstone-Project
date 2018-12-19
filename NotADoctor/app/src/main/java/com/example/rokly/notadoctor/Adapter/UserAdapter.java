@@ -43,19 +43,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserAdapterVie
 
         forecastAdapterViewHolder.userNameTextView.setText(user.getName());
 
-        forecastAdapterViewHolder.deleteUserImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clickHandler.onDeleteClickListener(user);
-            }
-        });
+        forecastAdapterViewHolder.deleteUserImageButton.setOnClickListener(view -> clickHandler.onDeleteClickListener(user));
 
-        forecastAdapterViewHolder.editUserImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clickHandler.onEditClickListener(user, view);
-            }
-        });
+        forecastAdapterViewHolder.editUserImageButton.setOnClickListener(view -> clickHandler.onEditClickListener(user, view));
     }
 
     @Override

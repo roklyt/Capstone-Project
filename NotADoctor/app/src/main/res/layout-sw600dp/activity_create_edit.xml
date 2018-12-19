@@ -48,7 +48,8 @@
             android:transitionName="@string/transition_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+            tools:ignore="UnusedAttribute" />
 
         <Spinner
             android:id="@+id/sp_sex"
@@ -73,7 +74,8 @@
             android:maxLength="@integer/max_lenght_age_edit_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sp_sex" />
+            app:layout_constraintTop_toBottomOf="@+id/sp_sex"
+            tools:targetApi="o" />
 
         <EditText
             android:id="@+id/et_height"

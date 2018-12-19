@@ -163,7 +163,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     private void replaceFragment(){
         questionFragment = new QuestionFragment();
         questionFragment.setQuestion(diagnose.getQuestion());
-        questionFragment.setEnterTransition(new Slide(Gravity.RIGHT));
+        questionFragment.setEnterTransition(new Slide(Gravity.END));
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.question_container, questionFragment)
                 .commit();
@@ -172,7 +172,7 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
     private void addFragment(){
         questionFragment = new QuestionFragment();
         questionFragment.setQuestion(diagnose.getQuestion());
-        questionFragment.setEnterTransition(new Slide(Gravity.RIGHT));
+        questionFragment.setEnterTransition(new Slide(Gravity.END));
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.question_container, questionFragment)
                 .commit();
@@ -194,42 +194,26 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
 
     private void writeEvidenceIntoDatabse(final List<Evidence> evicdences){
         final AppDatabase NotADoctor = AppDatabase.getInstance(this);
-        AppExecutor.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                DiagnoseEntry diagnoseEntry =  NotADoctor.databaseDao().loadDiagnoseByUserId(currentUser.getId());
+        AppExecutor.getInstance().diskIO().execute(() -> {
+            DiagnoseEntry diagnoseEntry =  NotADoctor.databaseDao().loadDiagnoseByUserId(currentUser.getId());
 
-                for(Evidence evidence:evicdences){
-                    final EvidenceEntry evidenceEntry= new EvidenceEntry(diagnoseEntry.getId(), evidence.getId(), getChoiceIdInt(evidence.getChoiceId()));
-                    AppExecutor.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            NotADoctor.databaseDao().insertEvidence(evidenceEntry);
-                        }
-                    });
-                }
+            for(Evidence evidence:evicdences){
+                final EvidenceEntry evidenceEntry= new EvidenceEntry(diagnoseEntry.getId(), evidence.getId(), getChoiceIdInt(evidence.getChoiceId()));
+                AppExecutor.getInstance().diskIO().execute(() -> NotADoctor.databaseDao().insertEvidence(evidenceEntry));
             }
         });
     }
 
     private void writeFinalConditionsIntoDb(final List<Condition> conditions){
         final AppDatabase NotADoctor = AppDatabase.getInstance(this);
-            AppExecutor.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    DiagnoseEntry diagnoseEntry =  NotADoctor.databaseDao().loadDiagnoseByUserId(currentUser.getId());
+            AppExecutor.getInstance().diskIO().execute(() -> {
+                DiagnoseEntry diagnoseEntry =  NotADoctor.databaseDao().loadDiagnoseByUserId(currentUser.getId());
 
-                    for(Condition condition:conditions){
-                        final ConditionEntry conditionEntry = new ConditionEntry(diagnoseEntry.getId(), condition.getId(), condition.getName(), condition.getProbability());
-                        AppExecutor.getInstance().diskIO().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                NotADoctor.databaseDao().insertCondition(conditionEntry);
-                            }
-                        });
-                    }
-
+                for(Condition condition:conditions){
+                    final ConditionEntry conditionEntry = new ConditionEntry(diagnoseEntry.getId(), condition.getId(), condition.getName(), condition.getProbability());
+                    AppExecutor.getInstance().diskIO().execute(() -> NotADoctor.databaseDao().insertCondition(conditionEntry));
                 }
+
             });
         }
 
@@ -238,13 +222,10 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
         ValueAnimator valueAnimator = ValueAnimator.ofInt(initialValue, finalValue);
         valueAnimator.setDuration(500);
 
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                String percentageText = valueAnimator.getAnimatedValue().toString() + "%";
-                textview.setText(percentageText);
+        valueAnimator.addUpdateListener(valueAnimator1 -> {
+            String percentageText = valueAnimator1.getAnimatedValue().toString() + "%";
+            textview.setText(percentageText);
 
-            }
         });
         valueAnimator.start();
     }
@@ -256,14 +237,11 @@ public class DiagnoseActivity extends AppCompatActivity implements QuestionFragm
 
         View logoView = ToolBarHelper.getToolbarLogoView(myToolbar);
         if (logoView != null) {
-            logoView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(DiagnoseActivity.this, WelcomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    supportFinishAfterTransition();
-                }
+            logoView.setOnClickListener(v -> {
+                Intent intent = new Intent(DiagnoseActivity.this, WelcomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                supportFinishAfterTransition();
             });
         }
     }

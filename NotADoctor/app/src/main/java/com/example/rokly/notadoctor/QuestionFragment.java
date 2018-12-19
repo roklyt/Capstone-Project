@@ -2,6 +2,7 @@ package com.example.rokly.notadoctor;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,20 +35,11 @@ public class QuestionFragment extends Fragment {
     private ImageButton proceedButton;
     private RadioGroup radioGroup;
     private ImageButton passButton;
-    private LinearLayout radioButtonLinearLayout;
 
     private OnFragmentInteractionListener mListener;
 
     public QuestionFragment() {
         // Required empty public constructor
-    }
-
-
-    public static QuestionFragment newInstance(Question question) {
-        QuestionFragment fragment = new QuestionFragment();
-        Bundle args = new Bundle();
-        args.putParcelable(ARG_PARAM1, question);
-        return fragment;
     }
 
     public void setQuestion(Question question){
@@ -63,7 +55,7 @@ public class QuestionFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView;
 
@@ -71,59 +63,36 @@ public class QuestionFragment extends Fragment {
             question = savedInstanceState.getParcelable(ARG_PARAM1);
         }
 
-            switch (question.getType()) {
+        assert question != null;
+        switch (question.getType()) {
                 case QUESTION_KIND_SINGLE:
                     rootView = inflater.inflate(R.layout.fragment_question, container, false);
                     findSingleView(rootView);
 
-                    proceedButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            List<Evidence> evidences = new ArrayList<>();
-                            Evidence evidence = new Evidence(question.getItems().get(0).getId(), getRadioGroupResult());
-                            evidences.add(evidence);
-                            onButtonPressed(evidences);
-                        }
+                    proceedButton.setOnClickListener(view -> {
+                        List<Evidence> evidences = new ArrayList<>();
+                        Evidence evidence = new Evidence(question.getItems().get(0).getId(), getRadioGroupResult());
+                        evidences.add(evidence);
+                        onButtonPressed(evidences);
                     });
                     break;
                 case QUESTION_KIND_GROUP_SINGLE:
                     rootView = inflater.inflate(R.layout.fragment_question_group_single, container, false);
                     findGroupSingleView(rootView);
 
-                    proceedButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            onButtonPressed(getRadioGroupSingleResult());
-                        }
-                    });
+                    proceedButton.setOnClickListener(view -> onButtonPressed(getRadioGroupSingleResult()));
 
-                    passButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            onButtonPressed(getRadioGroupUnknown());
-                        }
-                    });
+                    passButton.setOnClickListener(view -> onButtonPressed(getRadioGroupUnknown()));
                     break;
                 case QUESTION_KIND_GROUP_MULTIPLE:
                     rootView = inflater.inflate(R.layout.fragment_question_group_multiple, container, false);
                     findGroupMulitpleView(rootView);
 
-                    proceedButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            onButtonPressed(getRadioGroupMultipleResult(rootView));
-                        }
-                    });
+                    proceedButton.setOnClickListener(view -> onButtonPressed(getRadioGroupMultipleResult(rootView)));
 
-                    passButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            onButtonPressed(getRadioGroupUnknown());
-                        }
-                    });
+                    passButton.setOnClickListener(view -> onButtonPressed(getRadioGroupUnknown()));
                     break;
                 default:
-                    //TODO implement an error layout
                     rootView = inflater.inflate(R.layout.fragment_question, container, false);
                     break;
             }
@@ -135,7 +104,7 @@ public class QuestionFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(ARG_PARAM1, question);
     }
@@ -176,7 +145,7 @@ public class QuestionFragment extends Fragment {
         radioGroup = rootView.findViewById(R.id.rg_question);
         questionTextView = rootView.findViewById(R.id.tv_question);
         passButton = rootView.findViewById(R.id.bt_pass);
-        radioButtonLinearLayout = rootView.findViewById(R.id.ll_question);
+        LinearLayout radioButtonLinearLayout = rootView.findViewById(R.id.ll_question);
         questionTextView.setText(question.getText());
 
         for (int i = 0; i < question.getItems().size(); i++) {

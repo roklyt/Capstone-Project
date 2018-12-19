@@ -27,7 +27,6 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
     /* List for all user*/
     private List<Result> resultList;
     private Context context;
-    private AnimatedVectorDrawable downToUp;
     private AnimatedVectorDrawable upToDown;
 
     public PlacesAdapter(PlacesAdapter.ItemClickListener clickHandler, Context context) {
@@ -51,7 +50,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         /*Get the current doctor */
         final Result result = resultList.get(forecastAdapterViewHolder.getAdapterPosition());
 
-        downToUp = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_down_to_up);
+        AnimatedVectorDrawable downToUp = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_down_to_up);
         upToDown = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.avd_up_to_down);
 
         forecastAdapterViewHolder.resultNameTextView.setText(result.getName());
@@ -64,34 +63,26 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         ButtonAnimator.imageButtonAnimator(forecastAdapterViewHolder.callADoctor);
 
         if (isExpanded){
-            AnimatedVectorDrawable drawable = downToUp;
-            forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
-            drawable.start();
+            forecastAdapterViewHolder.upDownView.setImageDrawable(downToUp);
+            assert downToUp != null;
+            downToUp.start();
 
             previousExpandedPosition = forecastAdapterViewHolder.getAdapterPosition();
         }
 
-        forecastAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                AnimatedVectorDrawable drawable = upToDown;
-                forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
-                drawable.start();
+        forecastAdapterViewHolder.itemView.setOnClickListener(v -> {
+            AnimatedVectorDrawable drawable = upToDown;
+            forecastAdapterViewHolder.upDownView.setImageDrawable(drawable);
+            drawable.start();
 
-                    clickHandler.onExpandClickListener(result.getName());
-                    expandedPosition = isExpanded ? -1:forecastAdapterViewHolder.getAdapterPosition();
-                    TransitionManager.beginDelayedTransition(recyclerView);
-                    notifyItemChanged(previousExpandedPosition);
-                    notifyDataSetChanged();
-            }
+                clickHandler.onExpandClickListener(result.getName());
+                expandedPosition = isExpanded ? -1:forecastAdapterViewHolder.getAdapterPosition();
+                TransitionManager.beginDelayedTransition(recyclerView);
+                notifyItemChanged(previousExpandedPosition);
+                notifyDataSetChanged();
         });
 
-        forecastAdapterViewHolder.callADoctor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clickHandler.onCallClickListener(result.getDetailResult().getFormattedPhoneNumber());
-            }
-        });
+        forecastAdapterViewHolder.callADoctor.setOnClickListener(view -> clickHandler.onCallClickListener(result.getDetailResult().getFormattedPhoneNumber()));
     }
 
     @Override
